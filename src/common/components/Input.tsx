@@ -1,10 +1,12 @@
-import { InputHTMLAttributes } from "react";
+import type { InputHTMLAttributes } from "react";
 
+// Extendemos las props para aceptar cualquier atributo de un <input>
 interface Props extends InputHTMLAttributes<HTMLInputElement> {
   label: string;
   name: string;
 }
 
+// Componente reutilizable de input con estilos y accesibilidad
 const Input = ({ label, name, ...props }: Props) => (
   <div className="flex flex-col space-y-1">
     <label htmlFor={name} className="text-sm font-medium">
