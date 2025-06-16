@@ -4,11 +4,13 @@ import Input from "../../common/components/Input";
 import Button from "../../common/components/Button";
 import useForm from "../../common/hooks/useForm";
 import { loginUser } from "../../db/services/auth";
+import { useAuth } from "../../context/AuthContext";
 
 const LoginPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
   const [, navigate] = useLocation(); // Para redirigir si login es exitoso
+  const { login: saveSession } = useAuth();
 
   // Hook para manejar campos de login
   const { values, handleChange, resetForm } = useForm({
@@ -35,9 +37,11 @@ const LoginPage = () => {
 
       setSuccess("Inicio de sesión exitoso");
 
-      // 🔐 Por ahora solo mostramos el token en consola (más adelante irá al contexto)
       console.log("Token recibido:", response.token);
       console.log("Usuario:", response.user);
+
+      // guardar el contexto
+      saveSession(response.user, response.token);
 
       // Redireccionar si todo salió bien
       navigate("/home");

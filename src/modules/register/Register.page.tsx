@@ -88,7 +88,9 @@ const RegisterPage = () => {
           </Link>
         </p>
       </form>
+      
     </div>
+    
   );
 };
 

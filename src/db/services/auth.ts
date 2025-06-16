@@ -1,7 +1,7 @@
 // Función para registrar un nuevo usuario
 export const registerUser = async (data: any) => {
   try {
-    const response = await fetch("http://localhost:3402/registro", {
+    const response = await fetch("http://localhost:3402/register", {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
