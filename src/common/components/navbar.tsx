@@ -9,56 +9,54 @@ export default function Navbar( ) {
   return (
     <nav className="fixed top-0 left-0 w-full bg-[#f29200] shadow z-50">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 className="text-xl font-bold">LeDi</h1>
+      <h1 className="flex items-center  text-2xl font-bold text-white">
+        TintaNativa
+        </h1>
         <div className="flex space-x-6 items-center">
         {user ? (
-          <div className="flex space-x-6 items-center">
-            <Link href="/">Inicio</Link>
-            <Link href="/Catalogo">Catalogo</Link>
-            <Link href="/Foro">Foro</Link>
-            <div className="relative">
-             <button
+          <div className="flex font-semibold text-white gap-12 items-center">
+              <Link href="/">Inicio</Link>
+              <Link href="/Catalogo">Catalogo</Link>
+              <Link href="/Foro">Foro</Link>
+              <Link href="/Autores">Autores</Link>
+              <div className="relative">
+                <button
                   onClick={() => setOpenProfile(!openProfile)}
                   aria-haspopup="true"
                   aria-expanded={openProfile}
-                  className="focus:outline-none"
+                  className=" flex justify-center "
                 >
                   <img
-                // {  src={user.profileimg || "/img.png"} */}
-                src="/public/profile.png"
+                    // {  src={user.profileimg || "/img.png"} */}
+                    src="/public/logosaludando.svg"
                     alt="AvatarProfile"
                     className="w-8 h-8 rounded-full"
                   />
                 </button>
-            {openProfile && (
-               <div className="absolute right-0 mt-2 bg-white rounded shadow w-40 z-50 p-2">
-                 <Link href="/Perfil">Perfil</Link>
-                 <button onClick={() => {
+                {openProfile && (
+                  <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 text-black gap-4 bg-white flex flex-col items-center justify-center rounded shadow w-40 z-50 p-2">
+                    <Link href="/Perfil">Perfil</Link>
+                    <button
+                      onClick={() => {
                         logout();
                         setOpenProfile(false);
                       }}
                     >
-                    Cerrar sesión
-                  </button>
+                      Cerrar sesión
+                    </button>
                   </div>
                 )}
               </div>
-          </div>
-        ):(
-          <div>
-          <button>Iniciar Sesion</button>
-          <button>Registrarse</button>
-          <Link
-            id="buttoncontact"
-            className="inline-block shadow-2xl rounded-3xl p-2 transition-colors duration-300"
-            style={{ color: "#f0ebf8", backgroundColor: "#8c5e8c" }}
-            href="https://wa.me/5493705090746"
-            target="_blank"
-            rel="noopener noreferrer"
-          >
-            Ayuda 
-            </Link>
             </div>
+        ):(
+        <div className="flex justify-evenly gap-6">
+          <button className="bg-orange-500 text-[#DED8E7] font-semibold px-2 py-2 rounded-xl shadow-md hover:bg-orange-400 transition">
+          Iniciar Sesión
+          </button>
+          <button className="bg-orange-500 text-[#DED8E7] font-semibold px-2 py-2 rounded-xl shadow-md hover:bg-orange-300 transition">
+          Registrarse
+          </button>
+        </div>
         )}
         </div>
       </div>
