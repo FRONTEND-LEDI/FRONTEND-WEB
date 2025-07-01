@@ -2,7 +2,7 @@ import { Route, Switch } from "wouter";
 import LoginPage from "../modules/login/Login.page";
 import RegisterPage from "../modules/register/Register.page";
 import ProtectedRoute from "./ProtectedRoute";
-import HomePage from "../modules/home/home.page";
+import HomePage from "../modules/home/Home.page";
 
 const AppRouter = () => {
   return (
