@@ -53,6 +53,7 @@ const RegisterPage = () => {
       const res = await registerUser(data);
       setSuccess("¡Cuenta creada con éxito!" + res.msg);
       resetForm();
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || "Ocurrió un error al registrar.");
     }
