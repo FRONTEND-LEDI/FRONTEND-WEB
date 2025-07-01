@@ -3,7 +3,7 @@ import { Link, useLocation } from "wouter";
 import Input from "../../common/components/Input";
 import Button from "../../common/components/Button";
 import useForm from "../../common/hooks/useForm";
-import { loginUser } from "../../db/services/auth";
+import { loginUser, getUserData } from "../../db/services/auth";
 import { useAuth } from "../../context/AuthContext";
 
 const LoginPage = () => {
@@ -35,17 +35,20 @@ const LoginPage = () => {
         password: values.password,
       });
 
+      const token = response.token;
+      console.log("Token recibido:", token);
+
+      // obtener los datos del usuario con el token
+      const userData = await getUserData(token);
+      console.log("Datos del usuario:", userData);
+      
+      // guardar en el contexto
+      saveSession(userData, token);
+      
       setSuccess("Inicio de sesión exitoso");
-
-      console.log("Token recibido:", response.token);
-      console.log("Usuario:", response.user);
-
-      // guardar el contexto
-      saveSession(response.user, response.token);
 
       // Redireccionar si todo salió bien
       navigate("/home");
-
       resetForm();
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err:any) {

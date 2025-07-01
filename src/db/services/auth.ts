@@ -47,3 +47,25 @@ export const loginUser = async (data: any) => {
     throw error;
   }
 };
+
+export const getUserData = async (token: string) => {
+  try {
+    const response = await fetch("http://localhost:3402/getUser", {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "No se pudo obtener datos del usuario");
+    }
+
+    return result.user_data;
+  } catch (error) {
+    console.error("Error en getUserData:", error);
+    throw error;
+  }
+};

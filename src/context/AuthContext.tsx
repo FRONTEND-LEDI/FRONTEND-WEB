@@ -4,7 +4,9 @@ import type { ReactNode } from "react";
 // Tipo del usuario que vamos a guardar
 type User = {
   id: string;
-  rol?: string;
+  iat?: number;
+  exp?: number;
+  rol?: string; // por si después se recibe el rol
 };
 
 // Contexto
