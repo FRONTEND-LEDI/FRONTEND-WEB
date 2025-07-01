@@ -3,11 +3,13 @@ import LoginPage from "../modules/login/Login.page";
 import RegisterPage from "../modules/register/Register.page";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../modules/home/home.page";
+import LandingPage from '../modules/landing/LandingPage';
 
 const AppRouter = () => {
   return (
     <Switch>
-      <Route path="/" component={LoginPage} /> // el landing page acá después, agregar /login cuando esté 
+      <Route path="/" component={LandingPage}/>
+      <Route path="/login" component={LoginPage} /> 
       <Route path="/register" component={RegisterPage} />
       <Route path="/home">
         <ProtectedRoute>
