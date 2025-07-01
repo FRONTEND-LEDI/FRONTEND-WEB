@@ -60,36 +60,44 @@ const RegisterPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm space-y-4"
-        onSubmit={handleSubmit}
-      >
-        <h1 className="text-2xl font-semibold text-center">Registrarse</h1>
+    <div className="flex flex-col lg:flex-row min-h-screen bg-fund">
+      {/* columna izquierda con la imagen */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4">
+        <img src="/public/zorro-login.png" alt="Zorro registro" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
+      </div>
+      {/* columna derecha con el formulario */}
+      <div className="w-full m-6 lg:w-1/2 flex items-center justify-center px-4">
+        
+        <form
+          className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm space-y-4"
+          onSubmit={handleSubmit}
+        >
+          <h1 className="text-2xl text-primary font-bold text-center">Registrarse</h1>
 
-        {/* Mensajes */}
-        {error && <p className="text-red-600 text-sm text-center">{error}</p>}
-        {success && <p className="text-green-600 text-sm text-center">{success}</p>}
+          {/* Mensajes */}
+          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+          {success && <p className="text-green-600 text-sm text-center">{success}</p>}
 
-        {/* Campos del formulario */}
-        <Input label="Nombre" name="name" value={values.name} onChange={handleChange} />
-        <Input label="Apellido" name="lastname" value={values.lastname} onChange={handleChange} />
-        <Input label="Nombre de usuario" name="username" value={values.username} onChange={handleChange} />
-        <Input label="Correo electrónico" name="email" type="email" value={values.email} onChange={handleChange} />
-        <Input label="Fecha de nacimiento" name="birthDate" type="date" value={values.birthDate} onChange={handleChange} />
-        <Input label="Contraseña" name="password" type="password" value={values.password} onChange={handleChange} />
-        <Input label="Confirmar contraseña" name="confirm" type="password" value={values.confirm} onChange={handleChange} />
+          {/* Campos del formulario */}
+          <Input label="Nombre" name="name" value={values.name} onChange={handleChange} />
+          <Input label="Apellido" name="lastname" value={values.lastname} onChange={handleChange} />
+          <Input label="Nombre de usuario" name="username" value={values.username} onChange={handleChange} />
+          <Input label="Correo electrónico" name="email" type="email" value={values.email} onChange={handleChange} />
+          <Input label="Fecha de nacimiento" name="birthDate" type="date" value={values.birthDate} onChange={handleChange} />
+          <Input label="Contraseña" name="password" type="password" value={values.password} onChange={handleChange} />
+          <Input label="Confirmar contraseña" name="confirm" type="password" value={values.confirm} onChange={handleChange} />
 
-        <Button type="submit">Crear cuenta</Button>
+          <Button type="submit">Crear cuenta</Button>
 
-        <p className="text-center text-sm">
-          ¿Ya tenés cuenta?{" "}
-          <Link href="/" className="text-blue-600 hover:underline">
-            Iniciar sesión
-          </Link>
-        </p>
-      </form>
-      
+          <p className="text-center text-sm">
+            ¿Ya tenés cuenta?{" "}
+            <Link href="/" className="text-primary font-bold hover:underline">
+              Iniciar sesión
+            </Link>
+          </p>
+        </form>
+        
+      </div>
     </div>
     
   );

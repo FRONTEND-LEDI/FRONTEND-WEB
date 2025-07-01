@@ -7,7 +7,7 @@ export default function Navbar( ) {
   const {user, logout} = useAuth()
   const [openProfile, setOpenProfile] = useState(false)
   return (
-    <nav className="fixed top-0 left-0 w-full bg-[#f29200] shadow z-50">
+    <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
       <h1 className="flex items-center  text-2xl font-bold text-white">
         TintaNativa
@@ -16,9 +16,9 @@ export default function Navbar( ) {
         {user ? (
           <div className="flex font-semibold text-white gap-12 items-center">
               <Link href="/">Inicio</Link>
-              <Link href="/Catalogo">Catalogo</Link>
-              <Link href="/Foro">Foro</Link>
-              <Link href="/Autores">Autores</Link>
+              <Link href="/catalogo">Catalogo</Link>
+              <Link href="/foro">Foro</Link>
+              <Link href="/autores">Autores</Link>
               <div className="relative">
                 <button
                   onClick={() => setOpenProfile(!openProfile)}
@@ -35,7 +35,7 @@ export default function Navbar( ) {
                 </button>
                 {openProfile && (
                   <div className="absolute left-1/2 transform -translate-x-1/2 mt-2 text-black gap-4 bg-white flex flex-col items-center justify-center rounded shadow w-40 z-50 p-2">
-                    <Link href="/Perfil">Perfil</Link>
+                    <Link href="/perfil">Perfil</Link>
                     <button
                       onClick={() => {
                         logout();

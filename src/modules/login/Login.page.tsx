@@ -65,43 +65,51 @@ const LoginPage = () => {
   };
 
   return (
-    <div className="flex items-center justify-center min-h-screen bg-gray-100">
-      <form
-        className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm space-y-4"
-        onSubmit={handleSubmit}
-      >
-        <h1 className="text-2xl font-semibold text-center">Iniciar sesión</h1>
+    <div className="flex flex-col lg:flex-row min-h-screen bg-fund">
+      {/* columna izquierda con la imagen */ }
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4">
+        <img src="/public/zorro-login.png" alt="Zorro login" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
+      </div>
 
-        {/* Mensajes de feedback */}
-        {error && <p className="text-red-600 text-sm text-center">{error}</p>}
-        {success && <p className="text-green-600 text-sm text-center">{success}</p>}
+      { /* columna derecha con el formulario */}
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-4">
+        <form
+          className="bg-white p-8 rounded-lg shadow-md w-full max-w-md space-y-4"
+          onSubmit={handleSubmit}
+        >
+          <h1 className="text-2xl text-primary font-bold text-center">Iniciar sesión</h1>
 
-        {/* Campos */}
-        <Input
-          label="Correo electrónico"
-          name="email"
-          type="email"
-          value={values.email}
-          onChange={handleChange}
-        />
+          {/* Mensajes de feedback */}
+          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
+          {success && <p className="text-green-600 text-sm text-center">{success}</p>}
 
-        <Input
-          label="Contraseña"
-          name="password"
-          type="password"
-          value={values.password}
-          onChange={handleChange}
-        />
+          {/* Campos */}
+          <Input
+            label="Correo electrónico"
+            name="email"
+            type="email"
+            value={values.email}
+            onChange={handleChange}
+          />
 
-        <Button type="submit">Ingresar</Button>
+          <Input
+            label="Contraseña"
+            name="password"
+            type="password"
+            value={values.password}
+            onChange={handleChange}
+          />
 
-        <p className="text-center text-sm">
-          ¿No tenés cuenta?{" "}
-          <Link href="/register" className="text-blue-600 hover:underline">
-            Registrate
-          </Link>
-        </p>
-      </form>
+          <Button type="submit">Ingresar</Button>
+
+          <p className="text-center text-sm">
+            ¿No tenés cuenta?{" "}
+            <Link href="/register" className="text-primary font-bold hover:underline">
+              Registrate
+            </Link>
+          </p>
+        </form>
+      </div>
     </div>
   );
 };
