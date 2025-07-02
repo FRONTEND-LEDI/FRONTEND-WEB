@@ -67,12 +67,12 @@ const LoginPage = () => {
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-fund">
       {/* columna izquierda con la imagen */ }
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-4">
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:justify-end lg:pr-2">
         <img src="/public/zorro-login.png" alt="Zorro login" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
       </div>
 
       { /* columna derecha con el formulario */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center px-4">
+      <div className="w-full lg:w-1/2 flex items-center justify-center px-4 lg:justify-start lg:pl-4">
         <form
           className="bg-white p-8 rounded-lg shadow-md w-full max-w-md space-y-4"
           onSubmit={handleSubmit}
