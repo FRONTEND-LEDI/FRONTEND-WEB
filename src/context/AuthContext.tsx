@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from "react";
+import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
+import { getUserData } from "../db/services/auth";
 
 // Tipo del usuario que vamos a guardar
 type User = {
@@ -42,6 +43,29 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     setToken(null);
     localStorage.removeItem("token");
   };
+
+  // recuperar los datos del usuario con el token al iniciar la aplicación
+  // si ya hay un token guardado en localStorage
+  useEffect(() => {
+    const tokenInStorage = localStorage.getItem("token");
+
+    if (tokenInStorage && !user) {
+      // Intentar recuperar datos del usuario
+      console.log("Restaurando sesión con token:");
+      
+      getUserData(tokenInStorage)
+        .then((userData) => {
+          setUser(userData);
+          setToken(tokenInStorage);
+        })
+        .catch((error) => {
+          console.error("Error al restaurar la sesión:", error);
+          localStorage.removeItem("token");
+          setUser(null);
+          setToken(null);
+        });
+    }
+  }, []);
 
   return (
     <AuthContext.Provider value={{ user, token, login, logout }}>
