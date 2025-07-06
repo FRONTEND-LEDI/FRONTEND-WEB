@@ -5,6 +5,7 @@ import { getUserData } from "../db/services/auth";
 // Tipo del usuario que vamos a guardar
 type User = {
   id: string;
+  name: null;
   iat?: number;
   exp?: number;
   rol?: string; // por si después se recibe el rol
