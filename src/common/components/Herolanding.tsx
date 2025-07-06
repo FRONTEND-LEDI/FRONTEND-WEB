@@ -4,7 +4,7 @@ import { Link } from 'wouter';
 
 export default function Herolanding(){
 return(
-    <div className="bg-[url('/public/library.jpeg')]   bg-cover bg-center py-8 flex flex-col items-center justify-center text-white text-center px-4">
+    <div className="bg-[url('/public/library.jpeg')] w-full h-full mt-18 p-25 bg-cover bg-center py-15 flex flex-col items-center justify-center text-white text-center px-4">
        <div  />
       <h1 className="text-3xl md:text-5xl font-bold p-6 ">
         Bienvenido 
