@@ -10,7 +10,7 @@ export default function Navbar( ) {
     <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
       <h1 className="flex items-center  text-2xl font-bold text-white">
-        TintaFormoseña🖋
+        TintasFormoseñas
         </h1>
         <div className="flex space-x-6 items-center">
         {user ? (
@@ -28,7 +28,7 @@ export default function Navbar( ) {
                 >
                   <img
                     // {  src={user.profileimg || "/img.png"} */}
-                    src="/public/logosaludando.svg"
+                    src="/public/profile.png"
                     alt="AvatarProfile"
                     className="w-8 h-8 rounded-full"
                   />
