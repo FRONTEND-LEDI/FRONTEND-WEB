@@ -13,6 +13,7 @@ export default function LandingPage() {
     <div>
       <Herolanding />
     </div>
+
       <div className="mt-24 px-6 mb-24 flex max-w-6xl mx-auto justify-center flex-col">
         <h2 className="text-center text-2xl md:text-3xl font-bold text-primary mb-12">
           Tu próxima biblioteca favorita
@@ -92,15 +93,28 @@ export default function LandingPage() {
           <img
             src="/moviltest.png"
             alt="LeDi en móvil"
-            className="w-72 h-auto drop-shadow-lg"
+            className="w- h-auto drop-shadow-lg"
           />
         </div>
-        <div className="md:w-1/2 text-center md:text-left self-center max-w-xl">
+        <div className="md:w-1/2 text-center md:text-left justify-center flex  flex-col self-center max-w-xl">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Tu biblioteca virtual de bolsillo
           </h2>
           <p className="text-gray-700 text-base md:text-lg leading-relaxed">
             Accedé a Tintas desde cualquier lugar con tu celular. Leé cómodamente desde la app o el navegador, guardá tus libros favoritos y seguí tu progreso en tiempo real. ¡La lectura ahora te acompaña a donde vayas!
+          </p>
+        </div>
+      </div>
+       <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
+        <div className="w-full md:w-1/2 flex justify-center">
+          <img src="/public/QR_code_for_mobile_English_Wikipedia.svg.png" className="w-72 h-auto drop-shadow-lg" alt="Ledi el zorro" />
+        </div>
+        <div className="md:w-1/2 text-center md:text-left self-center max-w-xl">
+          <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+            Tu biblioteca virtual Formoseña
+          </h1>
+          <p className="text-gray-700 text-base md:text-lg leading-relaxed">
+            Tintas Formoseñas te presenta una biblioteca digital interactiva que conecta a lectores de todas las edades con antologías y contenidos locales. Aquí vas a encontrar obras literarias de autores y autoras formoseños/as, incluyendo las recopilaciones de los concursos "Letras del Viento Norte". Descubrí nuevas voces, leé en cualquier momento y formá parte de esta comunidad lectora.
           </p>
         </div>
       </div>
