@@ -4,6 +4,7 @@ import RegisterPage from "../modules/register/Register.page";
 import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../modules/home/Home.page";
 import LandingPage from '../modules/landing/LandingPage';
+import CatalogPage from "../modules/catalog/Catalog.page";
 
 const AppRouter = () => {
   return (
@@ -16,6 +17,12 @@ const AppRouter = () => {
           <HomePage />
         </ProtectedRoute>
       </Route>
+      <Route path="/catalogo">
+        <ProtectedRoute>
+          < CatalogPage />
+        </ProtectedRoute>
+      </Route>
+
       {/* las demás rutas acá */}
       <Route>404 - Página no encontrada</Route>
     </Switch>

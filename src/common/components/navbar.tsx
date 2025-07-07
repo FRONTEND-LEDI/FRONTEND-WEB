@@ -15,7 +15,7 @@ export default function Navbar( ) {
         <div className="flex space-x-6 items-center">
         {user ? (
           <div className="flex font-semibold text-white gap-12 items-center">
-              <Link href="/">Inicio</Link>
+              <Link href="/home">Inicio</Link>
               <Link href="/catalogo">Catalogo</Link>
               <Link href="/foro">Foro</Link>
               <Link href="/autores">Autores</Link>
