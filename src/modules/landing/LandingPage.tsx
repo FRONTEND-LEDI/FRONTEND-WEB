@@ -13,6 +13,7 @@ export default function LandingPage() {
     <div>
       <Herolanding />
     </div>
+
       <div className="mt-24 px-6 mb-24 flex max-w-6xl mx-auto justify-center flex-col">
         <h2 className="text-center text-2xl md:text-3xl font-bold text-primary mb-12">
           Tu próxima biblioteca favorita
@@ -92,10 +93,10 @@ export default function LandingPage() {
           <img
             src="/moviltest.png"
             alt="LeDi en móvil"
-            className="w-72 h-auto drop-shadow-lg"
+            className="w- h-auto drop-shadow-lg"
           />
         </div>
-        <div className="md:w-1/2 text-center md:text-left self-center max-w-xl">
+        <div className="md:w-1/2 text-center md:text-left justify-center flex  flex-col self-center max-w-xl">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Tu biblioteca virtual de bolsillo
           </h2>
@@ -104,7 +105,21 @@ export default function LandingPage() {
           </p>
         </div>
       </div>
-      <div className="relative bg-primary w-full overflow-hidden flex justify-center items-center flex-col py-20 mt-24">
+       <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
+        <div className="w-full md:w-1/2 flex justify-center">
+          <img src="/public/QR_code_for_mobile_English_Wikipedia.svg.png" className="w-72 h-auto drop-shadow-lg" alt="visitanos en PlayStore" />
+        </div>
+        <div className="md:w-1/2   flex flex-col  md:text-left  max-w-xl">
+          <h1 className="text-3xl mb-8 md:text-4xl font-semibold text-primary  ">
+            ¡Descarga la aplicacion web!
+          </h1>
+          <div className='flex justify-center items-center align-middle'>
+          <img src="/public/get-it-on-googleplay.png" className='cursor-pointer h-10 w-30' alt="" />
+          <img src="/public/applepay.png"  className='cursor-pointer h-9 w-30' alt="" />
+          </div>
+        </div>
+      </div>
+      <div className="relative bg-primary w-full  overflow-hidden flex justify-center items-center flex-col py-20 mt-24">
         <h1 className="text-secondary text-2xl md:text-4xl font-bold text-center z-10">
           Unite a este mundo de Tintas Formoseñas
         </h1>

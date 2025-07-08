@@ -1,4 +1,4 @@
-// vite.config.js
+
 import { defineConfig } from 'vite'
 import react from '@vitejs/plugin-react'
 import tailwindcss from '@tailwindcss/vite'
@@ -10,7 +10,7 @@ export default defineConfig({
     tailwindcss(),
   ],
   server: {
-    host: true, // permite acceso desde IP externa
-    port: 5173, // o el puerto que quieras
+    host: true, 
+    port: 5173, 
   },
 })
