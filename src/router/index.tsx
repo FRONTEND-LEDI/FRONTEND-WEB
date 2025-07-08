@@ -5,6 +5,7 @@ import ProtectedRoute from "./ProtectedRoute";
 import HomePage from "../modules/home/Home.page";
 import LandingPage from '../modules/landing/LandingPage';
 import CatalogPage from "../modules/catalog/Catalog.page";
+import Test from "../modules/test/Test";
 
 const AppRouter = () => {
   return (
@@ -12,6 +13,7 @@ const AppRouter = () => {
       <Route path="/" component={LandingPage}/>
       <Route path="/login" component={LoginPage} /> 
       <Route path="/register" component={RegisterPage} />
+      <Route path="/test" component={Test} />
       <Route path="/home">
         <ProtectedRoute>
           <HomePage />
