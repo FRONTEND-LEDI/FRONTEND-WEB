@@ -30,8 +30,24 @@ const RegisterPage = () => {
       return;
     }
 
+    if (values.username.length < 5) {
+      setError("El nombre de usuario debe tener al menos 5 caracteres.");
+      return;
+    }
+
     if (values.password !== values.confirm) {
       setError("Las contraseñas no coinciden.");
+      return;
+    }
+
+    if (values.password.length < 8) {
+      setError("La contraseña debe tener al menos 8 caracteres.");
+      return;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(values.email)) {
+      setError("El correo electrónico no es válido.");
       return;
     }
 
@@ -44,6 +60,7 @@ const RegisterPage = () => {
       email: values.email,
       password: values.password,
     };
+
     localStorage.setItem("registroPendiente", JSON.stringify(usuarioPendiente));
 
   //   try {

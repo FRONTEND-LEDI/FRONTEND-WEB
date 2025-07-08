@@ -20,22 +20,37 @@ const dialog: DialogProps[] = [
   { dialog: "¡Elegí tu avatar!" }
 ];
 
+// avatars ramdoms para probar
+const avatars = [
+  "https://cdn-icons-png.flaticon.com/512/847/847969.png",
+  "https://cdn-icons-png.flaticon.com/512/219/219969.png",
+  "https://cdn-icons-png.flaticon.com/512/236/236831.png",
+  "https://cdn-icons-png.flaticon.com/512/2922/2922510.png",
+  "https://cdn-icons-png.flaticon.com/512/2922/2922561.png",
+  "https://cdn-icons-png.flaticon.com/512/2922/2922511.png"
+];
+
+
 const handleCompleteRegistration = async () => {
   const saved = localStorage.getItem("registroPendiente");
+
   if (!saved) {
     alert("No se encontraron los datos del registro. Por favor volvé al formulario.");
-    navigate("/registro");
+    navigate("/register");
     return;
   }  
   const userForm = JSON.parse(saved);
+  const combinedPreferences = [...selectedGenres, ...selectedFormats];
+
   const dataToSend = {
     ...userForm,
-    avatar: selectedAvatar || "https://example.com/default-avatar.png",
+    avatar: selectedAvatar || "https://cdn.vectorstock.com/i/2000v/29/53/gray-silhouette-avatar-for-male-profile-picture-vector-56412953.avif",
     preference: {
-      category: selectedGenres.length >= 3 ? selectedGenres : ["general"],
+      category: combinedPreferences.length > 0 ? combinedPreferences : ["general"],
       language: "es"
     }
   };
+
   console.log("Datos que se enviarán al backend:", dataToSend);
   
   try {
@@ -68,192 +83,137 @@ const handleCompleteRegistration = async () => {
   }
 
   return (
-    <div className="flex justify-center items-center flex-col min-h-screen  ">
-    <div className="w-full flex justify-center items-start fixed top-5 z-0 ">
-      <ul className="steps steps-horizontal w-150 lg:steps-horizontal">
-        {dialog.map((_, index) => (
-          <li
-            key={index}
-            data-content={index + 1}
-            className={`step ${index <= progressSteps ? "step-primary" : ""}`}
-          >
-          
-          </li>
-        ))}
-      </ul>
-       <Link href="/home" onClick={handleCompleteRegistration} className="text-sm underline text-gray-500 cursor-pointer">
-       Omitir
-       </Link>
+    <div className="flex flex-col items-center min-h-screen bg-white py-10 px-4">
+      {/* Barra de pasos */}
+      <div className="w-full max-w-3xl flex justify-between items-center mb-8 relative">
+        <ul className="steps w-full">
+          {dialog.map((_, index) => (
+            <li
+              key={index}
+              data-content={index + 1}
+              className={`step ${index <= progressSteps ? "step-primary" : ""}`}
+            />
+          ))}
+        </ul>
+        <Link
+          href="/home"
+          onClick={handleCompleteRegistration}
+          className="absolute right-0 text-sm underline text-gray-500 cursor-pointer"
+        >
+          Omitir
+        </Link>
+      </div>
+
+      {/* Zorro + Mensaje */}
+      <div className="flex flex-row items-center text-center mb-8 space-y-4">
+        <img
+          src="/public/zorro-login.png"
+          alt="Zorro"
+          className="w-28 h-28 object-contain"
+        />
+        <div className="chat chat-start">
+          <div className="chat-bubble bg-secondary text-base-content">
+            {dialog[progressSteps].dialog}
+          </div>
         </div>
-   
-      <div
-  id="dialog"
-  className={`flex justify-center items-center w-150 botton-5 ${
-    progressSteps > 2 ? "fixed top-20 z-0" : ""
-  }`}
->
-  <div className="w-32 h-32">
-    <img
-      src="/zorro-login.png"
-      alt="avatar zorro"
-      className="w-full h-full object-contain"
-    />
-  </div>
-
-  <div className="chat chat-start">
-    <div className="chat-bubble bg-secondary text-base-content">
-      {dialog[progressSteps].dialog}
-    </div>
-  </div>
-</div>
-
-      <div className="w-150 flex justify-center ">
-      {progressSteps >= 2 && (
-        <div className="grid grid-cols-2 md:grid-cols-3 gap-4 mt-4">
-          {progressSteps === 2 && (
-            <>
-              <div onClick={() => {
-                  setSelectedGenres(prev => 
-                    prev.includes("Fantasía") ? prev.filter(g => g !== "Fantasía") : [...prev, "Fantasía"]
-                  );
-                }} className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" alt="Fantasía" className="rounded-lg  h-40 w-50 object-cover" />
-                <p className="mt-2 font-semibold">Fantasía</p>
-              </div>
-              <div onClick={() => {
-                  setSelectedGenres(prev => 
-                    prev.includes("Terror") ? prev.filter(g => g !== "Terror") : [...prev, "Terror"]
-                  );
-                }} className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" alt="Terror" className="rounded-lg shadow h-40 w-50 object-cover" />
-                <p className="mt-2 font-semibold">Terror</p>
-              </div>
-              <div onClick={() => {
-                  setSelectedGenres(prev => 
-                    prev.includes("Romance") ? prev.filter(g => g !== "Romance") : [...prev, "Romance"]
-                  );
-                }} className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" alt="Romance" className="rounded-lg shadow h-40 w-50 object-cover" />
-                <p className="mt-2 font-semibold">Romance</p>
-              </div>
-              <div onClick={() => {
-                  setSelectedGenres(prev => 
-                    prev.includes("Aventura") ? prev.filter(g => g !== "Aventura") : [...prev, "Aventura"]
-                  );
-                }} className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" alt="Aventura" className="rounded-lg shadow h-40 w-50 object-cover" />
-                <p className="mt-2 font-semibold">Aventura</p>
-              </div>
-              <div onClick={() => {
-                  setSelectedGenres(prev => 
-                    prev.includes("Nostalgico") ? prev.filter(g => g !== "Nostalgico") : [...prev, "Nostalgico"]
-                  );
-                }} className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" alt="Aventura" className="rounded-lg shadow h-40 w-50 object-cover" />
-                <p className="mt-2 font-semibold">Nostalgico</p>
-              </div>
-               <div onClick={() => {
-                  setSelectedGenres(prev => 
-                    prev.includes("Psicologico") ? prev.filter(g => g !== "Psicologico") : [...prev, "Psicologico"]
-                  );
-                }} className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" alt="Aventura" className="rounded-lg shadow h-40 w-50 object-cover" />
-                <p className="mt-2 font-semibold">Psicologico</p>
-              </div>
-            
-            </>
-          )}
-
-          {progressSteps === 3 && (
-            <>
-              <div onClick={() => {
-                  setSelectedFormats(prev => 
-                    prev.includes("Poema") ? prev.filter(g => g !== "Poema") : [...prev, "Poema"]
-                  );
-                }} className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" alt="Libro físico" className="rounded-lg shadow h-40 w-50 object-cover" />
-                <p className="mt-2 font-semibold">Poema</p>
-              </div>
-              <div onClick={() => {
-                  setSelectedFormats(prev => 
-                    prev.includes("Cuento Narrativo") ? prev.filter(g => g !== "Cuento Narrativo") : [...prev, "Cuento Narrativo"]
-                  );
-                }} className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" alt="E-book" className="rounded-lg shadow h-40 w-50 object-cover" />
-                <p className="mt-2 font-semibold">Cuento Narrativo</p>
-              </div>
-              <div onClick={() => {
-                  setSelectedFormats(prev => 
-                    prev.includes("Audiolibro") ? prev.filter(g => g !== "Audiolibro") : [...prev, "Audiolibro"]
-                  );
-                }} className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" alt="Audiolibro" className="rounded-lg shadow h-40 w-50 object-cover" />
-                <p className="mt-2 font-semibold">Audiolibro</p>
-              </div>
-            </>
-            
-          )}
-
-
-          {progressSteps === 4 && (
-            <>
-              <div className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar1.png" onClick={() => setSelectedAvatar("/public/avatars/avatar1.png")} className={`rounded-lg cursor-pointer h-40 w-50 object-cover ${selectedAvatar === "/public/avatars/avatar1.png" ? 'ring-4 ring-primary' : ''}`} />
-                
-              </div>
-              <div className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar2.png" onClick={() => setSelectedAvatar("/public/avatars/avatar2.png")} className={`rounded-lg cursor-pointer h-40 w-50 object-cover ${selectedAvatar === "/public/avatars/avatar2.png" ? 'ring-4 ring-primary' : ''}`} />
-                
-              </div>
-              <div className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar3.png" onClick={() => setSelectedAvatar("/public/avatars/avatar3.png")} className={`rounded-lg cursor-pointer h-40 w-50 object-cover ${selectedAvatar === "/public/avatars/avatar3.png" ? 'ring-4 ring-primary' : ''}`} />
-                
-              </div>
-              <div className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar4.png" onClick={() => setSelectedAvatar("/public/avatars/avatar4.png")} className={`rounded-lg cursor-pointer h-40 w-50 object-cover ${selectedAvatar === "/public/avatars/avatar4.png" ? 'ring-4 ring-primary' : ''}`} />
-                
-              </div>
-              <div className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar5.png" onClick={() => setSelectedAvatar("/public/avatars/avatar5.png")} className={`rounded-lg cursor-pointer h-40 w-50 object-cover ${selectedAvatar === "/public/avatars/avatar5.png" ? 'ring-4 ring-primary' : ''}`} />
-                
-              </div>
-              <div className="text-center cursor-pointer hover:scale-105 transition">
-                <img src="/public/avatars/avatar6.png" onClick={() => setSelectedAvatar("/public/avatars/avatar6.png")} className={`rounded-lg cursor-pointer h-40 w-50 object-cover ${selectedAvatar === "/public/avatars/avatar6.png" ? 'ring-4 ring-primary' : ''}`} />
-                
-              </div>
-          </>
-          )}
-        
       </div>
+
+      {/* Opciones */}
+      <div className="w-full max-w-5xl flex justify-center">
+        {progressSteps >= 2 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
+            {/* Géneros */}
+            {progressSteps === 2 &&
+              ["Fantasía", "Terror", "Romance", "Aventura", "Nostalgico", "Psicologico"].map((genre) => (
+                <div
+                  key={genre}
+                  onClick={() =>
+                    setSelectedGenres((prev) =>
+                      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
+                    )
+                  }
+                  className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
+                    selectedGenres.includes(genre) ? "ring-4 ring-primary" : ""
+                  }`}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+                    alt={genre}
+                    className="rounded-lg h-32 w-full object-cover mx-auto"
+                  />
+                  <p className="mt-2 font-semibold">{genre}</p>
+                </div>
+              ))}
+
+            {/* Formatos */}
+            {progressSteps === 3 &&
+              ["Poema", "Cuento Narrativo", "Audiolibro"].map((format) => (
+                <div
+                  key={format}
+                  onClick={() =>
+                    setSelectedFormats((prev) =>
+                      prev.includes(format) ? prev.filter((f) => f !== format) : [...prev, format]
+                    )
+                  }
+                  className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
+                    selectedFormats.includes(format) ? "ring-4 ring-primary" : ""
+                  }`}
+                >
+                  <img
+                    src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+                    alt={format}
+                    className="rounded-lg h-32 w-full object-cover mx-auto"
+                  />
+                  <p className="mt-2 font-semibold">{format}</p>
+                </div>
+              ))}
+
+            {/* Avatares */}
+            {progressSteps === 4 &&
+              avatars.map((avatarUrl, index) => (
+                <div
+                  key={index}
+                  onClick={() => setSelectedAvatar(avatarUrl)}
+                  className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
+                    selectedAvatar === avatarUrl ? "ring-4 ring-primary" : ""
+                  }`}
+                >
+                  <img
+                    src={avatarUrl}
+                    alt={`Avatar ${index + 1}`}
+                    className="rounded-lg h-32 w-full object-cover mx-auto"
+                  />
+                </div>
+              ))}
+          </div>
         )}
-          
-    
       </div>
 
-      <div className="flex gap-4 mt-4">
-  {progressSteps > 0 && (
-    <button
-      onClick={handleBack}
-      className="text-sm underline text-gray-500 font-bold py-2 px-6 cursor-pointer"
-    >
-      Atrás
-    </button>
-  )}
+      {/* Botones */}
+      <div className="flex flex-wrap justify-center gap-4 mt-10">
+        {progressSteps > 0 && (
+          <button
+            onClick={handleBack}
+            className="text-sm underline text-gray-500 font-bold py-2 px-6 cursor-pointer"
+          >
+            Atrás
+          </button>
+        )}
 
-  <button
-    onClick={() => {
-      if (progressSteps === dialog.length - 1) {
-      handleCompleteRegistration();
-    } else {
-      handleNext();
-    }}
-    }
-    className="bg-primary text-white font-bold py-2 px-6 cursor-pointer rounded"
-  >
-    {progressSteps === dialog.length - 1 ? "Finalizar Registro" : "Continuar"}
-  </button>
-</div>
-
+        <button
+          onClick={() => {
+            if (progressSteps === dialog.length - 1) {
+              handleCompleteRegistration();
+            } else {
+              handleNext();
+            }
+          }}
+          className="bg-primary text-white font-bold py-2 px-6 rounded hover:bg-primary/90"
+        >
+          {progressSteps === dialog.length - 1 ? "Finalizar Registro" : "Continuar"}
+        </button>
+      </div>
     </div>
+
   );
 }
