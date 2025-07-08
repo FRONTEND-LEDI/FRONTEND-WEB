@@ -15,7 +15,7 @@ export default function Navbar( ) {
         <div className="flex space-x-6 items-center">
         {user ? (
           <div className="flex font-semibold text-white gap-12 items-center">
-              <Link href="/">Inicio</Link>
+              <Link href="/home">Inicio</Link>
               <Link href="/catalogo">Catalogo</Link>
               <Link href="/foro">Foro</Link>
               <Link href="/autores">Autores</Link>
@@ -50,10 +50,10 @@ export default function Navbar( ) {
             </div>
         ):(
         <div className="flex justify-evenly gap-6">
-          <Link rel="stylesheet" href="/login"  className="bg-orange-500 text-[#DED8E7] font-semibold px-2 py-2 rounded-xl shadow-md hover:bg-orange-400 transition">
+          <Link rel="stylesheet" href="/login"  className="bg-white text-primary  font-semibold px-2 py-2 rounded-xl shadow-lg hover:bg-secondary hover:text-white transition">
           Iniciar Sesión
           </Link>
-          <Link  rel="stylesheet" href="/register" className="bg-orange-500 text-[#DED8E7] font-semibold px-2 py-2 rounded-xl shadow-md hover:bg-orange-300 transition">
+          <Link  rel="stylesheet" href="/register" className="bg-white text-primary  font-semibold px-2 py-2 rounded-xl shadow-lg hover:bg-secondary hover:text-white transition">
           Registrarse
           </Link>
         </div>

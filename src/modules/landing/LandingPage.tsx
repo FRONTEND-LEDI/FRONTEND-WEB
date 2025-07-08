@@ -13,7 +13,7 @@ export default function LandingPage() {
     <div>
       <Herolanding />
     </div>
-
+{/* Seccion propuestas */}
       <div className="mt-24 px-6 mb-24 flex max-w-6xl mx-auto justify-center flex-col">
         <h2 className="text-center text-2xl md:text-3xl font-bold text-primary mb-12">
           Tu próxima biblioteca favorita
@@ -75,9 +75,10 @@ export default function LandingPage() {
           </li>
         </ul>
       </div>
+{/* Session Presentacion */}
       <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
         <div className="w-full md:w-1/2 flex justify-center">
-          <img src="/zorro-login.png" className="w-72 h-auto drop-shadow-lg" alt="Ledi el zorro" />
+          <img src="/zorro-leyendo.png" className="w-72 h-auto drop-shadow-lg" alt="Ledi el zorro" />
         </div>
         <div className="md:w-1/2 text-center md:text-left self-center max-w-xl">
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
@@ -88,14 +89,66 @@ export default function LandingPage() {
           </p>
         </div>
       </div>
-      <div className="bg-white flex flex-col md:flex-row-reverse items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl mt-16">
-        <div className="w-full md:w-1/2 flex justify-center">
-          <img
-            src="/moviltest.png"
-            alt="LeDi en móvil"
-            className="w- h-auto drop-shadow-lg"
-          />
-        </div>
+{/* Nivel por edad  */}
+
+  <div className=' flex justify-center align-middle items-center flex-col p-8 '>
+    <h1 className='text-primary font-bold text-3xl text-center mb-12'>¡No te pierdas nuestras recomendaciones por Nivel!</h1>
+    <div className="flex justify-center gap-18">
+<div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
+    <figure className="w-1/3 h-full">
+      <img src="/public/cartoon-child-girl-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
+    </figure>
+    <div className="card-body w-2/3 p-2">
+      <h2 className="card-title">Inicial</h2>
+      <p className="text-xs">0-10</p>
+    </div>
+  </div>
+<div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
+    <figure className="w-1/3 h-full">
+      <img src="/public/aunt-cartoon-family-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
+    </figure>
+    <div className="card-body w-2/3 p-2">
+      <h2 className="card-title text-sm leading-tight">Secundaria</h2>
+      <p className="text-xs">10-18</p>
+    </div>
+  </div>
+
+<div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
+  <figure className="w-1/3 h-full">
+    <img src="/family-female-mom-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-contain"/>
+  </figure>
+  <div className="card-body w-2/3 p-2">
+    <h2 className="card-title text-sm leading-tight">Adulto joven</h2>
+    <p className="text-xs">18-60</p>
+  </div>
+</div>
+
+
+<div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
+    <figure className="w-1/3 h-full">
+      <img src="/public/family-grandfather-grandpa-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
+    </figure>
+    <div className="card-body w-2/3 p-2">
+      <h2 className="card-title text-sm leading-tight">Adulto Mayor</h2>
+      <p className="text-xs">60-100</p>
+    </div>
+  </div>
+
+
+</div>
+
+</div>
+
+{/* Seccion FInal - Seccion web */}
+<div className="bg-white flex flex-col md:flex-row-reverse items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl mt-16">
+<div className='flex justify-center w-100 gap-4'>
+<div>
+    <img alt="wallpaper" src="/public/12.png"/> 
+</div>
+<div >
+    <img alt="wallpaper" src="/public/123.png"/>
+</div>
+</div>
         <div className="md:w-1/2 text-center md:text-left justify-center flex  flex-col self-center max-w-xl">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Tu biblioteca virtual de bolsillo
@@ -119,6 +172,8 @@ export default function LandingPage() {
           </div>
         </div>
       </div>
+
+{/* Last Call  */}
       <div className="relative bg-primary w-full  overflow-hidden flex justify-center items-center flex-col py-20 mt-24">
         <h1 className="text-secondary text-2xl md:text-4xl font-bold text-center z-10">
           Unite a este mundo de Tintas Formoseñas

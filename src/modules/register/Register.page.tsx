@@ -1,17 +1,16 @@
 import { useState } from "react";
-import { Link } from "wouter";
+import { useLocation } from "wouter";
 import Input from "../../common/components/Input";
 import Button from "../../common/components/Button";
 import useForm from "../../common/hooks/useForm";
-import { registerUser } from "../../db/services/auth";
 
 const RegisterPage = () => {
   // Estado de error y éxito
   const [error, setError] = useState("");
-  const [success, setSuccess] = useState("");
+  const [, setLocation] = useLocation();
 
   // Hook de formulario
-  const { values, handleChange, resetForm } = useForm({
+  const { values, handleChange } = useForm({
     name: "",
     lastname: "",
     username: "",
@@ -20,12 +19,10 @@ const RegisterPage = () => {
     confirm: "",
     birthDate: "", 
   });
-
-  // Envío del formulario
+  
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
-    setSuccess("");
 
     // Validaciones básicas
     if (!values.name || !values.lastname || !values.username || !values.email || !values.password || !values.birthDate) {
@@ -38,8 +35,8 @@ const RegisterPage = () => {
       return;
     }
 
-    // Datos que espera el backend
-    const data = {
+    // guardo los datos en localStorage para después continuar con el registro
+    const usuarioPendiente = {
       name: values.name,
       lastName: values.lastname,
       userName: values.username,
@@ -47,16 +44,21 @@ const RegisterPage = () => {
       email: values.email,
       password: values.password,
     };
+    localStorage.setItem("registroPendiente", JSON.stringify(usuarioPendiente));
 
-
-    try {
-      const res = await registerUser(data);
-      setSuccess("¡Cuenta creada con éxito!" + res.msg);
-      resetForm();
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
-    } catch (err: any) {
-      setError(err.message || "Ocurrió un error al registrar.");
-    }
+  //   try {
+  //     const res = await registerUser(data);
+  //     setSuccess("¡Cuenta creada con éxito!" + res.msg);
+  //     resetForm();
+  //     // Redirigir al login después de registrarse
+  //     navigate("/login");
+  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  //   } catch (err: any) {
+  //     setError(err.message || "Ocurrió un error al registrar.");
+  //   }
+  
+  // redirigir al test
+    setLocation("/test");
   };
 
   return (
@@ -72,11 +74,10 @@ const RegisterPage = () => {
           className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm space-y-4"
           onSubmit={handleSubmit}
         >
-          <h1 className="text-2xl text-primary font-bold text-center">Registrarse</h1>
+          <h1 className="text-2xl text-primary font-bold text-center">Registremos tu cuenta</h1>
 
-          {/* Mensajes */}
-          {error && <p className="text-red-600 text-sm text-center">{error}</p>}
-          {success && <p className="text-green-600 text-sm text-center">{success}</p>}
+          {/* Mensaje de error si existe */}
+          {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           {/* Campos del formulario */}
           <Input label="Nombre" name="name" value={values.name} onChange={handleChange} />
@@ -86,17 +87,14 @@ const RegisterPage = () => {
           <Input label="Fecha de nacimiento" name="birthDate" type="date" value={values.birthDate} onChange={handleChange} />
           <Input label="Contraseña" name="password" type="password" value={values.password} onChange={handleChange} />
           <Input label="Confirmar contraseña" name="confirm" type="password" value={values.confirm} onChange={handleChange} />
-
-          <Button type="submit">Crear cuenta</Button>
-
+          <Button type="submit">Continuar</Button>
           <p className="text-center text-sm">
             ¿Ya tenés cuenta?{" "}
-            <Link href="/" className="text-primary font-bold hover:underline">
+            <a href="/login" className="text-primary font-bold hover:underline">
               Iniciar sesión
-            </Link>
+            </a>
           </p>
         </form>
-        
       </div>
     </div>
     
