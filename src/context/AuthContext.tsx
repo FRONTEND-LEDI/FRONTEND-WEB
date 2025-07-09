@@ -9,6 +9,7 @@ type User = {
   iat?: number;
   exp?: number;
   rol?: string; // por si después se recibe el rol
+  avatar?:string
 };
 
 // Contexto
