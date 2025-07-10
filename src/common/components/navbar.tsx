@@ -32,7 +32,7 @@ export default function Navbar() {
                   className="dropdown-content menu bg-base-100 text-black flex justify-center items-center rounded-box z-50 w-40 p-2 shadow"
                 >
                   <li>
-                    <Link href="/perfil">Perfil</Link>
+                    <Link href="/profile">Perfil</Link>
                   </li>
                   <li>
                     <button onClick={logout}>Cerrar sesión</button>

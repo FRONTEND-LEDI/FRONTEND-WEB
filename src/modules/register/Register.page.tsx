@@ -82,7 +82,7 @@ const RegisterPage = () => {
     <div className="flex flex-col lg:flex-row min-h-screen bg-fund">
       {/* columna izquierda con la imagen */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:justify-end lg:pr-2">
-        <img src="/public/zorro-login.png" alt="Zorro registro" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
+        <img src="/zorro-login.png" alt="Zorro registro" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
       </div>
       {/* columna derecha con el formulario */}
       <div className="w-full lg:m-6 lg:w-1/2 flex items-center justify-center p-4 lg:justify-start lg:pl-4">

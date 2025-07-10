@@ -3,6 +3,7 @@ import Herolanding from '../../common/components/Herolanding';
 import Footer from '../../common/components/Footer';
 import { FaBookOpen, FaMobileAlt, FaUsers, FaStar, FaRobot } from 'react-icons/fa';
 import { FaFaceSmile } from 'react-icons/fa6';
+import { Link } from 'wouter';
 
 export default function LandingPage() {
   return (
@@ -96,7 +97,7 @@ export default function LandingPage() {
     <div className="flex justify-center gap-18">
 <div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
     <figure className="w-1/3 h-full">
-      <img src="/public/cartoon-child-girl-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
+      <img src="/cartoon-child-girl-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
     </figure>
     <div className="card-body w-2/3 p-2">
       <h2 className="card-title">Inicial</h2>
@@ -105,7 +106,7 @@ export default function LandingPage() {
   </div>
 <div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
     <figure className="w-1/3 h-full">
-      <img src="/public/aunt-cartoon-family-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
+      <img src="/aunt-cartoon-family-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
     </figure>
     <div className="card-body w-2/3 p-2">
       <h2 className="card-title text-sm leading-tight">Secundaria</h2>
@@ -126,7 +127,7 @@ export default function LandingPage() {
 
 <div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
     <figure className="w-1/3 h-full">
-      <img src="/public/family-grandfather-grandpa-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
+      <img src="/family-grandfather-grandpa-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
     </figure>
     <div className="card-body w-2/3 p-2">
       <h2 className="card-title text-sm leading-tight">Adulto Mayor</h2>
@@ -178,9 +179,9 @@ export default function LandingPage() {
         <h1 className="text-secondary text-2xl md:text-4xl font-bold text-center z-10">
           Unite a este mundo de Tintas Formoseñas
         </h1>
-        <button className="mt-6 bg-white hover:shadow-2xl cursor-pointer text-primary font-semibold rounded-2xl px-6 py-3 hover:bg-secondary hover:text-white hover:shadow-black transition duration-300 ease-in-out z-10">
+        <Link href="/register" className="mt-6 bg-white hover:shadow-2xl cursor-pointer text-primary font-semibold rounded-2xl px-6 py-3 hover:bg-secondary hover:text-white hover:shadow-black transition duration-300 ease-in-out z-10">
           Empezar
-        </button>
+        </Link>
       </div>
 
       <Footer />
