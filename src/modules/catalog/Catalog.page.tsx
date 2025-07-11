@@ -53,6 +53,7 @@ const CatalogPage: React.FC = () => {
             {books.map((book) => (
               <BookCard
                 key={book._id}
+                id={book._id}
                 title={book.title}
                 author={book.author[0] || 'Autor desconocido'}
                 bookCoverImage={book.bookCoverImage?.url_secura || 'https://via.placeholder.com/150'}

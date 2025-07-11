@@ -1,15 +1,11 @@
 @import "tailwindcss";
-@plugin "daisyui"; 
-
-
+@plugin "daisyui";
 
 @plugin "daisyui/theme" {
   name: "light";
   default: true;
   --color-primary: #d97706;
-    --color-secondary: #f8d49a;
-    --color-fund: #f2f2f2;
-    --color-btnHover: #ad5d00;
+  --color-secondary: #f8d49a;
+  --color-fund: #f2f2f2;
+  --color-btnHover: #ad5d00;
 }
-
-
