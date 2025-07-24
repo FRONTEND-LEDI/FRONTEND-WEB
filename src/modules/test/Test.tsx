@@ -1,10 +1,14 @@
 import { useState } from "react";
-import { registerUser } from "../../db/services/auth";
 import { Link, useLocation } from 'wouter';
+// separo la función de registro para mantener el código limpio
+import { useCompleteRegistration } from "../../common/utils/registerHelper"; 
 
 
 export default function Test() {
-type DialogProps = {
+  const completeRegistration = useCompleteRegistration();
+  const [, navigate ] = useLocation();
+
+  type DialogProps = {
   dialog: string;
 };
 // estados para almacenar selecciones
@@ -30,40 +34,6 @@ const avatars = [
   "https://cdn-icons-png.flaticon.com/512/2922/2922511.png"
 ];
 
-
-const handleCompleteRegistration = async () => {
-  const saved = localStorage.getItem("registroPendiente");
-
-  if (!saved) {
-    alert("No se encontraron los datos del registro. Por favor volvé al formulario.");
-    navigate("/register");
-    return;
-  }  
-  const userForm = JSON.parse(saved);
-  const combinedPreferences = [...selectedGenres, ...selectedFormats];
-
-  const dataToSend = {
-    ...userForm,
-    avatar: selectedAvatar || "https://cdn.vectorstock.com/i/2000v/29/53/gray-silhouette-avatar-for-male-profile-picture-vector-56412953.avif",
-    preference: {
-      category: combinedPreferences.length > 0 ? combinedPreferences : ["general"],
-      language: "es"
-    }
-  };
-
-  console.log("Datos que se enviarán al backend:", dataToSend);
-  
-  try {
-
-    const res = await registerUser(dataToSend);
-    alert("Cuenta creada con éxito: " + res.msg);
-    localStorage.removeItem("pendingRegistration");
-    navigate("/home");
-  } catch (error) {
-    alert("Ocurrió un error al registrar. Revisá tus datos.");
-    }
-  
-  };
   const handleNext = () => {
     if (progressSteps < dialog.length - 1) {
       setProgressSteps(progressSteps + 1);
@@ -71,10 +41,6 @@ const handleCompleteRegistration = async () => {
   };
 
   const [progressSteps, setProgressSteps] = useState(0);
-  const [, navigate ] = useLocation();
-
-
-
 
   const handleBack = ()=>{
     if (progressSteps > 0) {
@@ -97,7 +63,7 @@ const handleCompleteRegistration = async () => {
         </ul>
         <Link
           href="/home"
-          onClick={handleCompleteRegistration}
+          onClick={() => completeRegistration(selectedGenres, selectedFormats, selectedAvatar, navigate)}
           className="absolute right-0 text-sm underline text-gray-500 cursor-pointer"
         >
           Omitir
@@ -203,7 +169,7 @@ const handleCompleteRegistration = async () => {
         <button
           onClick={() => {
             if (progressSteps === dialog.length - 1) {
-              handleCompleteRegistration();
+              completeRegistration(selectedGenres, selectedFormats, selectedAvatar, navigate);
             } else {
               handleNext();
             }
