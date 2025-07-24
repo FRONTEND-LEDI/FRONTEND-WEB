@@ -69,3 +69,23 @@ export const getUserData = async (token: string) => {
     throw error;
   }
 };
+
+export const logoutUser = async () => {
+  try {
+    const response = await fetch("http://localhost:3402/logout", {
+      method: "POST",
+      credentials: "include", // necesario para enviar las cookies
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.message || "Error al cerrar sesión");
+    }
+
+    return result;
+  } catch (error) {
+    console.error("Error en logoutUser:", error);
+    throw error;
+  }
+};
