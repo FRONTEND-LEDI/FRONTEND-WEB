@@ -54,6 +54,7 @@ export const getUserData = async (token: string) => {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
+        "x-client": "web",
       },
     });
 

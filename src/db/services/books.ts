@@ -1,9 +1,13 @@
+const URL = "http://localhost:3402"; 
+
 export const getAllBooks = async (token: string | null) => {
-  const res = await fetch('http://localhost:3402/books', {
+  const res = await fetch(`${URL}/books`, {
     headers: {
       'Authorization': `Bearer ${token}`,
       'Content-Type': 'application/json',
+      "x-client": "web",
     },
+    credentials: "include",
   });
 
   if (!res.ok) throw new Error('Error al obtener libros');
@@ -12,3 +16,18 @@ export const getAllBooks = async (token: string | null) => {
   return data;
 };
 
+
+export async function getBooksByQuery(query: string, token: string | null) {
+  const res = await fetch(`${URL}/books/${encodeURIComponent(query)}`, {
+    method: "GET",
+    headers: {
+      'Authorization': `Bearer ${token}`,
+      'Content-Type': 'application/json',
+      "x-client": "web",
+    },
+    credentials: "include",
+  });
+
+  if (!res.ok) throw new Error("Error al buscar libros");
+  return res.json();
+}
