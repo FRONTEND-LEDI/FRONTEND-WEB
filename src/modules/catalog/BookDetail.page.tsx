@@ -8,6 +8,7 @@ interface BookDetail {
   title: string;
   author: string[];
   synopsis: string;
+  subgenre: string[];
   bookCoverImage: {
     url_secura: string;
   };
@@ -43,27 +44,65 @@ const BookDetailPage: React.FC = () => {
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="flex-1 max-w-4xl mx-auto p-4 pt-16">
-        <img
-          src={
-            book.bookCoverImage.url_secura ||
-            "https://via.placeholder.com/400x600"
-          }
-          alt={book.title}
-          className="w-full max-h-96 object-cover rounded-lg mb-4"
-        />
-        <h1 className="text-3xl font-bold mb-2">{book.title}</h1>
-        <p className="text-lg text-gray-700 mb-4">
-          {book.author.join(", ") || "Autor Desconocido"}
-        </p>
-        <p className="text-gray-600 mb-6">{book.synopsis}</p>
+      <main className="flex-1 max-w-5xl mx-auto px-4 py-20">
+        <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
+          {/* Imagen */}
+          <img
+            src={
+              book.bookCoverImage.url_secura ||
+              "https://via.placeholder.com/400x600"
+            }
+            alt={book.title}
+            className="w-full max-w-xs md:w-1/3 object-cover rounded-lg shadow-md"
+          />
 
-        <Link
-          href={`/lectura/${id}`}
-          className="inline-block bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg"
-        >
-          Leer ahora
-        </Link>
+          {/* Contenido */}
+          <div className="flex-1">
+            <h1 className="text-3xl font-bold mb-2">{book.title}</h1>
+            <p className="text-lg text-gray-700 mb-2">
+              {book.author.join(", ") || "Autor Desconocido"}
+            </p>
+
+            {/* Subgéneros */}
+            <div className="flex flex-wrap gap-2 mb-4">
+              {book.subgenre?.map((genre, i) => (
+                <span
+                  key={i}
+                  className="bg-secondary text-gray-800 text-sm font-medium px-3 py-1 rounded-full"
+                >
+                  {genre}
+                </span>
+              ))}
+            </div>
+
+            {/* Sinopsis */}
+            <p className="text-gray-600 mb-6">{book.synopsis}</p>
+
+            {/* Botones de acción */}
+            <div className="flex flex-wrap gap-4">
+              <Link
+                href={`/lectura/${id}`}
+                className="bg-yellow-400 hover:bg-yellow-500 text-white font-semibold py-2 px-4 rounded-lg"
+              >
+                Leer
+              </Link>
+              <button
+                disabled
+                className="bg-yellow-100 text-yellow-600 font-semibold py-2 px-4 rounded-lg cursor-not-allowed"
+                title="Función no disponible aún"
+              >
+                Escuchar
+              </button>
+              <button
+                disabled
+                className="bg-yellow-100 text-yellow-600 font-semibold py-2 px-4 rounded-lg cursor-not-allowed"
+                title="Función no disponible aún"
+              >
+                Ver video
+              </button>
+            </div>
+          </div>
+        </div>
       </main>
 
       <Footer />
