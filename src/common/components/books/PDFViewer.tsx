@@ -1,79 +1,30 @@
-import { useEffect, useRef, useState } from 'react';
-import { GlobalWorkerOptions, getDocument } from 'pdfjs-dist';
-import 'pdfjs-dist/build/pdf.worker.mjs';
+import { Viewer, Worker } from "@react-pdf-viewer/core";
+import { defaultLayoutPlugin } from "@react-pdf-viewer/default-layout";
 
-// Configuración del worker
-GlobalWorkerOptions.workerSrc = new URL(
-  'pdfjs-dist/build/pdf.worker.mjs',
-  import.meta.url
-).toString();
+import "@react-pdf-viewer/core/lib/styles/index.css";
+import "@react-pdf-viewer/default-layout/lib/styles/index.css";
 
 interface PDFViewerProps {
   pdfUrl: string;
 }
 
 const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
-  const canvasRef = useRef<HTMLCanvasElement>(null);
-  const [numPages, setNumPages] = useState(0);
-  const [currentPage, setCurrentPage] = useState(1);
-
-  useEffect(() => {
-    let isMounted = true;
-    let pdfInstance: any = null;
-
-    const renderPDF = async () => {
-      try {
-        const loadingTask = getDocument(pdfUrl);
-        pdfInstance = await loadingTask.promise;
-
-        if (!isMounted) return;
-
-        setNumPages(pdfInstance.numPages);
-
-        const page = await pdfInstance.getPage(currentPage);
-
-        const viewport = page.getViewport({ scale: 1.5 });
-        const canvas = canvasRef.current;
-        if (!canvas) return;
-
-        const context = canvas.getContext('2d');
-        if (!context) return;
-
-        canvas.height = viewport.height;
-        canvas.width = viewport.width;
-
-        await page.render({ canvasContext: context, viewport }).promise;
-      } catch (error) {
-        console.error('Error al renderizar PDF:', error);
-      }
-    };
-
-    renderPDF();
-
-    return () => { isMounted = false; };
-  }, [pdfUrl, currentPage]);
-
-  const handlePrev = () => {
-    setCurrentPage((prev) => Math.max(prev - 1, 1));
-  };
-
-  const handleNext = () => {
-    setCurrentPage((prev) => Math.min(prev + 1, numPages));
-  };
+  const defaultLayoutPluginInstance = defaultLayoutPlugin();
 
   return (
-    <div className="flex flex-col items-center">
-      <div className="mb-2">
-        <button onClick={handlePrev} disabled={currentPage === 1} className="px-4 py-2 bg-yellow-400 text-white rounded mr-2">
-          ◀
-        </button>
-        <span>{currentPage} / {numPages}</span>
-        <button onClick={handleNext} disabled={currentPage === numPages} className="px-4 py-2 bg-yellow-400 text-white rounded ml-2">
-          ▶
-        </button>
-      </div>
+    <div className="flex flex-col items-center w-full min-h-screen bg-gray-50 px-4">
+      <button
+        onClick={() => window.history.back()}
+        className="my-4 bg-gray-200 text-black px-4 py-2 rounded hover:bg-gray-300 self-start"
+      >
+        ← Volver
+      </button>
 
-      <canvas ref={canvasRef} className="shadow-lg rounded bg-white" />
+      <div className="w-full max-w-[1024px] h-[85vh] border shadow-lg rounded overflow-hidden">
+        <Worker workerUrl="https://unpkg.com/pdfjs-dist@3.11.174/build/pdf.worker.min.js">
+          <Viewer fileUrl={pdfUrl} plugins={[defaultLayoutPluginInstance]} />
+        </Worker>
+      </div>
     </div>
   );
 };
