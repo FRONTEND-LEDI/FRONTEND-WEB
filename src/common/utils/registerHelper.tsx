@@ -1,5 +1,6 @@
 import { registerUser, loginUser, getUserData } from "../../db/services/auth";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 export function useCompleteRegistration() {
   const { login: saveSession } = useAuth();
@@ -12,7 +13,7 @@ export function useCompleteRegistration() {
     const saved = localStorage.getItem("registroPendiente");
 
     if (!saved) {
-      alert("No se encontraron los datos del registro. Por favor volvé al formulario.");
+      toast.error("Por favor, completa primero el formulario de registro.");
       navigate("/register");
       return;
     }  
@@ -46,12 +47,12 @@ export function useCompleteRegistration() {
       // guardar el contexto
       saveSession(userData, token);
 
-      alert("Registro exitoso. ¡Bienvenido!");
+      toast.success("Registro exitoso. ¡Bienvenido a Tinta Nativa!");
       localStorage.removeItem("registroPendiente");
 
       navigate("/home");
     } catch (error) {
-      alert("Ocurrió un error al registrar. Revisá tus datos.");
+      toast.error("Algo salió mal. Revisá tus datos e intentá de nuevo.");
       }
     
     };

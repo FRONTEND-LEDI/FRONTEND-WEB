@@ -5,6 +5,7 @@ import Button from "../../common/components/Button";
 import useForm from "../../common/hooks/useForm";
 
 const RegisterPage = () => {
+
   // Estado de error y éxito
   const [error, setError] = useState("");
   const [, setLocation] = useLocation();
@@ -62,17 +63,6 @@ const RegisterPage = () => {
     };
 
     localStorage.setItem("registroPendiente", JSON.stringify(usuarioPendiente));
-
-  //   try {
-  //     const res = await registerUser(data);
-  //     setSuccess("¡Cuenta creada con éxito!" + res.msg);
-  //     resetForm();
-  //     // Redirigir al login después de registrarse
-  //     navigate("/login");
-  //     // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  //   } catch (err: any) {
-  //     setError(err.message || "Ocurrió un error al registrar.");
-  //   }
   
   // redirigir al test
     setLocation("/test");
