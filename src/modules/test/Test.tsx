@@ -1,6 +1,7 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { Link, useLocation } from 'wouter';
-// separo la función de registro para mantener el código limpio
+// ! ai. separo la función de registro para mantener el código limpio y no meterme con los archivos de sele
+import { getAvatars } from "../../db/services/avatar";
 import { useCompleteRegistration } from "../../common/utils/registerHelper"; 
 
 
@@ -8,31 +9,39 @@ export default function Test() {
   const completeRegistration = useCompleteRegistration();
   const [, navigate ] = useLocation();
 
+  // ! ai. redirigir si no completó el formulario antes
+  useEffect(() => {
+    const registroPendiente = localStorage.getItem("registroPendiente");
+    if (!registroPendiente) {
+      navigate("/register");
+    }
+  }, []);
+  // ! ai. fin de redirección
+
+
   type DialogProps = {
-  dialog: string;
-};
-// estados para almacenar selecciones
-const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
-const [selectedFormats, setSelectedFormats] = useState<string[]>([]);
-const [selectedAvatar, setSelectedAvatar] = useState<string>("");
+    dialog: string;
+  };
+  // estados para almacenar selecciones
+  const [selectedGenres, setSelectedGenres] = useState<string[]>([]);
+  const [selectedFormats, setSelectedFormats] = useState<string[]>([]);
+  const [selectedAvatar, setSelectedAvatar] = useState<string>("");
 
-const dialog: DialogProps[] = [
-  { dialog: "Hola, soy tu bibliotecario virtual personal!" },
-  { dialog: "Si gustás te realizaré unas series de preguntas que me ayudarán a darte una mejor experiencia." },
-  { dialog: "Elegí al menos 3 opciones de tu género favorito" },
-  { dialog: "Elegí al menos 3 opciones de tu formato de libro favorito" },
-  { dialog: "¡Elegí tu avatar!" }
-];
+  const dialog: DialogProps[] = [
+    { dialog: "Hola, soy tu bibliotecario virtual personal!" },
+    { dialog: "Si gustás te realizaré unas series de preguntas que me ayudarán a darte una mejor experiencia." },
+    { dialog: "Elegí al menos 3 opciones de tu género favorito" },
+    { dialog: "Elegí al menos 3 opciones de tu formato de libro favorito" },
+    { dialog: "¡Elegí tu avatar!" }
+  ];
 
-// avatars ramdoms para probar
-const avatars = [
-  "https://cdn-icons-png.flaticon.com/512/847/847969.png",
-  "https://cdn-icons-png.flaticon.com/512/219/219969.png",
-  "https://cdn-icons-png.flaticon.com/512/236/236831.png",
-  "https://cdn-icons-png.flaticon.com/512/2922/2922510.png",
-  "https://cdn-icons-png.flaticon.com/512/2922/2922561.png",
-  "https://cdn-icons-png.flaticon.com/512/2922/2922511.png"
-];
+  // ! ai. los avatares traidos de base de datos 
+  const [avatars, setAvatars] = useState<any[]>([]);
+
+  useEffect(() => {
+    getAvatars().then(setAvatars);
+  }, []);
+  // ! fin de los avatares
 
   const handleNext = () => {
     if (progressSteps < dialog.length - 1) {
@@ -136,17 +145,17 @@ const avatars = [
 
             {/* Avatares */}
             {progressSteps === 4 &&
-              avatars.map((avatarUrl, index) => (
+              avatars.map((avatar) => (
                 <div
-                  key={index}
-                  onClick={() => setSelectedAvatar(avatarUrl)}
+                  key={avatar._id}
+                  onClick={() => setSelectedAvatar(avatar._id)}
                   className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
-                    selectedAvatar === avatarUrl ? "ring-4 ring-primary" : ""
+                    selectedAvatar === avatar._id ? "ring-4 ring-primary" : ""
                   }`}
                 >
                   <img
-                    src={avatarUrl}
-                    alt={`Avatar ${index + 1}`}
+                    src={avatar.avatars.url_secura}
+                    alt="Avatar"
                     className="rounded-lg h-32 w-full object-cover mx-auto"
                   />
                 </div>

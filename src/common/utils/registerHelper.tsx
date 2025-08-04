@@ -1,7 +1,6 @@
 import { registerUser, loginUser, getUserData } from "../../db/services/auth";
 import { useAuth } from "../../context/AuthContext";
 
-
 export function useCompleteRegistration() {
   const { login: saveSession } = useAuth();
     const completeRegistration = async (
@@ -21,7 +20,7 @@ export function useCompleteRegistration() {
 
     const dataToSend = {
       ...userForm,
-      avatar: selectedAvatar || "https://cdn.vectorstock.com/i/2000v/29/53/gray-silhouette-avatar-for-male-profile-picture-vector-56412953.avif",
+      avatar: selectedAvatar || null,
       preference: {
         category: selectedGenres.length > 0 ? selectedGenres : ["general"],
         format: selectedFormats.length > 0 ? selectedFormats : ["general"],
@@ -44,7 +43,7 @@ export function useCompleteRegistration() {
       const token = loginResponse.token;
       const userData = await getUserData(token);
 
-      // guardar el contecto
+      // guardar el contexto
       saveSession(userData, token);
 
       alert("Registro exitoso. ¡Bienvenido!");

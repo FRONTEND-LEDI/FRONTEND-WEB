@@ -9,16 +9,16 @@ import { useAuth } from "../../context/AuthContext";
 const LoginPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [, navigate] = useLocation(); // Para redirigir si login es exitoso
+  const [location , navigate] = useLocation(); // Para redirigir si login es exitoso
   const { login: saveSession } = useAuth();
   const { user } = useAuth();
 
   // si ya hay usuario redirigir a la página de inicio
   useEffect(() => {
-    if (user) {
+    if (user && (location ==="/login" || location === "/register")) {
       navigate("/home");
     }
-  }, [user])
+  }, [user, location])
 
   // Hook para manejar campos de login
   const { values, handleChange, resetForm } = useForm({
