@@ -68,7 +68,7 @@ const LoginPage = () => {
     <div className="flex flex-col lg:flex-row min-h-screen bg-fund">
       {/* columna izquierda con la imagen */ }
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:justify-end lg:pr-2">
-        <img src="/public/zorro-login.png" alt="Zorro login" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
+        <img src="/zorro-login.png" alt="Zorro login" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
       </div>
 
       { /* columna derecha con el formulario */}
@@ -104,7 +104,7 @@ const LoginPage = () => {
 
           <p className="text-center text-sm">
             ¿No tenés cuenta?{" "}
-            <Link href="/register" className="text-primary font-bold hover:underline">
+            <Link href="/register" className="text-primary cursor-pointer font-bold hover:underline">
               Registrate
             </Link>
           </p>
