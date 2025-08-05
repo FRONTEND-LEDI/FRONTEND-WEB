@@ -1,11 +1,11 @@
 import { createContext, useContext, useState, useEffect } from "react";
 import type { ReactNode } from "react";
-import { getUserData } from "../db/services/auth";
+import { getUserData, logoutUser } from "../db/services/auth";
 
 // Tipo del usuario que vamos a guardar
 type User = {
   id: string;
-  name: null;
+  name: string;
   iat?: number;
   exp?: number;
   rol?: string; // por si después se recibe el rol
@@ -40,10 +40,17 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("token", authToken);
   };
 
-  const logout = () => {
-    setUser(null);
-    setToken(null);
-    localStorage.removeItem("token");
+  const logout = async () => {
+    try {
+      await logoutUser(); // cerrar sesión en backend
+    } catch (error) {
+      console.error("Error al cerrar sesión en backend:", error);
+    } finally {
+      // limpiar en front si o sí
+      setUser(null);
+      setToken(null);
+      localStorage.removeItem("token");
+    }
   };
 
   // recuperar los datos del usuario con el token al iniciar la aplicación

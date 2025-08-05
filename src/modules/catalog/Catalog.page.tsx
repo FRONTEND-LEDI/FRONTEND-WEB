@@ -1,14 +1,15 @@
-import React, { useEffect, useState } from 'react';
-import { getAllBooks } from '../../db/services/books';
-import BookCard from '../../common/components/books/BookCard';
-import Navbar from '../../common/components/navbar';
-import Footer from '../../common/components/Footer';
-import { useAuth } from '../../context/AuthContext';
+import React, { useEffect, useState } from "react";
+import { getAllBooks, getBooksByQuery } from "../../db/services/books";
+import BookCard from "../../common/components/books/BookCard";
+import Navbar from "../../common/components/navbar";
+import Footer from "../../common/components/Footer";
+import { useAuth } from "../../context/AuthContext";
+import SearchBar from "./SearchBar";
 
 interface Book {
   _id: string;
   title: string;
-  author: string[]; // Por ahora es un array de IDs
+  author: string[];
   bookCoverImage: {
     url_secura: string;
   };
@@ -26,7 +27,7 @@ const CatalogPage: React.FC = () => {
         const data = await getAllBooks(token);
         setBooks(data);
       } catch (err) {
-        setError('No se pudieron cargar los libros');
+        setError("No se pudieron cargar los libros");
       } finally {
         setLoading(false);
       }
@@ -35,13 +36,37 @@ const CatalogPage: React.FC = () => {
     fetchBooks();
   }, [token]);
 
+  const handleSearch = async (query: string) => {
+    setLoading(true);
+    setError(null);
+
+    try {
+      let results;
+
+      if (query.trim() === "") {
+        // Si no hay texto, traer todos los libros
+        results = await getAllBooks(token);
+      } else {
+        // Buscar por query
+        results = await getBooksByQuery(query, token);
+      }
+
+      setBooks(results);
+    } catch {
+      setError("Ocurrió un error al buscar libros.");
+    } finally {
+      setLoading(false);
+    }
+  };
+
   return (
     <div className="flex flex-col min-h-screen">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto p-4">
+      <main className="flex-1 max-w-7xl mx-auto p-4 pt-20">
         <h1 className="text-2xl font-bold mb-4">Catálogo de Libros</h1>
 
+        <SearchBar onSearch={handleSearch} />
         {/* Acá van ir los filtros después */}
 
         {loading ? (
@@ -53,9 +78,13 @@ const CatalogPage: React.FC = () => {
             {books.map((book) => (
               <BookCard
                 key={book._id}
+                id={book._id}
                 title={book.title}
-                author={book.author[0] || 'Autor desconocido'}
-                bookCoverImage={book.bookCoverImage?.url_secura || 'https://via.placeholder.com/150'}
+                author={book.author[0] || "Autor desconocido"}
+                bookCoverImage={
+                  book.bookCoverImage?.url_secura ||
+                  "https://via.placeholder.com/150"
+                }
               />
             ))}
           </div>
