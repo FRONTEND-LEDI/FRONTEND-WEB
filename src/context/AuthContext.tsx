@@ -5,11 +5,11 @@ import { getUserData, logoutUser } from "../db/services/auth";
 // Tipo del usuario que vamos a guardar
 type User = {
   id: string;
-  name: string;
+  userName: string;
   iat?: number;
   exp?: number;
   rol?: string; // por si después se recibe el rol
-  avatar?:string
+  avatar?: null;
 };
 
 // Contexto
@@ -36,7 +36,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const login = (userData: User, authToken: string) => {
     setUser(userData);
     setToken(authToken);
-    // guardar en localStorage 
+    // guardar en localStorage
     localStorage.setItem("token", authToken);
   };
 
@@ -61,7 +61,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     if (tokenInStorage && !user) {
       // Intentar recuperar datos del usuario
       console.log("Restaurando sesión con token:");
-      
+
       getUserData(tokenInStorage)
         .then((userData) => {
           setUser(userData);
