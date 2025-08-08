@@ -26,8 +26,8 @@ const BookReaderPage: React.FC = () => {
   const pdfUrl = book?.contentBook?.url_secura;
 
   return (
-    <div className="flex flex-col min-h-screen">
-      <main className="flex-1 w-full flex justify-center p-4">
+    <div className="flex flex-col min-h-screen bg-fund">
+      <main className="flex-1 w-full flex justify-center">
         {pdfUrl ? (
           <PDFViewer pdfUrl={pdfUrl} />
         ) : (

@@ -41,10 +41,10 @@ const BookDetailPage: React.FC = () => {
   if (!book) return <p className="text-center mt-8">Libro no encontrado</p>;
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-fund">
       <Navbar />
 
-      <main className="flex-1 max-w-5xl mx-auto px-4 py-20">
+      <main className="flex-1 max-w-5xl mx-auto px-4 py-23">
         <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
           {/* Imagen */}
           <img
