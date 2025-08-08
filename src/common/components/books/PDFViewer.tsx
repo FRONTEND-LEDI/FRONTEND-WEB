@@ -1,8 +1,6 @@
 import { useEffect, useRef, useState } from "react";
-import { getDocument, GlobalWorkerOptions } from "pdfjs-dist";
-import type { PDFDocumentProxy } from "pdfjs-dist";
+import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from "pdfjs-dist";
 
-// Configurar worker
 GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface PDFViewerProps {
@@ -18,9 +16,9 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
   useEffect(() => {
     const loadPDF = async () => {
       const loadingTask = getDocument(pdfUrl);
-      const loaderPdf = await loadingTask.promise;
-      setPdf(loaderPdf);
-      setNumPages(loaderPdf.numPages);
+      const loadedPdf = await loadingTask.promise;
+      setPdf(loadedPdf);
+      setNumPages(loadedPdf.numPages);
     };
 
     loadPDF().catch(console.error);
@@ -31,18 +29,23 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
       if (!pdf) return;
 
       const page = await pdf.getPage(pageNumber);
-      const viewport = page.getViewport({ scale: 1.5 });
+
+      // Escalar automáticamente al ancho del contenedor
+      const containerWidth = window.innerWidth * 0.9;
+      const viewport = page.getViewport({ scale: 1, rotation: 0 });
+      const scale = containerWidth / viewport.width;
+      const scaledViewport = page.getViewport({ scale });
 
       const canvas = canvasRef.current;
       if (!canvas) return;
 
       const context = canvas.getContext("2d");
-      canvas.height = viewport.height;
-      canvas.width = viewport.width;
+      canvas.width = scaledViewport.width;
+      canvas.height = scaledViewport.height;
 
       await page.render({
         canvasContext: context!,
-        viewport,
+        viewport: scaledViewport,
       }).promise;
     };
 
@@ -50,38 +53,41 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
   }, [pdf, pageNumber]);
 
   return (
-    <div className="flex flex-col items-center w-full min-h-screen bg-gray-50 px-2">
+    <div className="relative min-h-screen flex flex-col items-center justify-center bg-[#f8f8f8] px-4 py-6">
+      {/* Encabezado simple */}
+      <div className="mb-4 text-center text-sm text-gray-500 uppercase tracking-wider">
+        Página {pageNumber} de {numPages}
+      </div>
+
+      {/* Botón ← */}
       <button
-        onClick={() => window.history.back()}
-        className="my-1 mx-1 bg-gray-300 text-gray-700 px-3 py-2 rounded-4xl hover:bg-gray-400 self-start"
+        onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
+        disabled={pageNumber === 1}
+        className="absolute left-2 top-1/2 -translate-y-1/2 bg-white text-gray-500 rounded-full p-2 shadow hover:bg-gray-100 disabled:opacity-30"
       >
         ←
       </button>
 
-      <div className="flex gap-4 mb-4">
-        <button
-          onClick={() => setPageNumber((prev) => Math.max(prev - 1, 1))}
-          disabled={pageNumber === 1}
-          className="bg-primary text-white px-4 py-2 rounded disabled:opacity-50"
-        >
-          Anterior
-        </button>
+      {/* Botón → */}
+      <button
+        onClick={() => setPageNumber((prev) => Math.min(prev + 1, numPages))}
+        disabled={pageNumber === numPages}
+        className="absolute right-2 top-1/2 -translate-y-1/2 bg-white text-gray-500 rounded-full p-2 shadow hover:bg-gray-100 disabled:opacity-30"
+      >
+        →
+      </button>
 
-        <span className="text-lg font-medium">
-          Página {pageNumber} de {numPages}
-        </span>
+      {/* Botón volver */}
+      <button
+        onClick={() => window.history.back()}
+        className="absolute top-4 left-4 bg-gray-300 text-gray-700 px-3 py-1 rounded-full hover:bg-gray-400 text-sm"
+      >
+        ← Volver
+      </button>
 
-        <button
-          onClick={() => setPageNumber((prev) => Math.min(prev + 1, numPages))}
-          disabled={pageNumber === numPages}
-          className="bg-primary text-white px-4 py-2 rounded disabled:opacity-50"
-        >
-          Siguiente
-        </button>
-      </div>
-
-      <div className="w-full max-w-[1024px] border shadow-md p-4 rounded bg-white overflow-auto">
-        <canvas ref={canvasRef}></canvas>
+      {/* Canvas del PDF */}
+      <div className="w-full max-w-[900px] bg-white p-4 shadow-md rounded overflow-auto">
+        <canvas ref={canvasRef} className="max-w-full h-auto mx-auto" />
       </div>
     </div>
   );

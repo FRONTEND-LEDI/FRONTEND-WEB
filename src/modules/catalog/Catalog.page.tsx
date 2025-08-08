@@ -49,6 +49,10 @@ const CatalogPage: React.FC = () => {
       } else {
         // Buscar por query
         results = await getBooksByQuery(query, token);
+        console.log("query:", query);
+        console.log("Resultados de búsqueda:", results);
+        
+        
       }
 
       setBooks(results);
