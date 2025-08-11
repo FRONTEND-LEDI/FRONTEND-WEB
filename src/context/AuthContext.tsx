@@ -8,7 +8,7 @@ type User = {
   userName: string;
   iat?: number;
   exp?: number;
-  rol?: string; // por si después se recibe el rol
+  rol?: string; 
   avatar?: null;
 };
 

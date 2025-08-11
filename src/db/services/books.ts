@@ -1,6 +1,7 @@
+import { type Book } from "../../types/books";
 const URL = "http://localhost:3402"; 
 
-export const getAllBooks = async (token: string | null) => {
+export const getAllBooks = async (token: string | null) : Promise<Book[]> => {
   const res = await fetch(`${URL}/books`, {
     headers: {
       'Authorization': `Bearer ${token}`,
@@ -12,12 +13,11 @@ export const getAllBooks = async (token: string | null) => {
 
   if (!res.ok) throw new Error('Error al obtener libros');
 
-  const data = await res.json();
-  return data;
+  return res.json() as Promise<Book[]>;
 };
 
 
-export async function getBooksByQuery(query: string, token: string | null) {
+export async function getBooksByQuery(query: string, token: string | null) : Promise<Book[]> {
   const res = await fetch(`${URL}/books/${encodeURIComponent(query)}`, {
     method: "GET",
     headers: {
@@ -29,5 +29,5 @@ export async function getBooksByQuery(query: string, token: string | null) {
   });
 
   if (!res.ok) throw new Error("Error al buscar libros");
-  return res.json();
+  return res.json() as Promise<Book[]>;
 }
