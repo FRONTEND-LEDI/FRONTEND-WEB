@@ -80,7 +80,7 @@ export default function Test() {
       </div>
 
       {/* Zorro + Mensaje */}
-      <div className="flex flex-row items-center text-center mb-8 space-y-4">
+      <div className="flex flex-row justify-center items-center text-center mb-8 space-y-4">
         <img
           src="/public/zorro-login.png"
           alt="Zorro"
