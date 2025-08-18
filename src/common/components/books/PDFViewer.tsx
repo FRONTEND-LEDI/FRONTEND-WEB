@@ -1,10 +1,16 @@
 import { useEffect, useRef, useState } from "react";
-import { getDocument, GlobalWorkerOptions, type PDFDocumentProxy } from "pdfjs-dist";
+import {
+  getDocument,
+  GlobalWorkerOptions,
+  type PDFDocumentProxy,
+} from "pdfjs-dist";
 
 GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface PDFViewerProps {
   pdfUrl: string;
+  initialPage?: number;
+  onPageChange?: (page: number) => void;
 }
 
 const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
@@ -30,18 +36,18 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
 
       const page = await pdf.getPage(pageNumber);
 
-      // Escalar automáticamente al ancho del contenedor
-      const containerWidth = window.innerWidth * 0.9;
-      const viewport = page.getViewport({ scale: 1, rotation: 0 });
+      const containerWidth = Math.min(window.innerWidth * 0.9, 900);
+      const rotation = page.rotate || 0;
+      const viewport = page.getViewport({ scale: 1, rotation });
       const scale = containerWidth / viewport.width;
-      const scaledViewport = page.getViewport({ scale });
+      const scaledViewport = page.getViewport({ scale, rotation });
 
       const canvas = canvasRef.current;
       if (!canvas) return;
 
       const context = canvas.getContext("2d");
-      canvas.width = scaledViewport.width;
-      canvas.height = scaledViewport.height;
+      canvas.width = Math.ceil(scaledViewport.width);
+      canvas.height = Math.ceil(scaledViewport.height);
 
       await page.render({
         canvasContext: context!,
@@ -54,7 +60,7 @@ const PDFViewer: React.FC<PDFViewerProps> = ({ pdfUrl }) => {
 
   return (
     <div className="relative min-h-screen flex flex-col items-center justify-center bg-[#f8f8f8] px-4 py-6">
-      {/* Encabezado simple */}
+      {/* Encabezado  */}
       <div className="mb-4 text-center text-sm text-gray-500 uppercase tracking-wider">
         Página {pageNumber} de {numPages}
       </div>
