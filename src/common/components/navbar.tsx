@@ -7,7 +7,7 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 className="flex items-center text-2xl font-bold text-white">
+        <h1 className="flex karaoke items-center text-2xl font-bold text-white">
           TintasFormoseñas
         </h1>
         <div className="flex space-x-6 items-center">
@@ -15,7 +15,7 @@ export default function Navbar() {
             <div className="flex font-semibold text-white gap-12 items-center">
               <Link href="/home">Inicio</Link>
               <Link href="/catalogo">Catálogo</Link>
-              <Link href="/foro">Foro</Link>
+              <Link href="/ClubdeLectura">Foro</Link>
               <Link href="/autores">Autores</Link>
               <div className="dropdown dropdown-center dropdown-hover">
                 <div tabIndex={0} role="button" className="btn btn-ghost btn-circle hover:bg-none avatar">

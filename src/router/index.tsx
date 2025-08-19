@@ -9,6 +9,7 @@ import CatalogPage from "../modules/catalog/Catalog.page";
 import BookDetailPage from "../modules/catalog/BookDetail.page";
 import BookReaderPage from "../modules/catalog/BookReader.page";
 import Profile from "../modules/profile/Profile.page";
+import ForumPage from "../modules/forum/Forum.page";
 
 const AppRouter = () => {
   return (
@@ -30,6 +31,12 @@ const AppRouter = () => {
           < CatalogPage />
         </ProtectedRoute>
       </Route>
+      
+      <Route path="/ClubdeLectura">
+      <ProtectedRoute>
+        <ForumPage/>
+      </ProtectedRoute>
+      </Route>
 
       <Route path="/libro/:id">
         <ProtectedRoute>
@@ -42,6 +49,7 @@ const AppRouter = () => {
           <BookReaderPage />
         </ProtectedRoute>
       </Route>
+
 
       {/* las demás rutas acá */}
       <Route>404 - Página no encontrada</Route>
