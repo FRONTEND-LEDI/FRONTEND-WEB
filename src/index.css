@@ -1,5 +1,10 @@
 @import "tailwindcss";
-@plugin "daisyui";
+@plugin "daisyui"; 
+
+body {
+  font-family: 'Poppins', sans-serif;
+}
+
 
 @theme {
   --color-fund: #f2f2f2;
