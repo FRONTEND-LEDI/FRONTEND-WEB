@@ -1,7 +1,7 @@
 export default function SearchingBar(){
     return(
-        <div>
-       <form  className="flex gap-2 mb-4">
+        <div >
+       <form  className="flex gap-2 mb-4 w-2xl">
       <input
         type="text"
         placeholder="Encuentra libros usando menciones, por ejemplo: @depresion"
