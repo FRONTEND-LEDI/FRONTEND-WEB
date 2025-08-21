@@ -7,7 +7,7 @@ export default function Navbar() {
   return (
     <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
       <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 className="flex items-center text-2xl font-bold text-white">
+        <h1 className="flex karaoke items-center text-2xl font-bold text-white">
           Tintas
         </h1>
 
@@ -17,7 +17,7 @@ export default function Navbar() {
             <div className="hidden lg:flex gap-6 items-center">
               <Link href="/home">Inicio</Link>
               <Link href="/catalogo">Catálogo</Link>
-              <Link href="/club">Club de Lectura</Link>
+              <Link href="/clubdeLectura">Club de Lectura</Link>
               <Link href="/autores">Autores</Link>
             </div>
 
