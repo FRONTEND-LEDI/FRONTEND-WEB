@@ -1,10 +1,6 @@
 @import "tailwindcss";
 @plugin "daisyui"; 
 
-body {
-  font-family: 'Poppins', sans-serif;
-}
-
 
 @theme {
   --color-fund: #f2f2f2;
@@ -16,4 +12,20 @@ body {
   default: true;
   --color-primary: #d97706;
   --color-secondary: #f8d49a;
+}
+@font-face {
+  font-family: 'LT Karaoke';
+  src: url('./assets/fonts/LTKaraoke-Regular.ttf') format('truetype');
+  font-weight: normal;
+  font-style: normal;
+}
+
+@font-face {
+  font-family: 'LT Karaoke';
+  src: url('./assets/fonts/LTKaraoke-Bold.ttf') format('truetype');
+  font-weight: bold;
+  font-style: normal;
+}
+.karaoke{
+  font-family: 'LT Karaoke', sans-serif;
 }
