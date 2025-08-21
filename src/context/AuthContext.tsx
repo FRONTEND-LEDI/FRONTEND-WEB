@@ -4,14 +4,14 @@ import { getUserId, getOneUser, logoutUser } from "../db/services/auth";
 import type { FullUser } from "../types/user";
 
 type User = {
-  id: string; // mapeado desde _id
+  id: string;
   name: string;
   lastName: string;
   userName: string;
   email: string;
   rol?: string;
   avatar?: string | null;
-  birthDate?: string; // normalizado a ISO string
+  birthDate?: string;
   nivel?: string;
   preference?: {
     category?: string[];
@@ -22,9 +22,9 @@ type User = {
 type AuthContextType = {
   user: User | null;
   token: string | null;
-  login: (authToken: string) => Promise<void>; // <- ahora solo recibe token
+  login: (authToken: string) => Promise<void>;
   logout: () => void;
-  refreshUser: () => Promise<void>; // <- por si querés refrescar datos
+  refreshUser: () => Promise<void>;
 };
 
 const AuthContext = createContext<AuthContextType>({
@@ -37,22 +37,14 @@ const AuthContext = createContext<AuthContextType>({
 
 // Normalizador para que el front tenga un shape estable y cómodo
 function normalizeUser(u: FullUser): User {
-  // birthDate puede venir como {$date: "..."} o string
-  const birth =
-    typeof u.birthDate === "object" &&
-    u.birthDate &&
-    " $date" in (u.birthDate as any)
-      ? (u.birthDate as any).$date
-      : (u.birthDate as string | undefined);
+  // birthDate puede venir como {$date: "..."}
+  const birth = typeof u.birthDate === "string" ? u.birthDate : undefined;
 
-  // avatar puede ser string (url), null o {$oid: "..."} (id)
-  let avatar: string | null | undefined = null;
-  if (typeof u.avatar === "string") avatar = u.avatar;
-  else if (u.avatar && typeof u.avatar === "object" && "$oid" in u.avatar) {
-    // si tenés una ruta para resolver la imagen por id, podés mapearla acá
-    // p.ej: avatar = `https://res.cloudinary.com/.../${u.avatar.$oid}.jpg`
-    avatar = null; // por ahora lo dejamos en null si es solo ObjectId
-  }
+  const avatarUrl =
+    u.avatar?.avatars?.url_secura &&
+    typeof u.avatar.avatars.url_secura === "string"
+      ? u.avatar.avatars.url_secura
+      : null;
 
   return {
     id: u._id,
@@ -61,14 +53,14 @@ function normalizeUser(u: FullUser): User {
     userName: u.userName,
     email: u.email,
     rol: u.rol,
-    avatar,
-    birthDate: birth ?? undefined,
+    avatar: avatarUrl,
+    birthDate: birth,
     nivel: u.nivel,
     preference: {
-      category: u.preference?.category,
-      format: u.preference?.format,
+      category: u.preference?.category ?? [],
+      format: u.preference?.format ?? [],
     },
-  };
+  } as const;
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
@@ -77,11 +69,11 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
 
   // Hidrata el usuario completo desde /oneUser usando el token
   const hydrateUser = async (authToken: string) => {
-    // opcional: primero pegarle a /getUser para obtener/validar id
+    // primero pegarle a /getUser para obtener/validar id
     try {
-      await getUserId(authToken); // si no lo necesitás, podés omitir esta línea
+      await getUserId(authToken);
     } catch {
-      // si falla /getUser igual intentamos /oneUser; o podés cortar acá
+      // si falla /getUser igual intentamos /oneUser;
     }
 
     const full = await getOneUser(authToken);
@@ -91,7 +83,7 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
     localStorage.setItem("token", authToken);
   };
 
-  // Login ahora recibe solo el token (del response de /login)
+  // Login ahora recibe solo el token
   const login = async (authToken: string) => {
     await hydrateUser(authToken);
   };
@@ -125,7 +117,6 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
         setToken(null);
       });
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (

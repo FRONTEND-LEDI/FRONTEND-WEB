@@ -103,9 +103,9 @@ export const getOneUser = async(token: string): Promise<FullUser> => {
 
 export const logoutUser = async () => {
   try {
-    const response = await fetch("http://localhost:3402/logout", {
+    const response = await fetch(`${API_URL}/logout`, {
       method: "POST",
-      credentials: "include", // necesario para enviar las cookies
+      credentials: "include",
     });
 
     const result = await response.json();
