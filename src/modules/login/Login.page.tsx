@@ -5,6 +5,7 @@ import Button from "../../common/components/Button";
 import useForm from "../../common/hooks/useForm";
 import { loginUser } from "../../db/services/auth";
 import { useAuth } from "../../context/AuthContext";
+import toast from "react-hot-toast";
 
 const LoginPage = () => {
   const [error, setError] = useState("");
@@ -49,6 +50,7 @@ const LoginPage = () => {
       await saveSession(token);
 
       setSuccess("Inicio de sesión exitoso");
+      toast.success("¡Bienvenido de nuevo a Tinta Nativa!");
       resetForm();
       // Redireccionar si todo salió bien
       navigate("/home");
