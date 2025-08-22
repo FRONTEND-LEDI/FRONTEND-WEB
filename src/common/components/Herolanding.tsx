@@ -12,9 +12,9 @@ return(
 
   <div className="hero-content text-neutral-content text-center">
     <div className="max-w-md flex justify-center flex-col items-center">
-       <h1 className="text-3xl karaoke md:text-5xl font-bold p-6 ">
+       {/* <h1 className="text-3xl karaoke md:text-5xl font-bold p-6 ">
         Bienvenido 
-      </h1>
+      </h1> */}
       <p className="text-lg karaoke md:text-xl px-2 py-2 rounded max-w-2xl">
         Una biblioteca virtual que resguarda y difunde las antologías literarias de nuestra provincia.
       </p>
