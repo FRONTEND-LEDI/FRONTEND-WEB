@@ -1,11 +1,16 @@
+export type AuthorItem = { _id: string; name: string } | string;
+export type NormalizedAuthor = { id?: string; name: string };
+
+
 export interface Book {
   _id: string;
   title: string;
-  author: string[];
+  author: AuthorItem[];
   bookCoverImage?: { url_secura?: string };
   summary?: string;
   synopsis?: string;
   subgenre?: string[];
+  theme?: string[];
   yearBook?: string;
   contentBook?: { url_secura?: string };
   totalPages?: number;
@@ -27,3 +32,4 @@ export interface BookProgress {
   completedAt?: string | null;
   __v?: number;
 }
+
