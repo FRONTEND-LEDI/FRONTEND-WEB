@@ -18,6 +18,7 @@ const forosIniciales: Foro[] = [
   { id: "2024", nombre: "Antologías 2024", posts: ["Publicación A del 2024", "Publicación B del 2024"] },
 ];
 
+
 // Skeleton 1: search bar + botón
 function SkeletonTop() {
   return (
@@ -71,7 +72,7 @@ export default function ForumPage() {
   return (
     <div className="mt-20 flex h-screen">
       {/* Panel izquierdo */}
-      <div className="w-3xs flex flex-col justify-center items-center h-full p-4">
+      <div className="w-3xs flex flex-col  h-full p-4">
         <FilterForum setForoSeleccionado={setForoSeleccionado} foros={foros} />
       </div>
 
