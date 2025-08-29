@@ -1,5 +1,6 @@
 import React, { useEffect, useRef } from "react";
 import { createPortal } from "react-dom";
+import { X } from "lucide-react";
 
 interface ModalProps {
   isOpen: boolean;
@@ -57,7 +58,7 @@ export default function Modal({
 
   const dialog = (
     <div
-      className="fixed inset-0 z-[1000] flex items-stretch justify-center bg-black/70"
+      className="fixed inset-0 z-[1000] flex items-stretch justify-center bg-black/80"
       aria-hidden={!isOpen}
       onMouseDown={(e) => {
         // cerrar con click en backdrop (evita cerrar si se hace mousedown dentro del contenido)
@@ -70,21 +71,20 @@ export default function Modal({
         aria-label={title}
         tabIndex={-1}
         ref={contentRef}
-        className="relative m-0 w-full md:w-[min(1000px,95vw)] h-full md:h-[95vh] bg-white rounded-none md:rounded-2xl shadow-xl focus:outline-none"
+        className="relative m-0 w-full h-full bg-transparent shadow-xl focus:outline-none"
       >
         {/* Barra superior */}
-        <div className="sticky top-0 flex items-center gap-3 px-4 py-3 border-b bg-white/95 backdrop-blur">
-          <h2 className="text-sm md:text-base font-semibold truncate">
+        <div className="sticky top-0 flex items-center justify-center px-4 py-3 border-b border-white/20 bg-primary/40 backdrop-blur">
+          <h2 className="text-sm md:text-base font-semibold text-white/80">
             {title || "Visor"}
           </h2>
-          <div className="ml-auto">
-            <button
-              onClick={onClose}
-              className="px-3 py-1 rounded-md text-sm border hover:bg-gray-50"
-            >
-              Cerrar
-            </button>
-          </div>
+          <button
+            onClick={onClose}
+            className="absolute right-4 p-2 rounded-full text-white hover:bg-white/20 transition-colors"
+            aria-label="Cerrar"
+          >
+            <X size={20} />
+          </button>
         </div>
         {/* Contenido modal */}
         <div className="h-[calc(100%-56px)] overflow-auto">{children}</div>

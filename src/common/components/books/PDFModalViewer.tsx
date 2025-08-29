@@ -5,7 +5,7 @@ import {
   type PDFDocumentProxy,
 } from "pdfjs-dist";
 
-GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js"; // ya lo usaban así
+GlobalWorkerOptions.workerSrc = "/pdf.worker.min.js";
 
 interface PDFModalViewerProps {
   pdfUrl: string;
@@ -52,7 +52,8 @@ export default function PDFModalViewer({
       const viewport = page.getViewport({ scale: 1 });
 
       // ancho disponible: padding de 16px del contenedor
-      const maxWidth = container.clientWidth - 32;
+      const containerWidth = container.clientWidth;
+      const maxWidth = Math.min(containerWidth - 42, 900); // máximo 900px
       const scale = maxWidth / viewport.width;
       const scaled = page.getViewport({ scale });
 
@@ -160,9 +161,12 @@ export default function PDFModalViewer({
   }, [numPages, initialPage]);
 
   return (
-    <div ref={containerRef} className="px-4 md:px-6 py-4 overflow-auto h-full">
+    <div
+      ref={containerRef}
+      className="px-6 py-4 overflow-auto h-full bg-transparent"
+    >
       {/* Toolbar simple opcional */}
-      <div className="mb-3 text-sm text-gray-600">
+      <div className="mb-4 text-sm text-center text-white/80">
         Página {visiblePage} de {numPages || "…"}
       </div>
 
@@ -170,13 +174,13 @@ export default function PDFModalViewer({
       <div className="flex flex-col gap-6 items-center">
         {pages.map((p) => (
           <div key={p} data-page={p} className="w-full max-w-[900px] mx-auto">
-            <div className="bg-white shadow rounded overflow-hidden">
+            <div className="bg-white shadow-2x1 rounded-lg overflow-hidden border border-gray-300">
               <canvas className="block w-full h-auto" />
             </div>
           </div>
         ))}
         {numPages === 0 && (
-          <div className="text-center text-gray-500 py-10">
+          <div className="text-center text-white/60 py-10">
             Cargando documento…
           </div>
         )}

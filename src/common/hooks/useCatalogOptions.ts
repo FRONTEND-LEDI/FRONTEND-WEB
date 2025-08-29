@@ -9,7 +9,7 @@ export function useCatalogOptions(token: string | null) {
   return {
     years: yearsQ.data ?? [],
     subgenres: subgenresQ.data ?? [],
-    formats: (formatsQ.data ?? []) as ("ebook" | "audio" | "video")[],
+    formats: (formatsQ.data ?? []) as ("ebook" | "audiolibro" | "video")[],
     isLoading: yearsQ.isLoading || subgenresQ.isLoading || formatsQ.isLoading,
     error: yearsQ.error || subgenresQ.error || formatsQ.error,
   };

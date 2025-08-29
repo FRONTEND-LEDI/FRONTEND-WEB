@@ -25,7 +25,8 @@ const FiltersBar: React.FC<Props> = ({
   const subgenreOptions = subgenres.map((s) => ({ value: s, label: s }));
   const formatOptions = formats.map((f) => ({
     value: f,
-    label: f === "ebook" ? "Ebook" : f === "audio" ? "Audiolibro" : "Video",
+    label:
+      f === "ebook" ? "Ebook" : f === "audiolibro" ? "Audiolibro" : "Video",
   }));
 
   return (

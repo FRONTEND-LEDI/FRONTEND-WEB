@@ -1,5 +1,6 @@
 import React, { useState } from "react";
 import { useRoute, Link } from "wouter";
+import { ArrowLeft } from "lucide-react";
 import Navbar from "../../common/components/navbar";
 import Footer from "../../common/components/Footer";
 import { useBook } from "../../common/hooks/useBook";
@@ -15,8 +16,14 @@ const BookDetailPage: React.FC = () => {
   const { data: progress } = useBookProgress(id);
   const [open, setOpen] = useState(false);
 
-  if (isLoading) return <p className="text-center mt-8">Cargando...</p>;
-  if (!book) return <p className="text-center mt-8">Libro no encontrado</p>;
+  if (isLoading)
+    return <span className="loading loading-spinner loading-xl"></span>;
+  if (!book)
+    return (
+      <div role="alert" className="alert alert-error alert-dash">
+        <span>Hubo un error. No se pudo cargar el libro.</span>
+      </div>
+    );
 
   const pdfUrl = book?.contentBook?.url_secura;
   const cover =
@@ -35,7 +42,7 @@ const BookDetailPage: React.FC = () => {
     ? (book.author as { _id: string; name: string }[])
     : [];
 
-  const maxThemes = 5;
+  const maxThemes = 3;
   const shownThemes = (book.theme ?? []).slice(0, maxThemes);
   const extraThemes = Math.max((book.theme?.length ?? 0) - maxThemes, 0);
 
@@ -45,14 +52,23 @@ const BookDetailPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-fund">
       <Navbar />
-      <main className="flex-1 max-w-5xl mx-auto px-4 py-23">
+      <main className="relative flex-1 max-w-5xl mx-auto px-4 py-23 ">
         <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
-          {/* Portada */}
-          <img
-            src={cover}
-            alt={book.title}
-            className="w-full max-w-xs md:w-1/3 object-cover rounded-lg shadow-md"
-          />
+          <div className="relative w-full max-w-xs md:w-1/3">
+            {/* Back button */}
+            <Link href="/catalogo">
+              <button className="absolute top-2 left-2 z-10 bg-primary/85 hover:bg-primary/95 text-white p-2 rounded-full transition-colors shadow-lg">
+                <ArrowLeft size={20} />
+              </button>
+            </Link>
+
+            {/* Portada */}
+            <img
+              src={cover || "/placeholder.svg"}
+              alt={book?.title}
+              className="w-full object-cover rounded-lg shadow-md"
+            />
+          </div>
 
           {/* Contenido */}
           <div className="flex-1">
@@ -129,7 +145,7 @@ const BookDetailPage: React.FC = () => {
                 </button>
               )}
 
-              {book.format === "audio" && (
+              {book.format === "audiolibro" && (
                 <button
                   disabled
                   className="bg-yellow-100 text-yellow-700 font-semibold py-2 px-4 rounded-lg cursor-not-allowed"

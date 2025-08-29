@@ -1,4 +1,4 @@
-export type FormatType = "ebook" | "audio" | "video";
+export type FormatType = "ebook" | "audiolibro" | "video";
 
 export interface FilterState {
   years: (number | string)[];
