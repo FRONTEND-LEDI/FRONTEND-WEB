@@ -10,7 +10,7 @@ import toast from "react-hot-toast";
 const LoginPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
-  const [location, navigate] = useLocation(); // Para redirigir si login es exitoso
+  const [location, navigate] = useLocation();
   const { login: saveSession, user } = useAuth();
 
   // si ya hay usuario redirigir a la página de inicio
@@ -54,7 +54,6 @@ const LoginPage = () => {
       resetForm();
       // Redireccionar si todo salió bien
       navigate("/home");
-      // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (err: any) {
       setError(err.message || "Ocurrió un error al iniciar sesión.");
     }
