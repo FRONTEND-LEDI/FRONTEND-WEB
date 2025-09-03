@@ -3,6 +3,7 @@ import { Link, useLocation } from 'wouter';
 // ! ai. separo la función de registro para mantener el código limpio y no meterme con los archivos de sele
 import { getAvatars } from "../../db/services/avatar";
 import { useCompleteRegistration } from "../../common/utils/registerHelper"; 
+import { getSubgenres } from '../../db/services/subgenres';
 
 
 export default function Test() {
@@ -16,6 +17,7 @@ export default function Test() {
       navigate("/register");
     }
   }, []);
+
   // ! ai. fin de redirección
 
 
@@ -42,6 +44,10 @@ export default function Test() {
     getAvatars().then(setAvatars);
   }, []);
   // ! fin de los avatares
+const [subgenres, setSubgenres] = useState<any[]> ([]);
+useEffect (()=> {
+getSubgenres().then(setSubgenres);
+}, []);
 
   const handleNext = () => {
     if (progressSteps < dialog.length - 1) {
@@ -99,24 +105,19 @@ export default function Test() {
           <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
             {/* Géneros */}
             {progressSteps === 2 &&
-              ["Fantasía", "Terror", "Romance", "Aventura", "Nostalgico", "Psicologico"].map((genre) => (
+              subgenres.map((subgenres) => (
                 <div
-                  key={genre}
-                  onClick={() =>
-                    setSelectedGenres((prev) =>
-                      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-                    )
-                  }
+                  key={subgenres.nombre}
+                  onClick={() => setSelectedGenres(subgenres.nombre)}
                   className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
-                    selectedGenres.includes(genre) ? "ring-4 ring-primary" : ""
+                    selectedGenres === subgenres.nombre ? "ring-4 ring-primary" : ""
                   }`}
                 >
                   <img
-                    src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-                    alt={genre}
+                    src={"https://cdn-icons-png.flaticon.com/512/847/847969.png"}
+                    alt="Subgenres.nombre"
                     className="rounded-lg h-32 w-full object-cover mx-auto"
                   />
-                  <p className="mt-2 font-semibold">{genre}</p>
                 </div>
               ))}
 
