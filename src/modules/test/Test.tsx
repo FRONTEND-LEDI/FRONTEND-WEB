@@ -4,6 +4,7 @@ import { Link, useLocation } from 'wouter';
 import { getAvatars } from "../../db/services/avatar";
 import { useCompleteRegistration } from "../../common/utils/registerHelper"; 
 import { getSubgenres } from '../../db/services/subgenres';
+import { getFormat } from "../../db/services/bookformats";
 
 
 export default function Test() {
@@ -44,9 +45,15 @@ export default function Test() {
     getAvatars().then(setAvatars);
   }, []);
   // ! fin de los avatares
-const [subgenres, setSubgenres] = useState<any[]> ([]);
+
+  const [subgenres, setSubgenres] = useState<any[]> ([]);
 useEffect (()=> {
 getSubgenres().then(setSubgenres);
+}, []);
+
+  const [formats, setFormats] = useState<any[]> ([]);
+useEffect (()=> {
+getFormat().then(setFormats);
 }, []);
 
   const handleNext = () => {
@@ -101,48 +108,66 @@ getSubgenres().then(setSubgenres);
 
       {/* Opciones */}
       <div className="w-full max-w-5xl flex justify-center">
-        {progressSteps >= 2 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {/* Géneros */}
-            {progressSteps === 2 &&
-              subgenres.map((subgenres) => (
-                <div
-                  key={subgenres.nombre}
-                  onClick={() => setSelectedGenres(subgenres.nombre)}
-                  className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
-                    selectedGenres === subgenres.nombre ? "ring-4 ring-primary" : ""
-                  }`}
-                >
-                  <img
-                    src={"https://cdn-icons-png.flaticon.com/512/847/847969.png"}
-                    alt="Subgenres.nombre"
-                    className="rounded-lg h-32 w-full object-cover mx-auto"
-                  />
-                </div>
-              ))}
-
+    {progressSteps >= 2 && (
+  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+   
+    {/* Géneros */}
+    {progressSteps === 2 &&
+  subgenres.map((nombre) => {
+    const isSelected = selectedGenres.includes(nombre);
+    return (
+      <div
+        key={nombre}
+        onClick={() =>
+          setSelectedGenres((prev) =>
+            isSelected
+              ? prev.filter((g) => g !== nombre)
+              : [...prev, nombre]
+          )
+        }
+        className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
+          isSelected ? "ring-4 ring-primary" : ""
+        }`}
+      >
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+          alt={nombre}
+          className="rounded-lg h-20 w-full object-cover mx-auto"
+        />
+        <p className="mt-2 font-medium">{nombre}</p>
+      </div>
+    );
+  })}
             {/* Formatos */}
             {progressSteps === 3 &&
-              ["Poema", "Cuento Narrativo", "Audiolibro"].map((format) => (
-                <div
-                  key={format}
-                  onClick={() =>
-                    setSelectedFormats((prev) =>
-                      prev.includes(format) ? prev.filter((f) => f !== format) : [...prev, format]
-                    )
-                  }
-                  className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
-                    selectedFormats.includes(format) ? "ring-4 ring-primary" : ""
-                  }`}
-                >
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-                    alt={format}
-                    className="rounded-lg h-32 w-full object-cover mx-auto"
-                  />
-                  <p className="mt-2 font-semibold">{format}</p>
-                </div>
-              ))}
+            formats.map((nombre) => {
+    const isSelected = selectedFormats.includes(nombre);
+
+    return (
+      <div
+        key={nombre}
+        onClick={() =>
+          setSelectedFormats((prev) =>
+            isSelected
+              ? prev.filter((g) => g !== nombre)
+              : [...prev, nombre]
+          )
+        }
+        className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
+          isSelected ? "ring-4 ring-primary" : ""
+        }`}
+      >
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+          alt={nombre}
+          className="rounded-lg h-20 w-full object-cover mx-auto"
+        />
+        <p className="mt-2 font-medium">{nombre}</p>
+      </div>
+    );
+  })}
+
+         
 
             {/* Avatares */}
             {progressSteps === 4 &&
