@@ -17,11 +17,17 @@ const BookDetailPage: React.FC = () => {
   const [open, setOpen] = useState(false);
 
   if (isLoading)
-    return <span className="loading loading-spinner loading-xl"></span>;
+    return (
+      <div className="flex justify-center items-center py-12">
+        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
+      </div>
+    );
   if (!book)
     return (
-      <div role="alert" className="alert alert-error alert-dash">
-        <span>Hubo un error. No se pudo cargar el libro.</span>
+      <div className="flex justify-center items-center py-12">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+          <span>Error! No se pudo cargar el libro.</span>
+        </div>
       </div>
     );
 
@@ -136,7 +142,7 @@ const BookDetailPage: React.FC = () => {
               {book.format === "ebook" && (
                 <button
                   onClick={() => setOpen(true)}
-                  className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow"
+                  className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow cursor-pointer"
                   disabled={!pdfUrl}
                 >
                   {progress?.currentPage && progress.currentPage > 1
@@ -145,17 +151,17 @@ const BookDetailPage: React.FC = () => {
                 </button>
               )}
 
-              {book.format === "audiolibro" && (
+              {book.format === "audiobook" && (
                 <button
                   disabled
-                  className="bg-yellow-100 text-yellow-700 font-semibold py-2 px-4 rounded-lg cursor-not-allowed"
+                  className="bg-yellow-100 text-yellow-700 font-semibold py-2 px-4 rounded-lg cursor-not-allowed "
                   title="Audiolibro próximamente"
                 >
                   Escuchar
                 </button>
               )}
 
-              {book.format === "video" && (
+              {book.format === "videobook" && (
                 <button
                   disabled
                   className="bg-yellow-100 text-yellow-700 font-semibold py-2 px-4 rounded-lg cursor-not-allowed"

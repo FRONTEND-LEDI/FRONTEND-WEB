@@ -1,3 +1,4 @@
+// ! reemplazado por DynamicMultiSelect.tsx - filtro dinámico
 import React, { useEffect, useRef, useState } from "react";
 import { ChevronDown } from "lucide-react";
 
@@ -44,7 +45,7 @@ const MultiSelectDropdown: React.FC<Props> = ({
       <button
         type="button"
         onClick={() => setOpen((o) => !o)}
-        className="flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 shadow-sm hover:shadow transition"
+        className="flex items-center gap-2 rounded-full border border-gray-300 bg-white px-4 py-2 shadow-sm hover:shadow transition cursor-pointer"
       >
         <span className="font-medium">{label}</span>
         <ChevronDown className="h-4 w-4 opacity-70" />
@@ -60,7 +61,7 @@ const MultiSelectDropdown: React.FC<Props> = ({
               >
                 <input
                   type="checkbox"
-                  className="accent-amber-600"
+                  className="accent-amber-600 cursor-pointer"
                   checked={temp.includes(op.value)}
                   onChange={() => toggle(op.value)}
                 />
@@ -73,7 +74,7 @@ const MultiSelectDropdown: React.FC<Props> = ({
             <button
               type="button"
               onClick={() => setTemp([])}
-              className="text-sm text-gray-600 hover:underline"
+              className="text-sm text-gray-600 hover:underline cursor-pointer"
             >
               Limpiar
             </button>
@@ -81,7 +82,7 @@ const MultiSelectDropdown: React.FC<Props> = ({
               <button
                 type="button"
                 onClick={() => setOpen(false)}
-                className="text-sm px-3 py-1 rounded-full border"
+                className="text-sm px-3 py-1 rounded-full border cursor-pointer"
               >
                 Cancelar
               </button>
@@ -91,7 +92,7 @@ const MultiSelectDropdown: React.FC<Props> = ({
                   onChange(temp);
                   setOpen(false);
                 }}
-                className="text-sm px-3 py-1 rounded-full bg-amber-500 text-white"
+                className="text-sm px-3 py-1 rounded-full bg-amber-500 text-white cursor-pointer"
               >
                 Aplicar
               </button>

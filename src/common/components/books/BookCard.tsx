@@ -17,7 +17,7 @@ const BookCard: React.FC<BookCardProps> = ({
   return (
     <Link
       href={`/libro/${id}`}
-      className="rounded-2xl shadow p-4 flex flex-col items-center bg-fund hover:shadow-lg transition"
+      className="rounded-2xl shadow p-4 flex flex-col items-center bg-fund hover:shadow-lg transition hover:transform-[scale(1.1)] hover:bg-violet-50"
     >
       <img
         src={bookCoverImage}

@@ -16,7 +16,7 @@ export interface Book {
   totalPages?: number;
   genre?: string;
   level?: string;
-  format?: "ebook" | "audiolibro" | "video";
+  format?: "ebook" | "audiobook" | "videobook";
 }
 
 export type ProgressStatus = "reading" | "finished" | "paused";
