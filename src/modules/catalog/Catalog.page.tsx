@@ -72,8 +72,9 @@ const CatalogPage: React.FC = () => {
                   author={authorLabel}
                   bookCoverImage={
                     book.bookCoverImage?.url_secura ||
-                    "https://via.placeholder.com/150"
+                    "/portada-no-disponible.png"
                   }
+                  format={book.format}
                 />
               );
             })}

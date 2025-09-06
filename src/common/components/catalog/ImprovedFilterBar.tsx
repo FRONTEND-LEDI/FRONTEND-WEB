@@ -1,6 +1,6 @@
 import type React from "react";
 import { useState, useEffect } from "react";
-import { Search, Filter, X } from "lucide-react";
+import { Filter, X, Brain, Sparkles, Zap } from "lucide-react";
 import DynamicMultiSelect from "../../components/filters/DynamicMultiSelect";
 import type { FilterState, FormatType } from "../../../types/filters";
 
@@ -25,12 +25,38 @@ const ImprovedFiltersBar: React.FC<Props> = ({
 }) => {
   const [query, setQuery] = useState("");
   const [showFilters, setShowFilters] = useState(false);
+  const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
+  const [isSearching, setIsSearching] = useState(false);
+
+  const aiPlaceholders = [
+    "Explora la literatura formoseña con IA...",
+    "Encuentra poemas inspirados en el río Paraguay...",
+    "Descubrí cuentos de escritores formoseños...",
+    "Libros sobre la historia y cultura de Formosa...",
+    "Novelas ambientadas en el paisaje del monte...",
+    "Biografías de autores y artistas formoseños...",
+    "Cuentos infantiles de escritores locales...",
+  ];
 
   useEffect(() => {
-    const timeoutId = setTimeout(() => {
-      onSearch(query);
-    }, 300);
-    return () => clearTimeout(timeoutId);
+    const interval = setInterval(() => {
+      setCurrentPlaceholder((prev) => (prev + 1) % aiPlaceholders.length);
+    }, 3000);
+    return () => clearInterval(interval);
+  }, []);
+
+  useEffect(() => {
+    if (query) {
+      setIsSearching(true);
+      const timeoutId = setTimeout(() => {
+        onSearch(query);
+        setIsSearching(false);
+      }, 300);
+      return () => clearTimeout(timeoutId);
+    } else {
+      setIsSearching(false);
+      onSearch("");
+    }
   }, [query, onSearch]);
 
   const yearOptions = (years || []).map((y) => ({
@@ -55,21 +81,89 @@ const ImprovedFiltersBar: React.FC<Props> = ({
 
   const clearAllFilters = () => {
     onChange({ years: [], genres: [], subgenres: [], formats: [] });
+    setQuery("");
+  };
+
+  const handleFilterChange = (newFilters: FilterState) => {
+    onChange(newFilters);
+    if (
+      hasActiveFilters ||
+      newFilters.years.length > 0 ||
+      newFilters.genres.length > 0 ||
+      newFilters.subgenres.length > 0 ||
+      newFilters.formats.length > 0
+    ) {
+      setQuery("");
+    }
   };
 
   return (
     <div className="mb-6 space-y-4">
       {/* Buscador */}
       <div className="flex flex-col sm:flex-row gap-3 items-stretch sm:items-center">
-        <div className="relative flex-1 max-w-md">
-          <Search className="absolute left-3 top-1/2 transform -translate-y-1/2 h-4 w-4 text-gray-400" />
+        <div className="relative flex-1 max-w-md group">
+          <div className="absolute -top-2 -right-2 z-10">
+            <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-[length:200%_200%] animate-gradient-x text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
+              <Sparkles className="h-3 w-3 animate-pulse" />
+              <span className="font-medium">IA</span>
+            </div>
+          </div>
+
+          <div className="absolute left-3 top-1/2 transform -translate-y-1/2 flex items-center gap-1">
+            <Brain
+              className={`h-4 w-4 text-orange-500 transition-all duration-300 ${
+                isSearching ? "animate-pulse scale-110" : ""
+              }`}
+            />
+            {isSearching && (
+              <div className="flex gap-1">
+                <div
+                  className="w-1 h-1 bg-orange-500 rounded-full animate-bounce"
+                  style={{ animationDelay: "0ms" }}
+                ></div>
+                <div
+                  className="w-1 h-1 bg-orange-500 rounded-full animate-bounce"
+                  style={{ animationDelay: "150ms" }}
+                ></div>
+                <div
+                  className="w-1 h-1 bg-orange-500 rounded-full animate-bounce"
+                  style={{ animationDelay: "300ms" }}
+                ></div>
+              </div>
+            )}
+          </div>
+
           <input
             type="text"
-            placeholder="Busqueda con IA"
+            placeholder={aiPlaceholders[currentPlaceholder]}
             value={query}
             onChange={(e) => setQuery(e.target.value)}
-            className="w-full pl-10 pr-4 py-2 border border-primary/50 rounded-lg focus:outline-none focus:ring-2 focus:ring-amber-500 focus:border-transparent"
+            className="w-full pl-12 pr-4 py-3 border-1 border-primary/30 bg-gradient-to-r from-orange-50 via-amber-50 to-yellow-50 rounded-lg focus:outline-none focus:ring-0 transition-all duration-300 placeholder:text-gray-400 placeholder:transition-all placeholder:duration-500 relative overflow-hidden
+                     before:absolute before:inset-0 before:p-[2px] before:bg-gradient-to-r before:from-orange-500 before:via-amber-500 before:to-yellow-500 before:bg-[length:200%_200%] before:animate-gradient-x before:rounded-lg before:-z-10
+                     focus:before:opacity-100 hover:before:opacity-70 before:opacity-0"
+            style={{
+              background:
+                "linear-gradient(135deg, #fff7ed 0%, #fef3c7 50%, #fefce8 100%)",
+              boxShadow: query ? "0 0 20px rgba(249, 115, 22, 0.15)" : "none",
+            }}
           />
+
+          {(query || isSearching) && (
+            <div className="absolute inset-0 pointer-events-none">
+              <Sparkles
+                className="absolute top-2 right-8 h-3 w-3 text-orange-400 animate-ping"
+                style={{ animationDelay: "0s" }}
+              />
+              <Zap
+                className="absolute bottom-2 right-12 h-3 w-3 text-amber-400 animate-ping"
+                style={{ animationDelay: "1s" }}
+              />
+              <Sparkles
+                className="absolute top-3 right-16 h-2 w-2 text-yellow-400 animate-ping"
+                style={{ animationDelay: "2s" }}
+              />
+            </div>
+          )}
         </div>
 
         <div className="flex items-center gap-2">
@@ -115,7 +209,7 @@ const ImprovedFiltersBar: React.FC<Props> = ({
               label="Año"
               options={yearOptions}
               selected={filters.years}
-              onChange={(years) => onChange({ ...filters, years })}
+              onChange={(years) => handleFilterChange({ ...filters, years })}
               placeholder="Todos los años"
             />
 
@@ -124,7 +218,7 @@ const ImprovedFiltersBar: React.FC<Props> = ({
               options={genreOptions}
               selected={filters.genres}
               onChange={(genres) =>
-                onChange({ ...filters, genres: genres as string[] })
+                handleFilterChange({ ...filters, genres: genres as string[] })
               }
               placeholder="Todos los géneros"
             />
@@ -133,8 +227,11 @@ const ImprovedFiltersBar: React.FC<Props> = ({
               label="Subgénero"
               options={subgenreOptions}
               selected={filters.subgenres}
-              onChange={(subgenres) =>
-                onChange({ ...filters, subgenres: subgenres as string[] })
+              onChange={(formats) =>
+                handleFilterChange({
+                  ...filters,
+                  formats: formats as FormatType[],
+                })
               }
               placeholder="Todos los subgéneros"
             />
