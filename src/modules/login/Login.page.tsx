@@ -6,27 +6,32 @@ import useForm from "../../common/hooks/useForm";
 import { loginUser } from "../../db/services/auth";
 import { useAuth } from "../../context/AuthContext";
 import toast from "react-hot-toast";
+import LoadingGate from "../../common/components/LoadingGate";
 
 const LoginPage = () => {
   const [error, setError] = useState("");
   const [success, setSuccess] = useState("");
+  const [submitting, setSubmitting] = useState(false);
   const [location, navigate] = useLocation();
-  const { login: saveSession, user } = useAuth();
 
-  // si ya hay usuario redirigir a la página de inicio
+  const { login: saveSession, user, loading } = useAuth();
+
+  // si ya hay usuario y NO estamos cargando, mandá a /home
   useEffect(() => {
-    if (user && (location === "/login" || location === "/register")) {
+    if (
+      !loading &&
+      user &&
+      (location === "/login" || location === "/register")
+    ) {
       navigate("/home");
     }
-  }, [user, location, navigate]);
+  }, [user, loading, location, navigate]);
 
-  // Hook para manejar campos de login
   const { values, handleChange, resetForm } = useForm({
     email: "",
     password: "",
   });
 
-  // enviar el formulario
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
@@ -38,29 +43,39 @@ const LoginPage = () => {
     }
 
     try {
+      setSubmitting(true);
       const response = await loginUser({
         email: values.email,
         password: values.password,
       });
 
       const token = response.token as string;
-      console.log("Token recibido:", token);
 
-      // guardar la sesion
       await saveSession(token);
 
       setSuccess("Inicio de sesión exitoso");
       toast.success("¡Bienvenido de nuevo a Tinta Nativa!");
       resetForm();
-      // Redireccionar si todo salió bien
-      navigate("/home");
+
+      // si venía de una ruta protegida, volver ahí
+      const returnTo = localStorage.getItem("returnTo");
+      if (returnTo) {
+        localStorage.removeItem("returnTo");
+        navigate(returnTo);
+      } else {
+        navigate("/home");
+      }
     } catch (err: any) {
       setError(err.message || "Ocurrió un error al iniciar sesión.");
+    } finally {
+      setSubmitting(false);
     }
   };
 
   return (
-    <div className="flex flex-col lg:flex-row min-h-screen bg-fund">
+    <div className="flex flex-col lg:flex-row min-h-screen bg-fund relative">
+      {submitting && <LoadingGate message="Ingresando…" />}
+
       {/* columna izquierda con la imagen */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:justify-end lg:pr-2">
         <img
@@ -80,13 +95,11 @@ const LoginPage = () => {
             Iniciar sesión
           </h1>
 
-          {/* Mensajes de feedback */}
           {error && <p className="text-red-600 text-sm text-center">{error}</p>}
           {success && (
             <p className="text-green-600 text-sm text-center">{success}</p>
           )}
 
-          {/* Campos */}
           <Input
             label="Correo electrónico"
             name="email"
@@ -103,7 +116,9 @@ const LoginPage = () => {
             onChange={handleChange}
           />
 
-          <Button type="submit">Ingresar</Button>
+          <Button type="submit" disabled={submitting}>
+            {submitting ? "Ingresando..." : "Ingresar"}
+          </Button>
 
           <p className="text-center text-sm">
             ¿No tenés cuenta?{" "}
