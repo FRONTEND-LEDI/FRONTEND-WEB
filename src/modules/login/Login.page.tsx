@@ -23,7 +23,25 @@ const LoginPage = () => {
       user &&
       (location === "/login" || location === "/register")
     ) {
-      navigate("/home");
+      // si venía de una ruta protegida específica, respetar eso (salvo admin area)
+      const returnTo = localStorage.getItem("returnTo");
+
+      if (user.rol === "admin") {
+        // si había returnTo pero NO es del admin, ignoralo para no chocar mundos
+        if (returnTo && returnTo.startsWith("/admin")) {
+          localStorage.removeItem("returnTo");
+          navigate(returnTo);
+        } else {
+          navigate("/admin");
+        }
+      } else {
+        if (returnTo && !returnTo.startsWith("/admin")) {
+          localStorage.removeItem("returnTo");
+          navigate(returnTo);
+        } else {
+          navigate("/home");
+        }
+      }
     }
   }, [user, loading, location, navigate]);
 

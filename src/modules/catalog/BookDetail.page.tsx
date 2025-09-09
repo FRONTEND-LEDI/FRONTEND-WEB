@@ -1,12 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRoute, Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "../../common/components/navbar";
 import Footer from "../../common/components/Footer";
 import { useBook } from "../../common/hooks/useBook";
-import { useBookProgress } from "../../common/hooks/useProgress";
+import {
+  useBookProgress,
+  useSetBookStatus,
+  useUpdateProgressById,
+} from "../../common/hooks/useProgress";
 import Modal from "../../common/components/books/Modal";
 import PDFModalViewer from "../../common/components/books/PDFModalViewer";
+import VideoPlayer from "../../common/components/media/VideoPlayer";
+import LoadingGate from "../../common/components/LoadingGate";
 
 const BookDetailPage: React.FC = () => {
   const [, params] = useRoute("/libro/:id");
@@ -14,14 +20,18 @@ const BookDetailPage: React.FC = () => {
 
   const { data: book, isLoading } = useBook(id);
   const { data: progress } = useBookProgress(id);
+
   const [open, setOpen] = useState(false);
 
-  if (isLoading)
-    return (
-      <div className="flex justify-center items-center py-12">
-        <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
-      </div>
-    );
+  // Guards anti-bucle (viven mientras esté montada la página)
+  const startedOnceRef = useRef(false);
+  const finishedOnceRef = useRef(false);
+
+  // hooks para cambiar estado (crea si no existe) y para actualizar por _id
+  const { mutate: setStatus, isPending: savingStatus } = useSetBookStatus(id);
+  const { mutate: updateById } = useUpdateProgressById();
+
+  if (isLoading) return <LoadingGate message="Cargando detalles del libro…" />;
   if (!book)
     return (
       <div className="flex justify-center items-center py-12">
@@ -52,8 +62,59 @@ const BookDetailPage: React.FC = () => {
   const shownThemes = (book.theme ?? []).slice(0, maxThemes);
   const extraThemes = Math.max((book.theme?.length ?? 0) - maxThemes, 0);
 
-  //const resumePage =
-  progress?.currentPage && progress.currentPage > 1 ? progress.currentPage : 1;
+  // guardar progreso
+  const resumePage = 1;
+  const resumeSeconds = 0;
+  // const { mutate: persistProgress } = useMutation({
+  //   mutationFn: (payload: {
+  //     bookId: string;
+  //     kind: "time"; // "page" para PDF
+  //     currentTimeSec: number;
+  //     durationSec?: number;
+  //     format?: string; // "audiobook" | "videobook"
+  //   }) => saveProgress(payload),
+  // });
+
+  const mediaUrl = book?.contentBook?.url_secura || "";
+  console.log(` link del video ${mediaUrl}`);
+
+  const isMedia =
+    book.format?.toLowerCase?.() === "audiobook" ||
+    book.format?.toLowerCase?.() === "videobook";
+
+  // al abrir lector/reproductor, si no hay progreso o está "pending", pasamos a "reading"
+  const openReader = () => {
+    if (!startedOnceRef.current) {
+      startedOnceRef.current = true;
+
+      if (!progress || !progress.status || progress.status === "pending") {
+        setStatus("reading");
+      }
+    }
+    setOpen(true);
+  };
+
+  // marcar finalizado: si ya existe doc -> PUT por _id; si no, crea con finished
+  const markFinished = () => {
+    if (finishedOnceRef.current) return; // evitar múltiples envíos
+    finishedOnceRef.current = true;
+
+    if (progress?._id) updateById({ id: progress._id, status: "finished" });
+    else setStatus("finished"); // crea un registro con finished si no existía
+  };
+
+  // helper para mostrar duración humana si la tenés en book.duration (seg)
+  const fmtTime = (sec?: number) => {
+    if (!sec && sec !== 0) return "";
+    const s = Math.floor(sec % 60)
+      .toString()
+      .padStart(2, "0");
+    const m = Math.floor((sec / 60) % 60)
+      .toString()
+      .padStart(2, "0");
+    const h = Math.floor(sec / 3600);
+    return h > 0 ? `${h}:${m}:${s}` : `${m}:${s}`;
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-fund">
@@ -63,7 +124,7 @@ const BookDetailPage: React.FC = () => {
           <div className="relative w-full max-w-xs md:w-1/3">
             {/* Back button */}
             <Link href="/catalogo">
-              <button className="absolute top-2 left-2 z-10 bg-primary/85 hover:bg-primary/95 text-white p-2 rounded-full transition-colors shadow-lg">
+              <button className="absolute top-2 left-2 z-10 bg-primary/85 hover:bg-primary/95 text-white p-2 rounded-full transition-colors shadow-lg cursor-pointer">
                 <ArrowLeft size={20} />
               </button>
             </Link>
@@ -141,49 +202,98 @@ const BookDetailPage: React.FC = () => {
               {/* Botón para abrir el modal */}
               {book.format === "ebook" && (
                 <button
-                  onClick={() => setOpen(true)}
+                  onClick={openReader}
                   className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow cursor-pointer"
                   disabled={!pdfUrl}
                 >
-                  {progress?.currentPage && progress.currentPage > 1
-                    ? `Reanudar`
-                    : "Leer"}
+                  {progress?.status === "reading" ? "Reanudar" : "Leer"}
                 </button>
               )}
 
               {book.format === "audiobook" && (
                 <button
-                  disabled
-                  className="bg-yellow-100 text-yellow-700 font-semibold py-2 px-4 rounded-lg cursor-not-allowed "
-                  title="Audiolibro próximamente"
+                  onClick={openReader}
+                  className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow cursor-pointer"
+                  disabled={!mediaUrl || savingStatus}
+                  title={
+                    book.duration
+                      ? `Duración: ${fmtTime(book.duration)}`
+                      : undefined
+                  }
                 >
-                  Escuchar
+                  {progress?.status === "reading" ? "Reanudar" : "Escuchar"}
                 </button>
               )}
 
               {book.format === "videobook" && (
                 <button
-                  disabled
-                  className="bg-yellow-100 text-yellow-700 font-semibold py-2 px-4 rounded-lg cursor-not-allowed"
-                  title="Video próximamente"
+                  onClick={openReader}
+                  className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow cursor-pointer"
+                  disabled={!mediaUrl || savingStatus}
+                  title={
+                    book.duration
+                      ? `Duración: ${fmtTime(book.duration)}`
+                      : undefined
+                  }
                 >
-                  Ver video
+                  {progress?.status === "reading" ? "Reanudar" : "Ver video"}
                 </button>
               )}
+
+              {/* Selector de estado */}
+              <div className="flex items-center gap-2">
+                <label className="text-sm text-gray-700">Estado:</label>
+                <select
+                  className="border rounded-md px-2 py-1 text-sm"
+                  value={progress?.status ?? "pending"}
+                  onChange={(e) => setStatus(e.target.value as any)}
+                  disabled={savingStatus}
+                >
+                  <option value="pending">Pendiente</option>
+                  <option value="reading">Leyendo</option>
+                  <option value="finished">Terminado</option>
+                  <option value="abandoned">Abandonado</option>
+                </select>
+              </div>
             </div>
 
             {/* Modal: solo se monta si hay pdfUrl */}
-            {pdfUrl && (
+            {pdfUrl && book.format === "ebook" && (
               <Modal
                 isOpen={open}
                 onClose={() => setOpen(false)}
                 title={book.title}
               >
-                {/* Lectura vertical */}
+                {/* se abre el pdf  */}
                 <PDFModalViewer
                   pdfUrl={pdfUrl}
-                  onPageChange={(_page) => {
-                    // Tguardamos el progreso
+                  initialPage={resumePage}
+                  onPageChange={(page) => {
+                    // si llega a la última página, marcamos “finished”
+                    if (
+                      typeof (book as any).totalPages === "number" &&
+                      page >= (book as any).totalPages
+                    ) {
+                      markFinished();
+                    }
+                  }}
+                />
+              </Modal>
+            )}
+            {isMedia && mediaUrl && (
+              <Modal
+                isOpen={open}
+                onClose={() => setOpen(false)}
+                title={book.title}
+              >
+                <VideoPlayer
+                  src={mediaUrl}
+                  poster={book.bookCoverImage?.url_secura}
+                  title={book.title}
+                  initialTime={resumeSeconds}
+                  onEnded={() => {
+                    // Al terminar el video/audio, marcamos terminado
+                    markFinished();
                   }}
                 />
               </Modal>

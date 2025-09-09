@@ -13,6 +13,7 @@ import {
   formatAuthorsForCard,
 } from "../../common/utils/authorHelper";
 import ImprovedFiltersBar from "../../common/components/catalog/ImprovedFilterBar";
+import LoadingGate from "../../common/components/LoadingGate";
 
 const CatalogPage: React.FC = () => {
   const { token } = useAuth();
@@ -29,15 +30,6 @@ const CatalogPage: React.FC = () => {
 
       <main className="flex-1 max-w-7xl mx-auto p-4 pt-23">
         {/* filtros y buscador */}
-        {/* <FiltersBar
-          years={years}
-          genres={genres}
-          subgenres={subgenres}
-          formats={formats}
-          filters={filters}
-          onChange={setFilters}
-          onSearch={setQuery}
-        /> */}
         <ImprovedFiltersBar
           years={years || []}
           genres={genres || []}
@@ -49,9 +41,7 @@ const CatalogPage: React.FC = () => {
         />
 
         {isLoading ? (
-          <div className="flex justify-center items-center py-12">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-amber-500"></div>
-          </div>
+          <LoadingGate message="Cargando los libros…" />
         ) : error ? (
           <div className="flex justify-center items-center py-12">
             <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
