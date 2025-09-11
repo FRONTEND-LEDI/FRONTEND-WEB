@@ -60,7 +60,7 @@ export default function Navbar() {
                 <li className="lg:hidden">
                   <Link href="/autores">Autores</Link>
                 </li>
-                {user.rol === "admin" && (
+                {user.rol === "Admin" && (
                   <li>
                     <Link href="/admin">Panel de Administración</Link>
                   </li>

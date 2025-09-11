@@ -1,293 +1,197 @@
-// modules/admin/books/AdminBooksNew.tsx
+"use client";
 import { useState } from "react";
+import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
-import { adminCreateBook } from "../../../db/services/adminBooks";
-import type { AdminCreateBookInput } from "../../../types/books";
-import { useLocation } from "wouter";
+import {
+  adminDeleteAuthor,
+  searchAuthors,
+} from "../../../db/services/adminAuthors";
+import type { Author } from "../../../types/author";
+import { getAuthorAvatarUrl } from "../../../types/author";
+import { Link } from "wouter";
 import toast from "react-hot-toast";
+import LoadingGate from "../../../common/components/LoadingGate";
+import { User, Search, Edit, Trash2, Plus, Users } from "lucide-react";
 
-const INITIAL = {
-  title: "",
-  author: [], // ids (por ahora vacío; luego podés integrar /author)
-  summary: "",
-  subgenre: [],
-  language: "es",
-  available: true,
-  yearBook: "",
-  synopsis: "",
-  theme: [],
-  genre: "",
-  level: "",
-  format: "ebook",
-  totalPages: undefined as number | undefined,
-  duration: undefined as number | undefined,
-  fileExtension: "pdf",
-};
-
-export default function AdminBooksNew() {
+export default function AdminAuthorsList() {
   const { token } = useAuth();
-  const [, navigate] = useLocation();
-  const [form, setForm] = useState(INITIAL);
-  const [imgFile, setImgFile] = useState<File | null>(null);
-  const [bookFile, setBookFile] = useState<File | null>(null);
-  const [loading, setLoading] = useState(false);
+  const qc = useQueryClient();
 
-  const set = (k: keyof typeof INITIAL, v: any) =>
-    setForm((s) => ({ ...s, [k]: v }));
+  // 👇 Esto faltaba
+  const [q, setQ] = useState("");
 
-  async function onSubmit(e: React.FormEvent) {
-    e.preventDefault();
-    try {
-      if (!imgFile || !bookFile) {
-        toast.error("Falta seleccionar imagen y archivo del libro.");
-        return;
-      }
-      setLoading(true);
+  const { data, isLoading, isError, error } = useQuery({
+    queryKey: ["admin-authors"],
+    queryFn: () => searchAuthors(token), // trae todos
+    staleTime: 30_000,
+  });
 
-      const payload: AdminCreateBookInput = {
-        ...form,
-        imgFile,
-        bookFile,
-      };
+  const delMut = useMutation({
+    mutationFn: (id: string) => adminDeleteAuthor(id, token),
+    onSuccess: () => {
+      toast.success("Autor eliminado");
+      qc.invalidateQueries({ queryKey: ["admin-authors"] });
+    },
+    onError: (e: any) => toast.error(e?.message ?? "Error al eliminar"),
+  });
 
-      await adminCreateBook(payload, token);
-      toast.success("Libro creado correctamente");
-      navigate("/admin/books");
-    } catch (err: any) {
-      toast.error(err?.message ?? "Error al crear libro");
-    } finally {
-      setLoading(false);
-    }
-  }
+  if (isLoading) return <LoadingGate message="Cargando autores…" />;
+  if (isError)
+    return <div className="text-red-600">Error: {(error as any)?.message}</div>;
+
+  const authorsAll = (data ?? []) as Author[];
+  const term = q.trim().toLowerCase();
+  const authors = authorsAll.filter((a) =>
+    term ? (a.name ?? "").toLowerCase().includes(term) : true
+  );
 
   return (
-    <div className="max-w-3xl">
-      <h2 className="text-xl font-bold mb-4">Crear libro</h2>
-
-      <form
-        onSubmit={onSubmit}
-        className="space-y-4 bg-white border rounded-lg p-4"
-      >
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="form-control">
-            <span className="label-text">Título</span>
-            <input
-              className="input input-bordered"
-              value={form.title}
-              onChange={(e) => set("title", e.target.value)}
-            />
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Género</span>
-            <input
-              className="input input-bordered"
-              value={form.genre}
-              onChange={(e) => set("genre", e.target.value)}
-            />
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Idioma</span>
-            <input
-              className="input input-bordered"
-              value={form.language}
-              onChange={(e) => set("language", e.target.value)}
-            />
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Año</span>
-            <input
-              className="input input-bordered"
-              value={form.yearBook}
-              onChange={(e) => set("yearBook", e.target.value)}
-            />
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Nivel</span>
-            <input
-              className="input input-bordered"
-              value={form.level}
-              onChange={(e) => set("level", e.target.value)}
-            />
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Formato</span>
-            <select
-              className="select select-bordered"
-              value={form.format}
-              onChange={(e) => {
-                const f = e.target.value;
-                set("format", f);
-                // limpiar los campos alternativos
-                if (f === "ebook") set("duration", undefined);
-                else set("totalPages", undefined);
-              }}
-            >
-              <option value="ebook">ebook</option>
-              <option value="audiobook">audiobook</option>
-              <option value="videobook">videobook</option>
-            </select>
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Disponible</span>
-            <select
-              className="select select-bordered"
-              value={String(form.available)}
-              onChange={(e) => set("available", e.target.value === "true")}
-            >
-              <option value="true">Sí</option>
-              <option value="false">No</option>
-            </select>
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Extensión de archivo</span>
-            <input
-              className="input input-bordered"
-              value={form.fileExtension}
-              onChange={(e) => set("fileExtension", e.target.value)}
-            />
-          </label>
-        </div>
-
-        <label className="form-control">
-          <span className="label-text">Resumen</span>
-          <textarea
-            className="textarea textarea-bordered"
-            value={form.summary}
-            onChange={(e) => set("summary", e.target.value)}
-          />
-        </label>
-
-        <label className="form-control">
-          <span className="label-text">Sinopsis</span>
-          <textarea
-            className="textarea textarea-bordered"
-            value={form.synopsis}
-            onChange={(e) => set("synopsis", e.target.value)}
-          />
-        </label>
-
-        <div className="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <label className="form-control">
-            <span className="label-text">Subgéneros (coma)</span>
-            <input
-              className="input input-bordered"
-              onChange={(e) =>
-                set(
-                  "subgenre",
-                  e.target.value
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter(Boolean)
-                )
-              }
-            />
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Temas (coma)</span>
-            <input
-              className="input input-bordered"
-              onChange={(e) =>
-                set(
-                  "theme",
-                  e.target.value
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter(Boolean)
-                )
-              }
-            />
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Autores (IDs separados por coma)</span>
-            <input
-              className="input input-bordered"
-              onChange={(e) =>
-                set(
-                  "author",
-                  e.target.value
-                    .split(",")
-                    .map((s) => s.trim())
-                    .filter(Boolean)
-                )
-              }
-            />
-          </label>
-        </div>
-
-        {form.format === "ebook" ? (
-          <label className="form-control">
-            <span className="label-text">Total de páginas</span>
-            <input
-              type="number"
-              className="input input-bordered"
-              value={form.totalPages ?? ""}
-              onChange={(e) =>
-                set(
-                  "totalPages",
-                  e.target.value ? Number(e.target.value) : undefined
-                )
-              }
-            />
-          </label>
-        ) : (
-          <label className="form-control">
-            <span className="label-text">Duración (segundos)</span>
-            <input
-              type="number"
-              className="input input-bordered"
-              value={form.duration ?? ""}
-              onChange={(e) =>
-                set(
-                  "duration",
-                  e.target.value ? Number(e.target.value) : undefined
-                )
-              }
-            />
-          </label>
-        )}
-
-        <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <label className="form-control">
-            <span className="label-text">Portada (img)</span>
-            <input
-              type="file"
-              accept="image/*"
-              className="file-input file-input-bordered"
-              onChange={(e) => setImgFile(e.target.files?.[0] ?? null)}
-            />
-          </label>
-
-          <label className="form-control">
-            <span className="label-text">Archivo del libro</span>
-            <input
-              type="file"
-              className="file-input file-input-bordered"
-              onChange={(e) => setBookFile(e.target.files?.[0] ?? null)}
-            />
-          </label>
-        </div>
-
-        <div className="flex gap-2">
-          <button
-            className={`btn btn-primary ${loading ? "btn-disabled" : ""}`}
-            type="submit"
+    <div className="space-y-6">
+      <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
+              <Users className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Gestión de Autores
+              </h2>
+              <p className="text-gray-600">
+                Administra los autores de la biblioteca
+              </p>
+            </div>
+          </div>
+          <Link
+            href="/admin/authors/new"
+            className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all shadow-sm hover:shadow-md"
           >
-            {loading ? "Creando…" : "Crear"}
-          </button>
-          <button className="btn" type="button" onClick={() => history.back()}>
-            Cancelar
+            <Plus className="w-4 h-4" />
+            Nuevo Autor
+          </Link>
+        </div>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
+        <div className="flex gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+              placeholder="Buscar por nombre del autor..."
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
+          </div>
+          <button
+            className="px-6 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            onClick={() => setQ("")}
+          >
+            Limpiar
           </button>
         </div>
-      </form>
+      </div>
+
+      <div className="bg-white rounded-xl shadow-sm border border-orange-100 overflow-hidden">
+        <div className="overflow-x-auto">
+          <table className="w-full">
+            <thead className="bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-100">
+              <tr>
+                <th className="text-left py-4 px-6 font-semibold text-gray-700">
+                  Avatar
+                </th>
+                <th className="text-left py-4 px-6 font-semibold text-gray-700">
+                  Nombre
+                </th>
+                <th className="text-left py-4 px-6 font-semibold text-gray-700">
+                  Biografía
+                </th>
+                <th className="text-right py-4 px-6 font-semibold text-gray-700">
+                  Acciones
+                </th>
+              </tr>
+            </thead>
+            <tbody className="divide-y divide-gray-100">
+              {authors.map((a) => {
+                const url = getAuthorAvatarUrl(a.avatar);
+                return (
+                  <tr
+                    key={a._id}
+                    className="hover:bg-orange-25 transition-colors"
+                  >
+                    <td className="py-4 px-6">
+                      {url ? (
+                        <img
+                          src={url}
+                          alt={a.name}
+                          className="w-12 h-12 rounded-full object-cover border-2 border-orange-100"
+                        />
+                      ) : (
+                        <div className="w-12 h-12 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 flex items-center justify-center border-2 border-orange-200">
+                          <User className="w-6 h-6 text-orange-600" />
+                        </div>
+                      )}
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="font-medium text-gray-900">{a.name}</div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div
+                        className="max-w-md text-gray-600 text-sm leading-relaxed"
+                        title={a.biography}
+                      >
+                        {(a.biography ?? "").length > 100
+                          ? `${a.biography.substring(0, 100)}...`
+                          : a.biography}
+                      </div>
+                    </td>
+                    <td className="py-4 px-6">
+                      <div className="flex items-center justify-end gap-2">
+                        <Link
+                          href={`/admin/authors/${a._id}/edit`}
+                          className="flex items-center gap-1 px-3 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors"
+                        >
+                          <Edit className="w-3 h-3" />
+                          Editar
+                        </Link>
+                        <button
+                          className="flex items-center gap-1 px-3 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                          onClick={() => {
+                            if (!confirm("¿Eliminar este autor?")) return;
+                            delMut.mutate(a._id);
+                          }}
+                        >
+                          <Trash2 className="w-3 h-3" />
+                          Eliminar
+                        </button>
+                      </div>
+                    </td>
+                  </tr>
+                );
+              })}
+              {authors.length === 0 && (
+                <tr>
+                  <td colSpan={4} className="text-center py-12">
+                    <div className="flex flex-col items-center gap-3">
+                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
+                        <Search className="w-6 h-6 text-gray-400" />
+                      </div>
+                      <div>
+                        <p className="text-gray-500 font-medium">
+                          No se encontraron autores
+                        </p>
+                        <p className="text-gray-400 text-sm">
+                          Intenta con otros términos de búsqueda
+                        </p>
+                      </div>
+                    </div>
+                  </td>
+                </tr>
+              )}
+            </tbody>
+          </table>
+        </div>
+      </div>
     </div>
   );
 }

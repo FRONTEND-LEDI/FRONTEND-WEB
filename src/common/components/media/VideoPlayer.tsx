@@ -125,7 +125,7 @@ export default function VideoPlayer({
           ))}
         </video>
 
-        <div className="mt-3 flex items-center gap-3 text-white/90">
+        {/*<div className="mt-3 flex items-center gap-3 text-white/90">
           <span className="text-sm opacity-75">{title}</span>
           <div className="ml-auto flex items-center gap-2">
             <label htmlFor="rate" className="text-xs opacity-75">
@@ -148,7 +148,7 @@ export default function VideoPlayer({
               ))}
             </select>
           </div>
-        </div>
+        </div>*/}
       </div>
     </div>
   );

@@ -18,16 +18,24 @@ export type UpdateAuthorInput = {
   avatarFile?: File; // opcional
 };
 
-function buildAuthorFormData(data: CreateAuthorInput | UpdateAuthorInput): FormData {
+function buildAuthorFormData(
+  data: CreateAuthorInput | UpdateAuthorInput
+): FormData {
   const fd = new FormData();
-  if ("name" in data && typeof data.name !== "undefined") fd.append("name", String(data.name));
-  if ("biography" in data && typeof data.biography !== "undefined") fd.append("biography", String(data.biography));
-  if ("avatarFile" in data && data.avatarFile) fd.append("avatar", (data as any).avatarFile);
+  if ("name" in data && typeof data.name !== "undefined")
+    fd.append("name", String(data.name));
+  if ("biography" in data && typeof data.biography !== "undefined")
+    fd.append("biography", String(data.biography));
+  if ("avatarFile" in data && data.avatarFile)
+    fd.append("avatar", (data as any).avatarFile);
   return fd;
 }
 
 // Crear autor (POST /author/create)
-export async function adminCreateAuthor(data: CreateAuthorInput, token: string | null) {
+export async function adminCreateAuthor(
+  data: CreateAuthorInput,
+  token: string | null
+) {
   const res = await fetch(`${API_URL}/author/create`, {
     method: "POST",
     headers: authHeaders(token),
@@ -40,7 +48,11 @@ export async function adminCreateAuthor(data: CreateAuthorInput, token: string |
 }
 
 // Actualizar autor (PUT /author/:id)
-export async function adminUpdateAuthor(id: string, data: UpdateAuthorInput, token: string | null) {
+export async function adminUpdateAuthor(
+  id: string,
+  data: UpdateAuthorInput,
+  token: string | null
+) {
   const res = await fetch(`${API_URL}/author/${id}`, {
     method: "PUT",
     headers: authHeaders(token),
@@ -75,16 +87,18 @@ export async function getAuthorById(id: string, token: string | null) {
   return json;
 }
 
-// Buscar autores por nombre (GET /author?name=...)
-// Si el backend permite llamar sin query para traer todos, genial.
-// Si NO, entonces usaremos siempre con nombre/parcial.
-export async function searchAuthors(name: string, token: string | null) {
-  const qs = name ? `?name=${encodeURIComponent(name)}` : "";
-  const res = await fetch(`${API_URL}/author${qs}`, {
+// trae todos los autores
+export async function searchAuthors(token: string | null) {
+  const res = await fetch(`${API_URL}/AllAuthores`, {
     headers: authHeaders(token),
     credentials: "include",
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json?.error || "No se pudo buscar autores");
-  return json; // asumimos array
+
+  // ADAPTAR a la forma { msg, result: [...] }
+  if (Array.isArray(json)) return json;
+  if (Array.isArray(json?.result)) return json.result;
+  if (Array.isArray(json?.authors)) return json.authors;
+  return [];
 }

@@ -14,13 +14,13 @@ export default function AdminRoute({ children }: { children: ReactNode }) {
       navigate("/login");
       return;
     }
-    if (user.rol !== "admin") {
+    if (user.rol !== "Admin") {
       navigate("/home");
     }
   }, [user, loading, navigate]);
 
   if (loading) return <LoadingGate message="Cargando…" />;
-  if (!user || user.rol !== "admin") return null;
+  if (!user || user.rol !== "Admin") return null;
 
   return <>{children}</>;
 }

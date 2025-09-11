@@ -1,4 +1,5 @@
 import type { BookProgress, ProgressStatus } from "../../types/progress";
+
 const URL = "http://localhost:3402";
 
 const authHeaders = (token: string | null): HeadersInit => {
@@ -10,7 +11,7 @@ const authHeaders = (token: string | null): HeadersInit => {
   return h;
 };
 
-/** GET /Progress → puede venir {result:{}}; lo normalizamos a [] */
+//! GET  -> normaliza a [] si no hay result */
 export async function getAllProgress(
   token: string | null
 ): Promise<BookProgress[]> {
@@ -22,27 +23,27 @@ export async function getAllProgress(
   if (!res.ok) throw new Error("No se pudo obtener el progreso del usuario");
   const payload = await res.json();
   const result = payload?.result;
-  if (Array.isArray(result)) return result as BookProgress[];
-  return []; // si viene {}, null o undefined, devolvemos lista vacía
+  return Array.isArray(result) ? (result as BookProgress[]) : [];
 }
 
-/** Ayuda: buscar por libro en la lista global */
+//! -----
+// ? Ayuda: obtener el progreso del libro específico */
 export async function getProgressByBook(bookId: string, token: string | null) {
   const all = await getAllProgress(token);
   return all.find((p) => p.idBook === bookId) ?? null;
 }
 
-/** POST /SaveProgress → el back exige TODOS los campos */
-export async function createProgressStrict(
+//! POST -> crea progreso inicial */
+export async function createProgress(
   input: {
-    idUser: string;
     idBook: string;
     status: ProgressStatus;
-    progress: number;
+    position: number;
     startDate: string;
+    unit: "page" | "second";
   },
   token: string | null
-): Promise<void> {
+): Promise<BookProgress> {
   const res = await fetch(`${URL}/SaveProgress`, {
     method: "POST",
     headers: authHeaders(token),
@@ -50,32 +51,22 @@ export async function createProgressStrict(
     body: JSON.stringify(input),
   });
   if (!res.ok) throw new Error("No se pudo crear el progreso");
+  const payload = await res.json();
+  return payload?.data as BookProgress;
 }
 
-/** PUT /progress → requiere { id, ... } */
-export async function updateProgressById(
-  input: { id: string; status?: ProgressStatus; progress?: number },
+// ! PUT - actualiza la posición */
+export async function updateProgressPosition(
+  input: { id: string; position: number },
   token: string | null
-): Promise<void> {
+): Promise<BookProgress> {
   const res = await fetch(`${URL}/progress`, {
     method: "PUT",
     headers: authHeaders(token),
     credentials: "include",
     body: JSON.stringify(input),
   });
-  if (!res.ok) throw new Error("No se pudo actualizar el progreso");
-}
-
-/** DELETE /progress → body { id } */
-export async function deleteProgressById(
-  id: string,
-  token: string | null
-): Promise<void> {
-  const res = await fetch(`${URL}/progress`, {
-    method: "DELETE",
-    headers: authHeaders(token),
-    credentials: "include",
-    body: JSON.stringify({ id }),
-  });
-  if (!res.ok) throw new Error("No se pudo eliminar el progreso");
+  if (!res.ok) throw new Error("No se pudo actualizar la posición");
+  const payload = await res.json();
+  return payload?.result as BookProgress;
 }
