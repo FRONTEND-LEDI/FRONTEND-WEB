@@ -71,9 +71,9 @@ getFormat().then(setFormats);
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-white py-10 px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen  bg-fund py-10 px-4">
       {/* Barra de pasos */}
-      <div className="w-full max-w-3xl flex justify-between items-center mb-8 relative">
+      <div className="w-full max-w-3xl fixed top-4 h-2">
         <ul className="steps w-full">
           {dialog.map((_, index) => (
             <li
@@ -93,7 +93,7 @@ getFormat().then(setFormats);
       </div>
 
       {/* Zorro + Mensaje */}
-      <div className="flex flex-row justify-center items-center text-center mb-8 space-y-4">
+      <div className="flex flex-row justify-center items-center text-center w-2xl mb-8 space-y-4">
         <img
           src="/hostImage/zorro-loginIA.png"
           alt="Zorro"
@@ -109,7 +109,7 @@ getFormat().then(setFormats);
       {/* Opciones */}
       <div className="w-full max-w-5xl flex justify-center">
     {progressSteps >= 2 && (
-  <div className="grid grid-cols-2 sm:grid-cols-2 lg:grid-cols-3 gap-6">
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-6">
    
     {/* Géneros */}
     {progressSteps === 2 &&
@@ -132,7 +132,7 @@ getFormat().then(setFormats);
         <img
           src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
           alt={nombre}
-          className="rounded-lg h-20 w-full object-cover mx-auto"
+          className="rounded-lg h-10 w-15 object-cover mx-auto"
         />
         <p className="mt-2 font-medium">{nombre}</p>
       </div>
@@ -209,7 +209,7 @@ getFormat().then(setFormats);
               handleNext();
             }
           }}
-          className="bg-primary text-white font-bold py-2 px-6 rounded hover:bg-primary/90"
+          className="bg-primary text-white font-bold py-2 px-6 rounded cursor-pointer hover:bg-primary/90"
         >
           {progressSteps === dialog.length - 1 ? "Finalizar Registro" : "Continuar"}
         </button>

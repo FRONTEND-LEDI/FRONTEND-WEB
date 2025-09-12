@@ -6,18 +6,22 @@ export default function Navbar() {
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
-      <div className="max-w-6xl mx-auto px-6 py-4 flex justify-between items-center">
-        <h1 className="flex karaoke items-center text-2xl font-bold text-white">
-          Tintas
-        </h1>
+      <div className="max-full mx-auto px-12 py-4 flex justify-between items-center">
+       <div className="flex colum self-baseline">
+        <img src="/public/hostImage/LOGO-COLOR.svg" style={{height: 50, padding: 0}} alt=""  />
 
+        <h1 className="flex karaoke items-center text-2xl font-bold text-white">
+          Tintas Formoseñas
+        </h1>
+      </div>
         {user ? (
-          <div className="flex font-semibold text-white gap-6 items-center">
+          <div className="flex font-semibold text-white gap-12 items-center">
             {/* Links en pantalla grande */}
-            <div className="hidden lg:flex gap-6 items-center">
+            <div className="hidden lg:flex gap-12 items-center">
               <Link href="/home">Inicio</Link>
               <Link href="/catalogo">Catálogo</Link>
               <Link href="/clubdeLectura">Club de Lectura</Link>
+              <Link href="/biblioGames">BiblioGames</Link>
               <Link href="/autores">Autores</Link>
             </div>
 

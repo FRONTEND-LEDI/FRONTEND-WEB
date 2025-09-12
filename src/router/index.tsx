@@ -10,6 +10,7 @@ import BookDetailPage from "../modules/catalog/BookDetail.page";
 import BookReaderPage from "../modules/catalog/BookReader.page";
 import Profile from "../modules/profile/Profile.page";
 import ForumPage from "../modules/forum/Forum.page";
+import { BiblioGames } from "../modules/games/Games.page";
 
 const AppRouter = () => {
   return (
@@ -35,6 +36,11 @@ const AppRouter = () => {
       <Route path="/ClubdeLectura">
       <ProtectedRoute>
         <ForumPage/>
+      </ProtectedRoute>
+      </Route>
+      <Route path="/BiblioGames">
+      <ProtectedRoute>
+        <BiblioGames/>
       </ProtectedRoute>
       </Route>
 
