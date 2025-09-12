@@ -95,7 +95,7 @@ getFormat().then(setFormats);
       {/* Zorro + Mensaje */}
       <div className="flex flex-row justify-center items-center text-center mb-8 space-y-4">
         <img
-          src="/public/zorro-login.png"
+          src="/hostImage/zorro-loginIA.png"
           alt="Zorro"
           className="w-28 h-28 object-contain"
         />

@@ -5,6 +5,7 @@ import FilterForum from '../../common/components/forumComponents/filter';
 import Popular from '../../common/components/forumComponents/mostPopular';
 import SearchingBar from '../../common/components/forumComponents/searchBar';
 import AddPost from '../../common/components/forumComponents/addPost';
+import Navbar from '../../common/components/navbar';
 
 type Foro = {
   id: string;
@@ -71,6 +72,8 @@ export default function ForumPage() {
 
   return (
     <div className="mt-20 flex h-screen">
+      <Navbar/>,
+      
       {/* Panel izquierdo */}
       <div className="w-3xs flex flex-col  h-full p-4">
         <FilterForum setForoSeleccionado={setForoSeleccionado} foros={foros} />

@@ -76,10 +76,10 @@ export default function LandingPage() {
           </li>
         </ul>
       </div>
-{/* Session Presentacion */}
+{/* Seccion Presentacion */}
       <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
         <div className="w-full md:w-1/2 flex justify-center">
-          <img src="/zorro-leyendo.png" className="w-72 h-auto drop-shadow-lg" alt="Ledi el zorro" />
+          <img src="/hostImage/LOGO-VERTICAL.svg" className="w-72 h-auto drop-shadow-lg" alt="Ledi el zorro" />
         </div>
         <div className="md:w-1/2 text-center md:text-left self-center max-w-xl">
           <h1 className="text-3xl md:text-4xl font-bold text-primary mb-4">
@@ -92,12 +92,12 @@ export default function LandingPage() {
       </div>
 {/* Nivel por edad  */}
 
-  <div className=' flex justify-center align-middle items-center flex-col p-8 '>
+  <div className=' flex justify-center align-middle items-center flex-col p-8  '>
     <h1 className='text-primary font-bold text-3xl text-center mb-12'>¡No te pierdas nuestras recomendaciones por Nivel!</h1>
     <div className="flex justify-center gap-18">
 <div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
     <figure className="w-1/3 h-full">
-      <img src="/cartoon-child-girl-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
+      <img src="/landingImages/cartoon-child-girl-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
     </figure>
     <div className="card-body w-2/3 p-2">
       <h2 className="card-title">Inicial</h2>
@@ -106,7 +106,7 @@ export default function LandingPage() {
   </div>
 <div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
     <figure className="w-1/3 h-full">
-      <img src="/aunt-cartoon-family-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
+      <img src="/landingImages/aunt-cartoon-family-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
     </figure>
     <div className="card-body w-2/3 p-2">
       <h2 className="card-title text-sm leading-tight">Secundaria</h2>
@@ -116,7 +116,7 @@ export default function LandingPage() {
 
 <div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
   <figure className="w-1/3 h-full">
-    <img src="/family-female-mom-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-contain"/>
+    <img src="/landingImages/family-female-mom-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-contain"/>
   </figure>
   <div className="card-body w-2/3 p-2">
     <h2 className="card-title text-sm leading-tight">Adulto joven</h2>
@@ -127,7 +127,7 @@ export default function LandingPage() {
 
 <div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
     <figure className="w-1/3 h-full">
-      <img src="/family-grandfather-grandpa-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
+      <img src="/landingImages/family-grandfather-grandpa-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
     </figure>
     <div className="card-body w-2/3 p-2">
       <h2 className="card-title text-sm leading-tight">Adulto Mayor</h2>
@@ -144,10 +144,10 @@ export default function LandingPage() {
 <div className="bg-white flex flex-col md:flex-row-reverse items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl mt-16">
 <div className='flex justify-center w-100 gap-4'>
 <div>
-    <img alt="wallpaper" src="/public/12.png"/> 
+    <img alt="wallpaper" src="/landingImages/12.png"/> 
 </div>
 <div >
-    <img alt="wallpaper" src="/public/123.png"/>
+    <img alt="wallpaper" src="/landingImages/123.png"/>
 </div>
 </div>
         <div className="md:w-1/2 text-center md:text-left justify-center flex  flex-col self-center max-w-xl">
@@ -161,15 +161,15 @@ export default function LandingPage() {
       </div>
        <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
         <div className="w-full md:w-1/2 flex justify-center">
-          <img src="/public/QR_code_for_mobile_English_Wikipedia.svg.png" className="w-72 h-auto drop-shadow-lg" alt="visitanos en PlayStore" />
+          <img src="/landingImages/QR_code_for_mobile_English_Wikipedia.svg.png" className="w-72 h-auto drop-shadow-lg" alt="visitanos en PlayStore" />
         </div>
         <div className="md:w-1/2   flex flex-col  md:text-left  max-w-xl">
           <h1 className="text-3xl mb-8 md:text-4xl font-semibold text-primary  ">
             ¡Descarga la aplicacion web!
           </h1>
           <div className='flex justify-center items-center align-middle'>
-          <img src="/public/get-it-on-googleplay.png" className='cursor-pointer h-10 w-30' alt="" />
-          <img src="/public/applepay.png"  className='cursor-pointer h-9 w-30' alt="" />
+          <img src="/landingImages/get-it-on-googleplay.png" className='cursor-pointer h-10 w-30' alt="" />
+          <img src="/landingImages/applepay.png"  className='cursor-pointer h-9 w-30' alt="" />
           </div>
         </div>
       </div>
