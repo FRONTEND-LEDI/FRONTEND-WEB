@@ -1,92 +1,67 @@
-import React, { useEffect, useState } from "react";
-import { getAllBooks, getBooksByQuery } from "../../db/services/books";
+import React, { useState } from "react";
 import BookCard from "../../common/components/books/BookCard";
 import Navbar from "../../common/components/navbar";
 import Footer from "../../common/components/Footer";
 import { useAuth } from "../../context/AuthContext";
-import SearchBar from "./SearchBar";
-
-interface Book {
-  _id: string;
-  title: string;
-  author: string[];
-  bookCoverImage: {
-    url_secura: string;
-  };
-}
+// import SearchBar from "../../common/components/catalog/SearchBar";
+import { useCatalogOptions } from "../../common/hooks/useCatalogOptions";
+import FiltersBar from "../../common/components/catalog/FiltersBar";
+import { emptyFilters, type FilterState } from "../../types/filters";
+import { useBooks } from "../../common/hooks/useBooks";
+import {
+  normalizeAuthors,
+  formatAuthorsForCard,
+} from "../../common/utils/authorHelper";
 
 const CatalogPage: React.FC = () => {
   const { token } = useAuth();
-  const [books, setBooks] = useState<Book[]>([]);
-  const [loading, setLoading] = useState(true);
-  const [error, setError] = useState<string | null>(null);
+  const [query, setQuery] = useState("");
+  const [filters, setFilters] = useState<FilterState>(emptyFilters);
+  const { years, subgenres, formats } = useCatalogOptions(token);
 
-  useEffect(() => {
-    const fetchBooks = async () => {
-      try {
-        const data = await getAllBooks(token);
-        setBooks(data);
-      } catch (err) {
-        setError("No se pudieron cargar los libros");
-      } finally {
-        setLoading(false);
-      }
-    };
-
-    fetchBooks();
-  }, [token]);
-
-  const handleSearch = async (query: string) => {
-    setLoading(true);
-    setError(null);
-
-    try {
-      let results;
-
-      if (query.trim() === "") {
-        // Si no hay texto, traer todos los libros
-        results = await getAllBooks(token);
-      } else {
-        // Buscar por query
-        results = await getBooksByQuery(query, token);
-      }
-
-      setBooks(results);
-    } catch {
-      setError("Ocurrió un error al buscar libros.");
-    } finally {
-      setLoading(false);
-    }
-  };
+  const { data, isLoading, error } = useBooks({ query, filters, token });
+  const books = data ?? [];
 
   return (
-    <div className="flex flex-col min-h-screen">
+    <div className="flex flex-col min-h-screen bg-fund">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto p-4 pt-20">
-        <h1 className="text-2xl font-bold mb-4">Catálogo de Libros</h1>
+      <main className="flex-1 max-w-7xl mx-auto p-4 pt-23">
+        {/* filtros y buscador */}
+        <FiltersBar
+          years={years}
+          subgenres={subgenres}
+          formats={formats}
+          filters={filters}
+          onChange={setFilters}
+          onSearch={setQuery}
+        />
 
-        <SearchBar onSearch={handleSearch} />
-        {/* Acá van ir los filtros después */}
-
-        {loading ? (
-          <p className="text-center">Cargando libros...</p>
+        {isLoading ? (
+          <span className="loading loading-spinner loading-xl"></span>
         ) : error ? (
-          <p className="text-center text-red-500">{error}</p>
+          <div role="alert" className="alert alert-error alert-dash">
+            <span>Error! No se pudieron cargar los libros.</span>
+          </div>
         ) : (
           <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
-            {books.map((book) => (
-              <BookCard
-                key={book._id}
-                id={book._id}
-                title={book.title}
-                author={book.author[0] || "Autor desconocido"}
-                bookCoverImage={
-                  book.bookCoverImage?.url_secura ||
-                  "https://via.placeholder.com/150"
-                }
-              />
-            ))}
+            {books.map((book) => {
+              const authors = normalizeAuthors(book.author);
+              const authorLabel = formatAuthorsForCard(authors);
+
+              return (
+                <BookCard
+                  key={book._id}
+                  id={book._id}
+                  title={book.title}
+                  author={authorLabel}
+                  bookCoverImage={
+                    book.bookCoverImage?.url_secura ||
+                    "https://via.placeholder.com/150"
+                  }
+                />
+              );
+            })}
           </div>
         )}
       </main>

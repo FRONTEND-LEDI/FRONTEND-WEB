@@ -31,11 +31,11 @@ const SearchBar: React.FC<Props> = ({ onSearch }) => {
         placeholder="Buscar por título, tema, etc."
         value={query}
         onChange={(e) => setQuery(e.target.value)}
-        className="flex-grow border border-gray-300 rounded px-3 py-1"
+        className="flex-grow border border-gray-450 focus:border-primary focus:ring focus:ring-primary/30 focus:outline-none rounded px-3 py-1 transition-all"
       />
       <button
         type="submit"
-        className="bg-primary text-white px-4 py-1 rounded hover:bg-blue-700"
+        className="bg-primary text-white px-4 py-1 hover:bg-btnHover rounded cursor-pointer"
       >
         Buscar
       </button>

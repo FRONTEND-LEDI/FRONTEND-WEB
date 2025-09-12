@@ -1,7 +1,10 @@
+import { type FullUser } from "../../types/user";
+
+const API_URL = "http://localhost:3402";
 // Función para registrar un nuevo usuario
 export const registerUser = async (data: any) => {
   try {
-    const response = await fetch("http://localhost:3402/register", {
+    const response = await fetch(`${API_URL}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -25,7 +28,7 @@ export const registerUser = async (data: any) => {
 // Función para logearse
 export const loginUser = async (data: any) => {
   try {
-    const response = await fetch("http://localhost:3402/login", {
+    const response = await fetch(`${API_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -48,15 +51,41 @@ export const loginUser = async (data: any) => {
   }
 };
 
-export const getUserData = async (token: string) => {
+export const getUserId = async (token: string) => {
   try {
-    const response = await fetch("http://localhost:3402/getUser", {
+    const response = await fetch(`${API_URL}/getUser`, {
       method: "GET",
       headers: {
         "Authorization": `Bearer ${token}`,
         "x-client": "web",
       },
+      credentials: "include",
     });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "No se pudo obtener el del usuario");
+    }
+
+    console.log(" resultado de getUserId", result.user_data);
+    return result.user_data;
+  } catch (error) {
+    console.error("Error en getUserId:", error);
+    throw error;
+  }
+};
+
+export const getOneUser = async(token: string): Promise<FullUser> => {
+  try {
+    const response = await fetch(`${API_URL}/oneUser`, {
+      method: "GET",
+      headers: {
+        "Authorization": `Bearer ${token}`,
+        "x-client": "web",
+      },
+      credentials: "include",
+    }); 
 
     const result = await response.json();
 
@@ -64,18 +93,19 @@ export const getUserData = async (token: string) => {
       throw new Error(result.error || "No se pudo obtener datos del usuario");
     }
 
-    return result.user_data;
+    console.log(" resultado de getOneUser", result.result);
+    return result.result as FullUser;
   } catch (error) {
-    console.error("Error en getUserData:", error);
+    console.error("Error en getOneUser:", error);
     throw error;
   }
 };
 
 export const logoutUser = async () => {
   try {
-    const response = await fetch("http://localhost:3402/logout", {
+    const response = await fetch(`${API_URL}/logout`, {
       method: "POST",
-      credentials: "include", // necesario para enviar las cookies
+      credentials: "include",
     });
 
     const result = await response.json();
