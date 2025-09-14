@@ -1,7 +1,7 @@
 "use client";
 
 import type React from "react";
-
+import { useState } from "react";
 import { Link } from "wouter";
 import { useAuth } from "../../context/AuthContext";
 import {
@@ -13,6 +13,8 @@ import {
   LogOut,
   Settings,
   Library,
+  Menu,
+  X,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -21,23 +23,46 @@ export default function AdminLayout({
   children: React.ReactNode;
 }) {
   const { logout } = useAuth();
+  const [sidebarOpen, setSidebarOpen] = useState(false);
 
   return (
     <div className="min-h-screen flex bg-gradient-to-br from-orange-50 to-amber-50">
-      <aside className="w-72 bg-white border-r border-orange-200 shadow-lg hidden md:block">
+      {sidebarOpen && (
+        <div
+          className="fixed inset-0 bg-black bg-opacity-50 z-40 md:hidden"
+          onClick={() => setSidebarOpen(false)}
+        />
+      )}
+
+      <aside
+        className={`
+        fixed md:static inset-y-0 left-0 z-50 w-72 bg-white border-r border-orange-200 shadow-lg
+        transform transition-transform duration-300 ease-in-out
+        ${sidebarOpen ? "translate-x-0" : "-translate-x-full"}
+        md:translate-x-0
+      `}
+      >
         <div className="p-6 border-b border-orange-100 bg-gradient-to-r from-orange-500 to-amber-500">
-          <div className="flex items-center gap-3">
-            <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
-              <Settings className="w-6 h-6 text-white" />
+          <div className="flex items-center justify-between">
+            <div className="flex items-center gap-3">
+              <div className="w-10 h-10 bg-white/20 rounded-lg flex items-center justify-center">
+                <Settings className="w-6 h-6 text-white" />
+              </div>
+              <div>
+                <h2 className="text-xl font-bold text-white">Administración</h2>
+                <p className="text-orange-100 text-sm">Panel de control</p>
+              </div>
             </div>
-            <div>
-              <h2 className="text-xl font-bold text-white">Administración</h2>
-              <p className="text-orange-100 text-sm">Panel de control</p>
-            </div>
+            <button
+              onClick={() => setSidebarOpen(false)}
+              className="md:hidden text-white hover:bg-white/20 p-1 rounded"
+            >
+              <X className="w-5 h-5" />
+            </button>
           </div>
         </div>
 
-        <nav className="p-4">
+        <nav className="p-4 flex-1 overflow-y-auto">
           <div className="space-y-2">
             <Link
               href="/admin"
@@ -109,11 +134,11 @@ export default function AdminLayout({
           </div>
         </nav>
 
-        <div className="absolute bottom-0 left-0 right-0 p-4 border-t border-orange-100 bg-white">
+        <div className="p-4 border-t border-orange-100 bg-white">
           <div className="space-y-2">
             <Link
               href="/home"
-              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors group w-full"
+              className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors group"
             >
               <Home className="w-4 h-4 text-orange-500 group-hover:text-orange-600" />
               <span className="text-gray-700 group-hover:text-gray-900">
@@ -133,8 +158,25 @@ export default function AdminLayout({
         </div>
       </aside>
 
-      <main className="flex-1 p-8 overflow-auto">
-        <div className="max-w-7xl mx-auto">{children}</div>
+      <main className="flex-1 flex flex-col min-w-0">
+        <header className="md:hidden bg-white border-b border-orange-200 p-4">
+          <div className="flex items-center justify-between">
+            <button
+              onClick={() => setSidebarOpen(true)}
+              className="p-2 text-gray-600 hover:bg-orange-50 rounded-lg transition-colors"
+            >
+              <Menu className="w-6 h-6" />
+            </button>
+            <h1 className="text-lg font-semibold text-gray-900">
+              Administración
+            </h1>
+            <div className="w-10" /> {/* Spacer for centering */}
+          </div>
+        </header>
+
+        <div className="flex-1 p-4 md:p-8 overflow-auto">
+          <div className="max-w-7xl mx-auto">{children}</div>
+        </div>
       </main>
     </div>
   );

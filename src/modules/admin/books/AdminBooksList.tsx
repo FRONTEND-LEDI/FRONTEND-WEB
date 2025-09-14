@@ -117,13 +117,13 @@ export default function AdminBooksList() {
                         <Edit className="w-3 h-3" />
                         Editar
                       </Link>
-                      {user?.rol === "admin" && (
+                      {user?.rol === "Admin" && (
                         <button
                           className="flex items-center gap-1 px-3 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
                           onClick={() => {
                             if (
                               !confirm(
-                                "¿Eliminar este libro? Sólo hazlo con libros creados por vos (riesgoso)."
+                                "¿Eliminar este libro? Esta acción no se puede deshacer."
                               )
                             )
                               return;
@@ -150,7 +150,7 @@ export default function AdminBooksList() {
                           No hay libros registrados
                         </p>
                         <p className="text-gray-400 text-sm">
-                          Comienza agregando tu primer libro
+                          Comienza agregando el primer libro
                         </p>
                       </div>
                     </div>

@@ -11,25 +11,32 @@ const authHeaders = (token: string | null): HeadersInit => {
 function buildBookFormData(payload: AdminCreateBookInput): FormData {
   const fd = new FormData();
 
-  // archivos (según el backend: "file" y "img")
+  // archivos
   fd.append("file", payload.bookFile);
   fd.append("img", payload.imgFile);
 
-  // campos "text"
+  // simples
   fd.append("title", payload.title);
-  // arrays como JSON o múltiples append (según parseFormData). Tu back usa parseFormData, así que JSON es seguro.
-  fd.append("author", JSON.stringify(payload.author));
   fd.append("summary", payload.summary);
-  fd.append("subgenre", JSON.stringify(payload.subgenre));
   fd.append("language", payload.language);
   fd.append("available", String(payload.available));
   fd.append("yearBook", payload.yearBook);
   fd.append("synopsis", payload.synopsis);
-  fd.append("theme", JSON.stringify(payload.theme));
   fd.append("genre", payload.genre);
   fd.append("level", payload.level);
   fd.append("format", payload.format);
   fd.append("fileExtension", payload.fileExtension);
+
+  //  ENVIAR CADA ELEMENTO POR SEPARADO
+  for (const id of payload.author) {
+    fd.append("author", id);
+  }
+  for (const s of payload.subgenre) {
+    fd.append("subgenre", s);
+  }
+  for (const t of payload.theme) {
+    fd.append("theme", t);
+  }
 
   if (typeof payload.totalPages === "number") {
     fd.append("totalPages", String(payload.totalPages));
@@ -41,12 +48,18 @@ function buildBookFormData(payload: AdminCreateBookInput): FormData {
   return fd;
 }
 
-export async function adminCreateBook(payload: AdminCreateBookInput, token: string | null) {
+export async function adminCreateBook(
+  payload: AdminCreateBookInput,
+  token: string | null
+) {
   // Validación simple en front:
   if (payload.format === "ebook" && !payload.totalPages) {
     throw new Error("Para 'ebook' es obligatorio totalPages.");
   }
-  if ((payload.format === "audiobook" || payload.format === "videobook") && !payload.duration) {
+  if (
+    (payload.format === "audiobook" || payload.format === "videobook") &&
+    !payload.duration
+  ) {
     throw new Error("Para audio/video es obligatorio duration.");
   }
 
@@ -78,7 +91,11 @@ export async function adminDeleteBook(id: string, token: string | null) {
 }
 
 // Dejo preparado para cuando esté el endpoint de edición (PUT /book/:id):
-export async function adminUpdateBook(id: string, form: Partial<AdminCreateBookInput>, token: string | null) {
+export async function adminUpdateBook(
+  id: string,
+  form: Partial<AdminCreateBookInput>,
+  token: string | null
+) {
   const fd = new FormData();
   // solo adjuntar lo que venga
   if (form.bookFile) fd.append("file", form.bookFile);
@@ -86,7 +103,12 @@ export async function adminUpdateBook(id: string, form: Partial<AdminCreateBookI
   for (const [k, v] of Object.entries(form)) {
     if (k === "bookFile" || k === "imgFile") continue;
     if (Array.isArray(v)) fd.append(k, JSON.stringify(v));
-    else if (typeof v === "boolean" || typeof v === "number" || typeof v === "string") fd.append(k, String(v));
+    else if (
+      typeof v === "boolean" ||
+      typeof v === "number" ||
+      typeof v === "string"
+    )
+      fd.append(k, String(v));
   }
 
   const res = await fetch(`${URL}/book/${id}`, {

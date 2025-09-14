@@ -1,3 +1,5 @@
+"use client";
+
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
@@ -38,9 +40,7 @@ export default function AdminAuthorsList() {
 
   const authorsAll = (data ?? []) as Author[];
   const authors = authorsAll.filter((a) =>
-    q.trim()
-      ? a.name.toLowerCase().includes(q.trim().toLocaleLowerCase())
-      : true
+    q.trim() ? a.name.toLowerCase().includes(q.trim().toLowerCase()) : true
   );
 
   return (

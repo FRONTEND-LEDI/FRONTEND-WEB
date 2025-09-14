@@ -12,7 +12,7 @@ export default function AdminDashboard() {
             <h1 className="text-3xl font-bold text-gray-900">
               Panel de Administración
             </h1>
-            <p className="text-gray-600">Gestión de Tintas Formoseñas</p>
+            <p className="text-gray-600">Gestiona tu biblioteca digital</p>
           </div>
         </div>
       </div>

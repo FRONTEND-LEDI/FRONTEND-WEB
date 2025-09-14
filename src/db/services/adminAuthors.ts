@@ -53,12 +53,29 @@ export async function adminUpdateAuthor(
   data: UpdateAuthorInput,
   token: string | null
 ) {
+  const hasFile = !!data.avatarFile;
+  let body: BodyInit;
+  let headers = authHeaders(token);
+
+  if (hasFile) {
+    // multipart sólo si hay archivo
+    body = buildAuthorFormData(data);
+    // no seteamos Content-Type, el browser lo hace
+  } else {
+    // JSON cuando no hay archivo
+    headers = { ...headers, "Content-Type": "application/json" };
+    body = JSON.stringify({
+      name: data.name,
+      biography: data.biography,
+    });
+  }
   const res = await fetch(`${API_URL}/author/${id}`, {
     method: "PUT",
-    headers: authHeaders(token),
-    body: buildAuthorFormData(data),
+    headers,
+    body,
     credentials: "include",
   });
+
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json?.error || "No se pudo actualizar el autor");
   return json;
@@ -84,7 +101,7 @@ export async function getAuthorById(id: string, token: string | null) {
   });
   const json = await res.json().catch(() => ({}));
   if (!res.ok) throw new Error(json?.error || "No se pudo obtener el autor");
-  return json;
+  return json?.result ?? json;
 }
 
 // trae todos los autores

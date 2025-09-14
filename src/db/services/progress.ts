@@ -27,7 +27,7 @@ export async function getAllProgress(
 }
 
 //! -----
-// ? Ayuda: obtener el progreso del libro específico */
+// ? obtener el progreso del libro específico */
 export async function getProgressByBook(bookId: string, token: string | null) {
   const all = await getAllProgress(token);
   return all.find((p) => p.idBook === bookId) ?? null;

@@ -1,5 +1,3 @@
-"use client";
-
 import { useRoute } from "wouter";
 import { BookOpen, X } from "lucide-react";
 
