@@ -1,6 +1,4 @@
-"use client";
-
-// modules/admin/books/AdminBooksList.tsx
+import { useState, useMemo } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { getAllBooks } from "../../../db/services/books";
 import { adminDeleteBook } from "../../../db/services/adminBooks";
@@ -9,17 +7,33 @@ import type { Book } from "../../../types/books";
 import { Link } from "wouter";
 import toast from "react-hot-toast";
 import LoadingGate from "../../../common/components/LoadingGate";
-import { Edit, Trash2, Plus, Search } from "lucide-react";
+import { Edit, Trash2, Plus, Search, Library } from "lucide-react";
 
 export default function AdminBooksList() {
   const { token, user } = useAuth();
   const qc = useQueryClient();
+  const [q, setQ] = useState("");
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin-books"],
     queryFn: () => getAllBooks(token),
     staleTime: 60_000,
   });
+
+  const books = (data ?? []) as Book[];
+
+  const filtered = useMemo(() => {
+    const term = q.trim().toLowerCase();
+    if (!term) return books;
+    return books.filter((b) => {
+      const title = b.title?.toLowerCase() ?? "";
+      const format = b.format?.toLowerCase() ?? "";
+      const year = String(b.yearBook ?? "").toLowerCase();
+      return (
+        title.includes(term) || format.includes(term) || year.includes(term)
+      );
+    });
+  }, [books, q]);
 
   const delMutation = useMutation({
     mutationFn: (id: string) => adminDeleteBook(id, token),
@@ -36,19 +50,23 @@ export default function AdminBooksList() {
   if (isError)
     return <div className="text-red-600">Error: {(error as any)?.message}</div>;
 
-  const books = (data ?? []) as Book[];
-
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
-        <div className="flex items-center justify-between">
-          <div>
-            <h2 className="text-2xl font-bold text-gray-900">
-              Gestión de Libros
-            </h2>
-            <p className="text-gray-600 mt-1">
-              Administra el catálogo completo de libros
-            </p>
+        <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
+              <Library className="w-6 h-6 text-white" />
+            </div>
+            <div>
+              <h2 className="text-2xl font-bold text-gray-900">
+                Gestión de Libros
+              </h2>
+              <p className="text-gray-600">
+                Administra el catálogo de Tintas Formoseñas
+              </p>
+            </div>
           </div>
           <Link
             href="/admin/books/new"
@@ -60,6 +78,28 @@ export default function AdminBooksList() {
         </div>
       </div>
 
+      {/* Buscador */}
+      <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
+        <div className="flex gap-4">
+          <div className="relative flex-1 max-w-md">
+            <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-gray-400" />
+            <input
+              className="w-full pl-10 pr-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+              placeholder="Buscar por título, formato o año…"
+              value={q}
+              onChange={(e) => setQ(e.target.value)}
+            />
+          </div>
+          <button
+            className="px-6 py-3 border border-gray-200 text-gray-700 rounded-lg hover:bg-gray-50 transition-colors"
+            onClick={() => setQ("")}
+          >
+            Limpiar
+          </button>
+        </div>
+      </div>
+
+      {/* Tabla */}
       <div className="bg-white rounded-xl shadow-sm border border-orange-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -83,7 +123,7 @@ export default function AdminBooksList() {
               </tr>
             </thead>
             <tbody className="divide-y divide-gray-100">
-              {books.map((b) => (
+              {filtered.map((b) => (
                 <tr
                   key={b._id}
                   className="hover:bg-orange-25 transition-colors"
@@ -138,7 +178,7 @@ export default function AdminBooksList() {
                   </td>
                 </tr>
               ))}
-              {books.length === 0 && (
+              {filtered.length === 0 && (
                 <tr>
                   <td colSpan={5} className="text-center py-12">
                     <div className="flex flex-col items-center gap-3">
@@ -147,10 +187,10 @@ export default function AdminBooksList() {
                       </div>
                       <div>
                         <p className="text-gray-500 font-medium">
-                          No hay libros registrados
+                          No se encontraron libros
                         </p>
                         <p className="text-gray-400 text-sm">
-                          Comienza agregando el primer libro
+                          Intenta con otros términos de búsqueda
                         </p>
                       </div>
                     </div>

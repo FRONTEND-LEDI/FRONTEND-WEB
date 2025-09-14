@@ -41,32 +41,12 @@ const LANGUAGE_OPTIONS = [
   { value: "en", label: "Inglés" },
 ];
 
-const GENRE_OPTIONS = [
-  "Ficción",
-  "No ficción",
-  "Romance",
-  "Misterio",
-  "Ciencia ficción",
-  "Fantasía",
-  "Historia",
-  "Biografía",
-  "Autoayuda",
-  "Infantil",
-  "Juvenil",
-];
+const GENRE_OPTIONS = ["Narrativo", "Poesía"];
 
 const FORMAT_OPTIONS = [
-  { value: "ebook", label: "E-book", extensions: ["pdf", "epub", "mobi"] },
-  {
-    value: "audiobook",
-    label: "Audiolibro",
-    extensions: ["mp3", "m4a", "wav"],
-  },
-  {
-    value: "videobook",
-    label: "Videolibro",
-    extensions: ["mp4", "avi", "mkv"],
-  },
+  { value: "ebook", label: "E-book" },
+  { value: "audiobook", label: "Audiolibro" },
+  { value: "videobook", label: "Videolibro" },
 ];
 
 export default function AdminBooksNew() {
@@ -143,7 +123,7 @@ export default function AdminBooksNew() {
               Crear Nuevo Libro
             </h2>
             <p className="text-sm md:text-base text-gray-600">
-              Agrega un libro al catálogo de la biblioteca
+              Agrega un libro al catálogo de Tintas Formoseñas
             </p>
           </div>
         </div>
@@ -315,12 +295,7 @@ export default function AdminBooksNew() {
                     onChange={(e) => {
                       const f = e.target.value;
                       set("format", f);
-                      const formatOption = FORMAT_OPTIONS.find(
-                        (opt) => opt.value === f
-                      );
-                      if (formatOption) {
-                        set("fileExtension", formatOption.extensions[0]);
-                      }
+                      //
                       if (f === "ebook") set("duration", undefined);
                       else set("totalPages", undefined);
                     }}
@@ -334,6 +309,7 @@ export default function AdminBooksNew() {
                   <ChevronDown className="absolute right-3 top-1/2 transform -translate-y-1/2 w-4 h-4 text-gray-400 pointer-events-none" />
                 </div>
               </div>
+              {/* FORMAT: duration según format */}
 
               {form.format === "ebook" && (
                 <div className="space-y-2">
@@ -342,17 +318,15 @@ export default function AdminBooksNew() {
                   </label>
                   <input
                     type="number"
+                    min={1}
+                    step={1}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                     placeholder="Número de páginas"
                     value={form.totalPages || ""}
-                    onChange={(e) =>
-                      set(
-                        "totalPages",
-                        e.target.value
-                          ? Number.parseInt(e.target.value)
-                          : undefined
-                      )
-                    }
+                    onChange={(e) => {
+                      const value = Number.parseInt(e.target.value);
+                      set("totalPages", value > 0 ? value : undefined);
+                    }}
                   />
                 </div>
               )}
@@ -360,12 +334,14 @@ export default function AdminBooksNew() {
               {(form.format === "audiobook" || form.format === "videobook") && (
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Duración (minutos)
+                    Duración (segundos)
                   </label>
                   <input
                     type="number"
+                    min={1}
+                    step={1}
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-                    placeholder="Duración en minutos"
+                    placeholder="Duración en segundos"
                     value={form.duration || ""}
                     onChange={(e) =>
                       set(
@@ -378,6 +354,18 @@ export default function AdminBooksNew() {
                   />
                 </div>
               )}
+              {/* FORMAT: extension */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Extensión del archivo
+                </label>
+                <input
+                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
+                  placeholder="pdf, epub, mp3, etc."
+                  value={form.fileExtension}
+                  onChange={(e) => set("fileExtension", e.target.value)}
+                />
+              </div>
             </div>
           </div>
 
@@ -456,17 +444,6 @@ export default function AdminBooksNew() {
                   onChange={(e) => set("synopsis", e.target.value)}
                 />
               </div>
-            </div>
-            <div className="space-y-2">
-              <label className="text-sm font-medium text-gray-700">
-                Extensión del archivo
-              </label>
-              <input
-                className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-                placeholder="pdf, epub, mp3, etc."
-                value={form.fileExtension}
-                onChange={(e) => set("fileExtension", e.target.value)}
-              />
             </div>
           </div>
 

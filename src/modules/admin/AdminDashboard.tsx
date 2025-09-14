@@ -1,6 +1,40 @@
-import { BarChart3, BookOpen, Users, TrendingUp } from "lucide-react";
+import {
+  BarChart3,
+  Library,
+  BookOpen,
+  NotebookPen,
+  Users,
+  TrendingUp,
+  MonitorDot,
+  MessagesSquare,
+} from "lucide-react";
+import { useQuery } from "@tanstack/react-query";
+import { useAuth } from "../../context/AuthContext";
+import { getAllBooks } from "../../db/services/books";
+import { searchAuthors } from "../../db/services/adminAuthors";
 
 export default function AdminDashboard() {
+  const { token } = useAuth();
+
+  // Cuenta de libros (usamos select para evitar guardar el array completo)
+  const booksCountQ = useQuery({
+    queryKey: ["admin-books-count"],
+    queryFn: () => getAllBooks(token),
+    select: (rows) => (rows ?? []).length,
+    staleTime: 30_000,
+  });
+
+  // Cuenta de autores
+  const authorsCountQ = useQuery({
+    queryKey: ["admin-authors-count"],
+    queryFn: () => searchAuthors(token),
+    select: (rows) => (rows ?? []).length,
+    staleTime: 30_000,
+  });
+
+  const fmt = (n: number | undefined) =>
+    typeof n === "number" ? n.toLocaleString("es-AR") : "—";
+
   return (
     <div className="space-y-8">
       <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-8">
@@ -19,60 +53,86 @@ export default function AdminDashboard() {
 
       {/* Stats Cards */}
       <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+        {/* Libros */}
         <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Total Libros</p>
-              <p className="text-2xl font-bold text-gray-900">1,234</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {booksCountQ.isLoading ? "…" : fmt(booksCountQ.data)}
+              </p>
               <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
                 <TrendingUp className="w-3 h-3" />
-                +12% este mes
+                {/* placeholder de tendencia */}
+                +12% de algo
               </p>
             </div>
             <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-orange-600" />
+              <Library className="w-6 h-6 text-orange-600" />
             </div>
           </div>
+          {booksCountQ.isError && (
+            <p className="text-xs text-red-600 mt-2">
+              No se pudo cargar la cantidad de libros.
+            </p>
+          )}
         </div>
 
+        {/* Autores */}
         <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
           <div className="flex items-center justify-between">
             <div>
               <p className="text-sm font-medium text-gray-600">Autores</p>
-              <p className="text-2xl font-bold text-gray-900">89</p>
+              <p className="text-2xl font-bold text-gray-900">
+                {authorsCountQ.isLoading ? "…" : fmt(authorsCountQ.data)}
+              </p>
               <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
                 <TrendingUp className="w-3 h-3" />
-                +5% este mes
+                +5% no sé
               </p>
             </div>
             <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-              <Users className="w-6 h-6 text-amber-600" />
+              <NotebookPen className="w-6 h-6 text-amber-600" />
+            </div>
+          </div>
+          {authorsCountQ.isError && (
+            <p className="text-xs text-red-600 mt-2">
+              No se pudo cargar la cantidad de autores.
+            </p>
+          )}
+        </div>
+
+        {/* Usuarios (a futuro: conectar endpoint real) */}
+        <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
+          <div className="flex items-center justify-between">
+            <div>
+              <p className="text-sm font-medium text-gray-600">Usuarios</p>
+              <p className="text-2xl font-bold text-gray-900">—</p>
+              <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
+                <TrendingUp className="w-3 h-3" />
+                +34% registros
+              </p>
+            </div>
+            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
+              <Users className="w-6 h-6 text-blue-600" />
             </div>
           </div>
         </div>
 
+        {/* Clubes (placeholder) */}
         <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Disponibles</p>
-              <p className="text-2xl font-bold text-gray-900">1,156</p>
-              <p className="text-xs text-gray-500 mt-1">93.7% del total</p>
-            </div>
-            <div className="w-12 h-12 bg-green-100 rounded-lg flex items-center justify-center">
-              <BarChart3 className="w-6 h-6 text-green-600" />
-            </div>
-          </div>
-        </div>
-
-        <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Géneros</p>
-              <p className="text-2xl font-bold text-gray-900">24</p>
-              <p className="text-xs text-gray-500 mt-1">Categorías activas</p>
+              <p className="text-sm font-medium text-gray-600">
+                Clubes de lectura
+              </p>
+              <p className="text-2xl font-bold text-gray-900">—</p>
+              <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
+                <MonitorDot className="w-3 h-3" />8 clubes activos ponele
+              </p>
             </div>
             <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <BookOpen className="w-6 h-6 text-purple-600" />
+              <MessagesSquare className="w-6 h-6 text-purple-600" />
             </div>
           </div>
         </div>
@@ -104,7 +164,7 @@ export default function AdminDashboard() {
             className="flex items-center gap-4 p-4 rounded-lg border border-orange-200 hover:border-orange-300 hover:bg-orange-50 transition-colors group"
           >
             <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-200">
-              <Users className="w-5 h-5 text-amber-600" />
+              <NotebookPen className="w-5 h-5 text-amber-600" />
             </div>
             <div>
               <h3 className="font-medium text-gray-900">Agregar Autor</h3>

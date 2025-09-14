@@ -53,7 +53,9 @@ export default function AdminAuthorsNew() {
             <h2 className="text-2xl font-bold text-gray-900">
               Crear Nuevo Autor
             </h2>
-            <p className="text-gray-600">Registra un autor en la biblioteca</p>
+            <p className="text-gray-600">
+              Registra un autor en Tintas Formoseñas
+            </p>
           </div>
         </div>
       </div>

@@ -1,5 +1,3 @@
-"use client";
-
 import { useState } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import { useAuth } from "../../../context/AuthContext";
@@ -56,7 +54,7 @@ export default function AdminAuthorsList() {
                 Gestión de Autores
               </h2>
               <p className="text-gray-600">
-                Administra los autores de la biblioteca
+                Administra los autores de Tintas Formoseñas
               </p>
             </div>
           </div>
