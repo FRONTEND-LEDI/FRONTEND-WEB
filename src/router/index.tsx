@@ -11,6 +11,7 @@ import Profile from "../modules/profile/Profile.page";
 import ForumPage from "../modules/forum/Forum.page";
 import { BiblioGames } from "../modules/games/Games.page";
 import LoadingGate from "../common/components/LoadingGate";
+import NotFound from "../common/components/notFound/NotFound";
 
 // Admin
 import AdminRoute from "./AdminRoute";
@@ -22,6 +23,7 @@ import AdminBooksEdit from "../modules/admin/books/AdminBooksEdit";
 import AdminAuthorsList from "../modules/admin/authors/AdminAuthorsList";
 import AdminAuthorsNew from "../modules/admin/authors/AdminAuthorsNew";
 import AdminAuthorsEdit from "../modules/admin/authors/AdminAuthorsEdit";
+import AdminNotFound from "../common/components/notFound/AdminNotFound";
 
 const AppRouter = () => {
   return (
@@ -55,9 +57,9 @@ const AppRouter = () => {
         </ProtectedRoute>
       </Route>
       <Route path="/BiblioGames">
-      <ProtectedRoute>
-        <BiblioGames/>
-      </ProtectedRoute>
+        <ProtectedRoute>
+          <BiblioGames />
+        </ProtectedRoute>
       </Route>
 
       <Route path="/libro/:id">
@@ -90,14 +92,18 @@ const AppRouter = () => {
                 path="/admin/authors/:id/edit"
                 component={AdminAuthorsEdit}
               />
-              <Route>Admin: 404</Route>
+              <Route>
+                <AdminNotFound />
+              </Route>
             </Switch>
           </AdminLayout>
         </AdminRoute>
       </Route>
 
       {/* ===== 404 SIEMPRE AL FINAL ===== */}
-      <Route>404 - Página no encontrada</Route>
+      <Route>
+        <NotFound />
+      </Route>
     </Switch>
   );
 };
