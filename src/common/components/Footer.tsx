@@ -2,14 +2,14 @@ import { Link } from "wouter";
 
 export default function Footer() {
   return (
-    <footer className="bg-primary text-secondary py-4 ">
+    <footer className="bg-primary text-secondary py-4 fixed bottom-0 w-full  ">
       <div className="max-w-6xl mx-auto flex flex-col md:flex-row items-center justify-between px-4">
         <div className="flex items-center mb-2 md:mb-0">
-          <img
-            src="/zorro-login.png"
-            alt="Logo Tinta Nativa"
-            className="w-10 h-10 mr-2"
-          />
+         <img
+          src="/hostImage/LOGO-COLOR.svg"
+          alt="Logo Tinta Nativa"
+          className="w-10 h-10 mr-2"
+        />
           <span className="text-sm">&copy; 2025 Tintas Formoseñas, Inc.</span>
         </div>
         <div className="flex space-x-4 text-sm">

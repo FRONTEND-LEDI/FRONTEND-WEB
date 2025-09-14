@@ -9,6 +9,7 @@ import CatalogPage from "../modules/catalog/Catalog.page";
 import BookDetailPage from "../modules/catalog/BookDetail.page";
 import Profile from "../modules/profile/Profile.page";
 import ForumPage from "../modules/forum/Forum.page";
+import { BiblioGames } from "../modules/games/Games.page";
 import LoadingGate from "../common/components/LoadingGate";
 
 // Admin
@@ -52,6 +53,11 @@ const AppRouter = () => {
         <ProtectedRoute>
           <ForumPage />
         </ProtectedRoute>
+      </Route>
+      <Route path="/BiblioGames">
+      <ProtectedRoute>
+        <BiblioGames/>
+      </ProtectedRoute>
       </Route>
 
       <Route path="/libro/:id">
