@@ -96,11 +96,7 @@ const LoginPage = () => {
 
       {/* columna izquierda con la imagen */}
       <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:justify-end lg:pr-2">
-        <img
-          src="/zorro-login.png"
-          alt="Zorro login"
-          className="max-h-[90px] lg:max-h-[350px] w-auto object-contain"
-        />
+        <img src="/hostImage/zorro-loginIA.png" alt="Zorro login" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
       </div>
 
       {/* columna derecha con el formulario */}

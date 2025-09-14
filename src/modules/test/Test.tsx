@@ -3,6 +3,8 @@ import { Link, useLocation } from 'wouter';
 // ! ai. separo la función de registro para mantener el código limpio y no meterme con los archivos de sele
 import { getAvatars } from "../../db/services/avatar";
 import { useCompleteRegistration } from "../../common/utils/registerHelper"; 
+import { getSubgenres } from '../../db/services/subgenres';
+import { getFormat } from "../../db/services/bookformats";
 
 
 export default function Test() {
@@ -16,6 +18,7 @@ export default function Test() {
       navigate("/register");
     }
   }, []);
+
   // ! ai. fin de redirección
 
 
@@ -43,6 +46,16 @@ export default function Test() {
   }, []);
   // ! fin de los avatares
 
+  const [subgenres, setSubgenres] = useState<any[]> ([]);
+useEffect (()=> {
+getSubgenres().then(setSubgenres);
+}, []);
+
+  const [formats, setFormats] = useState<any[]> ([]);
+useEffect (()=> {
+getFormat().then(setFormats);
+}, []);
+
   const handleNext = () => {
     if (progressSteps < dialog.length - 1) {
       setProgressSteps(progressSteps + 1);
@@ -58,9 +71,9 @@ export default function Test() {
   }
 
   return (
-    <div className="flex flex-col items-center min-h-screen bg-white py-10 px-4">
+    <div className="flex flex-col items-center justify-center min-h-screen  bg-fund py-10 px-4">
       {/* Barra de pasos */}
-      <div className="w-full max-w-3xl flex justify-between items-center mb-8 relative">
+      <div className="w-full max-w-3xl fixed top-4 h-2">
         <ul className="steps w-full">
           {dialog.map((_, index) => (
             <li
@@ -80,9 +93,9 @@ export default function Test() {
       </div>
 
       {/* Zorro + Mensaje */}
-      <div className="flex flex-row justify-center items-center text-center mb-8 space-y-4">
+      <div className="flex flex-row justify-center items-center text-center w-2xl mb-8 space-y-4">
         <img
-          src="/public/zorro-login.png"
+          src="/hostImage/zorro-loginIA.png"
           alt="Zorro"
           className="w-28 h-28 object-contain"
         />
@@ -95,53 +108,66 @@ export default function Test() {
 
       {/* Opciones */}
       <div className="w-full max-w-5xl flex justify-center">
-        {progressSteps >= 2 && (
-          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-4 gap-6">
-            {/* Géneros */}
-            {progressSteps === 2 &&
-              ["Fantasía", "Terror", "Romance", "Aventura", "Nostalgico", "Psicologico"].map((genre) => (
-                <div
-                  key={genre}
-                  onClick={() =>
-                    setSelectedGenres((prev) =>
-                      prev.includes(genre) ? prev.filter((g) => g !== genre) : [...prev, genre]
-                    )
-                  }
-                  className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
-                    selectedGenres.includes(genre) ? "ring-4 ring-primary" : ""
-                  }`}
-                >
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-                    alt={genre}
-                    className="rounded-lg h-32 w-full object-cover mx-auto"
-                  />
-                  <p className="mt-2 font-semibold">{genre}</p>
-                </div>
-              ))}
-
+    {progressSteps >= 2 && (
+  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-6">
+   
+    {/* Géneros */}
+    {progressSteps === 2 &&
+  subgenres.map((nombre) => {
+    const isSelected = selectedGenres.includes(nombre);
+    return (
+      <div
+        key={nombre}
+        onClick={() =>
+          setSelectedGenres((prev) =>
+            isSelected
+              ? prev.filter((g) => g !== nombre)
+              : [...prev, nombre]
+          )
+        }
+        className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
+          isSelected ? "ring-4 ring-primary" : ""
+        }`}
+      >
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+          alt={nombre}
+          className="rounded-lg h-10 w-15 object-cover mx-auto"
+        />
+        <p className="mt-2 font-medium">{nombre}</p>
+      </div>
+    );
+  })}
             {/* Formatos */}
             {progressSteps === 3 &&
-              ["Poema", "Cuento Narrativo", "Audiolibro"].map((format) => (
-                <div
-                  key={format}
-                  onClick={() =>
-                    setSelectedFormats((prev) =>
-                      prev.includes(format) ? prev.filter((f) => f !== format) : [...prev, format]
-                    )
-                  }
-                  className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
-                    selectedFormats.includes(format) ? "ring-4 ring-primary" : ""
-                  }`}
-                >
-                  <img
-                    src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
-                    alt={format}
-                    className="rounded-lg h-32 w-full object-cover mx-auto"
-                  />
-                  <p className="mt-2 font-semibold">{format}</p>
-                </div>
-              ))}
+            formats.map((nombre) => {
+    const isSelected = selectedFormats.includes(nombre);
+
+    return (
+      <div
+        key={nombre}
+        onClick={() =>
+          setSelectedFormats((prev) =>
+            isSelected
+              ? prev.filter((g) => g !== nombre)
+              : [...prev, nombre]
+          )
+        }
+        className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
+          isSelected ? "ring-4 ring-primary" : ""
+        }`}
+      >
+        <img
+          src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
+          alt={nombre}
+          className="rounded-lg h-20 w-full object-cover mx-auto"
+        />
+        <p className="mt-2 font-medium">{nombre}</p>
+      </div>
+    );
+  })}
+
+         
 
             {/* Avatares */}
             {progressSteps === 4 &&
@@ -183,7 +209,7 @@ export default function Test() {
               handleNext();
             }
           }}
-          className="bg-primary text-white font-bold py-2 px-6 rounded hover:bg-primary/90"
+          className="bg-primary text-white font-bold py-2 px-6 rounded cursor-pointer hover:bg-primary/90"
         >
           {progressSteps === dialog.length - 1 ? "Finalizar Registro" : "Continuar"}
         </button>

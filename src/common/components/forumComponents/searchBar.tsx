@@ -19,11 +19,11 @@ export default function SearchingBar({ searchTerm, setSearchTerm, foroSelecciona
         placeholder={`Buscar en ${foroSeleccionado ? foroSeleccionado.nombre : "todas las publicaciones"}`}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
-        className="flex-grow border border-gray-300 rounded px-3 py-1"
+        className="flex-grow border border-primary rounded-2xl px-3 py-2"
       />
       <button
         type="submit"
-        className="bg-primary text-white px-4 py-1 rounded cursor-pointer hover:bg-orange-700"
+        className="bg-primary text-white px-4 py-1 rounded-2xl cursor-pointer hover:shadow-black hover:shadow-2xl hover:bg-white hover:text-primary"
       >
         Buscar
       </button>

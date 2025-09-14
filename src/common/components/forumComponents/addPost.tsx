@@ -35,7 +35,7 @@ export default function AddPost({ foroSeleccionado, agregarPost }: AddPostProps)
   return (
     <>
       {/* Botón para abrir modal */}
-      <button className="btn" onClick={openModal}>
+      <button className="btn" style={{ borderRadius: "18px", cursor: "pointer", }}  onClick={openModal}>
         Crear Post
       </button>
 
@@ -53,7 +53,7 @@ export default function AddPost({ foroSeleccionado, agregarPost }: AddPostProps)
           />
 
           <div className="modal-action flex gap-2">
-            <button type="submit" className="btn btn-primary">
+            <button type="submit"  className="btn btn-primary">
               Crear
             </button>
             <button
