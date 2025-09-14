@@ -22,6 +22,7 @@ type User = {
 type AuthContextType = {
   user: User | null;
   token: string | null;
+  loading: boolean;
   login: (authToken: string) => Promise<void>;
   logout: () => void;
   refreshUser: () => Promise<void>;
@@ -30,6 +31,7 @@ type AuthContextType = {
 const AuthContext = createContext<AuthContextType>({
   user: null,
   token: null,
+  loading: true,
   login: async () => {},
   logout: () => {},
   refreshUser: async () => {},
@@ -66,24 +68,26 @@ function normalizeUser(u: FullUser): User {
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [token, setToken] = useState<string | null>(null);
+  const [loading, setLoading] = useState(true);
 
   // Hidrata el usuario completo desde /oneUser usando el token
   const hydrateUser = async (authToken: string) => {
-    // primero pegarle a /getUser para obtener/validar id
+    setLoading(true);
     try {
-      await getUserId(authToken);
-    } catch {
-      // si falla /getUser igual intentamos /oneUser;
+      try {
+        await getUserId(authToken);
+      } catch {}
+      const full = await getOneUser(authToken);
+      const normalized = normalizeUser(full);
+      setUser(normalized);
+      setToken(authToken);
+      localStorage.setItem("token", authToken);
+    } finally {
+      setLoading(false);
     }
-
-    const full = await getOneUser(authToken);
-    const normalized = normalizeUser(full);
-    setUser(normalized);
-    setToken(authToken);
-    localStorage.setItem("token", authToken);
   };
 
-  // Login ahora recibe solo el token
+  // Login solo el token
   const login = async (authToken: string) => {
     await hydrateUser(authToken);
   };
@@ -103,24 +107,31 @@ export const AuthProvider = ({ children }: { children: ReactNode }) => {
       setUser(null);
       setToken(null);
       localStorage.removeItem("token");
+      localStorage.removeItem("returnTo");
     }
   };
 
   // Restaurar sesión al cargar la app
   useEffect(() => {
     const tokenInStorage = localStorage.getItem("token");
-    if (tokenInStorage && !user) {
-      hydrateUser(tokenInStorage).catch((error) => {
-        console.error("Error al restaurar la sesión:", error);
-        localStorage.removeItem("token");
-        setUser(null);
-        setToken(null);
-      });
+    if (!tokenInStorage) {
+      setLoading(false);
+      return;
     }
+
+    hydrateUser(tokenInStorage).catch((error) => {
+      console.error("Error al restaurar la sesión:", error);
+      localStorage.removeItem("token");
+      setUser(null);
+      setToken(null);
+      setLoading(false);
+    });
   }, []);
 
   return (
-    <AuthContext.Provider value={{ user, token, login, logout, refreshUser }}>
+    <AuthContext.Provider
+      value={{ user, token, login, loading, logout, refreshUser }}
+    >
       {children}
     </AuthContext.Provider>
   );

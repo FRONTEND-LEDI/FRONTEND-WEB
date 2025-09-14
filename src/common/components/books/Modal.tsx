@@ -80,7 +80,7 @@ export default function Modal({
           </h2>
           <button
             onClick={onClose}
-            className="absolute right-4 p-2 rounded-full text-white hover:bg-white/20 transition-colors"
+            className="absolute right-4 p-2 rounded-full text-white hover:bg-white/20 transition-colors cursor-pointer"
             aria-label="Cerrar"
           >
             <X size={20} />

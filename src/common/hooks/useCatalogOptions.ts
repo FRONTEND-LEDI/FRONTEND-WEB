@@ -1,16 +1,38 @@
-import { useQuery } from "@tanstack/react-query";
-import { getAllYears, getAllSubgenres, getAllFormats } from "../../db/services/catalog";
+import { useState, useEffect } from "react"
+import { getAllYears, getAllGenres, getAllSubgenres, getAllFormats } from "../../db/services/catalog"
+import type { FormatType } from "../../types/filters"
 
 export function useCatalogOptions(token: string | null) {
-  const yearsQ = useQuery({ queryKey: ["years", token], queryFn: () => getAllYears(token), enabled: !!token, placeholderData: (p) => p });
-  const subgenresQ = useQuery({ queryKey: ["subgenres", token], queryFn: () => getAllSubgenres(token), enabled: !!token, placeholderData: (p) => p });
-  const formatsQ = useQuery({ queryKey: ["formats", token], queryFn: () => getAllFormats(token), enabled: !!token, placeholderData: (p) => p });
+  const [years, setYears] = useState<(number | string)[]>([])
+  const [genres, setGenres] = useState<string[]>([])
+  const [subgenres, setSubgenres] = useState<string[]>([])
+  const [formats, setFormats] = useState<FormatType[]>([])
+  const [loading, setLoading] = useState(true)
 
-  return {
-    years: yearsQ.data ?? [],
-    subgenres: subgenresQ.data ?? [],
-    formats: (formatsQ.data ?? []) as ("ebook" | "audiolibro" | "video")[],
-    isLoading: yearsQ.isLoading || subgenresQ.isLoading || formatsQ.isLoading,
-    error: yearsQ.error || subgenresQ.error || formatsQ.error,
-  };
+  useEffect(() => {
+    const fetchOptions = async () => {
+      try {
+        setLoading(true)
+        const [yearsData, genresData, subgenresData, formatsData] = await Promise.all([
+          getAllYears(token),
+          getAllGenres(token),
+          getAllSubgenres(token),
+          getAllFormats(token),
+        ])
+
+        setYears(yearsData)
+        setGenres(genresData)
+        setSubgenres(subgenresData)
+        setFormats(formatsData as FormatType[])
+      } catch (error) {
+        console.error("Error al obtener filtros: :", error)
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchOptions()
+  }, [token])
+
+  return { years, genres, subgenres, formats, loading }
 }

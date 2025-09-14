@@ -1,6 +1,7 @@
 @import "tailwindcss";
-@plugin "daisyui"; 
+@plugin "daisyui";
 
+@custom-variant dark (&:is(.dark *));
 
 @theme {
   --color-fund: #f2f2f2;
@@ -14,18 +15,38 @@
   --color-secondary: #f8d49a;
 }
 @font-face {
-  font-family: 'LT Karaoke';
-  src: url('./assets/fonts/LTKaraoke-Regular.ttf') format('truetype');
+  font-family: "LT Karaoke";
+  src: url("./assets/fonts/LTKaraoke-Regular.ttf") format("truetype");
   font-weight: normal;
   font-style: normal;
 }
 
 @font-face {
-  font-family: 'LT Karaoke';
-  src: url('./assets/fonts/LTKaraoke-Bold.ttf') format('truetype');
+  font-family: "LT Karaoke";
+  src: url("./assets/fonts/LTKaraoke-Bold.ttf") format("truetype");
   font-weight: bold;
   font-style: normal;
 }
-.karaoke{
-  font-family: 'LT Karaoke', sans-serif;
+.karaoke {
+  font-family: "LT Karaoke", sans-serif;
+}
+
+/* ! necesario para los efectos del buscador con IA */
+
+@keyframes gradient-x {
+  0%,
+  100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.animate-gradient-x {
+  animation: gradient-x 3s ease infinite;
+}
+
+.ai-glow {
+  box-shadow: 0 0 20px rgba(147, 51, 234, 0.3), 0 0 40px rgba(59, 130, 246, 0.2);
 }
