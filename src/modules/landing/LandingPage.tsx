@@ -1,20 +1,42 @@
-import Navbar from '../../common/components/navbar';
-import Herolanding from '../../common/components/Herolanding';
-import Footer from '../../common/components/Footer';
-import { FaBookOpen, FaMobileAlt, FaUsers, FaStar, FaRobot } from 'react-icons/fa';
-import { FaFaceSmile } from 'react-icons/fa6';
-import { Link } from 'wouter';
+import { useEffect } from "react";
+import Navbar from "../../common/components/navbar";
+import Herolanding from "../../common/components/Herolanding";
+import Footer from "../../common/components/Footer";
+import {
+  FaBookOpen,
+  FaMobileAlt,
+  FaUsers,
+  FaStar,
+  FaRobot,
+} from "react-icons/fa";
+import { FaFaceSmile } from "react-icons/fa6";
+import { Link, useLocation } from "wouter";
+import { useAuth } from "../../context/AuthContext";
+import LoadingGate from "../../common/components/LoadingGate";
 
 export default function LandingPage() {
+  // cuando hay token, redirigir al /home
+  const { user, loading } = useAuth();
+  const [location, setLocation] = useLocation();
+
+  // si ya hay usuario redirigir a la página de inicio
+  useEffect(() => {
+    if (!loading && user && location === "/") {
+      setLocation("/home");
+    }
+  }, [loading, user, location, setLocation]);
+
+  if (loading) return <LoadingGate message="Espere un momento…" />;
+
   return (
-    <div className="w-full overflow-hidden flex justify-center flex-col">     
-    <div>
-      <Navbar />
-    </div>
-    <div>
-      <Herolanding />
-    </div>
-{/* Seccion propuestas */}
+    <div className="w-full overflow-hidden flex justify-center flex-col">
+      <div>
+        <Navbar />
+      </div>
+      <div>
+        <Herolanding />
+      </div>
+      {/* Seccion propuestas */}
       <div className="mt-24 px-6 mb-24 flex max-w-6xl mx-auto justify-center flex-col">
         <h2 className="text-center text-2xl md:text-3xl font-bold text-primary mb-12">
           Tu próxima biblioteca favorita
@@ -25,7 +47,8 @@ export default function LandingPage() {
             <div>
               <h3 className="font-semibold text-lg">Antologías literarias</h3>
               <p className="text-gray-600 text-sm">
-                Accedé a obras locales y recopilaciones de concursos provinciales.
+                Accedé a obras locales y recopilaciones de concursos
+                provinciales.
               </p>
             </div>
           </li>
@@ -41,7 +64,9 @@ export default function LandingPage() {
           <li className="flex items-start gap-6">
             <FaRobot className="text-primary text-2xl hover:scale-110 transition-transform duration-300" />
             <div>
-              <h3 className="font-semibold text-lg">Lecturas personalizadas con IA</h3>
+              <h3 className="font-semibold text-lg">
+                Lecturas personalizadas con IA
+              </h3>
               <p className="text-gray-600 text-sm">
                 Disfrutá de recomendaciones inteligentes basadas en tus gustos.
               </p>
@@ -86,7 +111,12 @@ export default function LandingPage() {
             Tu biblioteca virtual Formoseña
           </h1>
           <p className="text-gray-700 text-base md:text-lg leading-relaxed">
-            Tintas Formoseñas te presenta una biblioteca digital interactiva que conecta a lectores de todas las edades con antologías y contenidos locales. Aquí vas a encontrar obras literarias de autores y autoras formoseños/as, incluyendo las recopilaciones de los concursos "Letras del Viento Norte". Descubrí nuevas voces, leé en cualquier momento y formá parte de esta comunidad lectora.
+            Tintas Formoseñas te presenta una biblioteca digital interactiva que
+            conecta a lectores de todas las edades con antologías y contenidos
+            locales. Aquí vas a encontrar obras literarias de autores y autoras
+            formoseños/as, incluyendo las recopilaciones de los concursos
+            "Letras del Viento Norte". Descubrí nuevas voces, leé en cualquier
+            momento y formá parte de esta comunidad lectora.
           </p>
         </div>
       </div>
@@ -135,11 +165,6 @@ export default function LandingPage() {
     </div>
   </div>
 
-
-</div>
-
-</div>
-
 {/* Seccion FInal - Seccion web */}
 <div className="bg-white flex flex-col md:flex-row-reverse items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl mt-16">
 <div className='flex justify-center w-100 gap-4'>
@@ -155,13 +180,17 @@ export default function LandingPage() {
             Tu biblioteca virtual de bolsillo
           </h2>
           <p className="text-gray-700 text-base md:text-lg leading-relaxed">
-            Accedé a Tintas desde cualquier lugar con tu celular. Leé cómodamente desde la app o el navegador, guardá tus libros favoritos y seguí tu progreso en tiempo real. ¡La lectura ahora te acompaña a donde vayas!
+            Accedé a Tintas desde cualquier lugar con tu celular. Leé
+            cómodamente desde la app o el navegador, guardá tus libros favoritos
+            y seguí tu progreso en tiempo real. ¡La lectura ahora te acompaña a
+            donde vayas!
           </p>
         </div>
       </div>
-       <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
+      <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
         <div className="w-full md:w-1/2 flex justify-center">
           <img src="/landingImages/QR_code_for_mobile_English_Wikipedia.svg.png" className="w-72 h-auto drop-shadow-lg" alt="visitanos en PlayStore" />
+        
         </div>
         <div className="md:w-1/2   flex flex-col  md:text-left  max-w-xl">
           <h1 className="text-3xl mb-8 md:text-4xl font-semibold text-primary  ">
@@ -174,12 +203,15 @@ export default function LandingPage() {
         </div>
       </div>
 
-{/* Last Call  */}
+      {/* Last Call  */}
       <div className="relative bg-primary w-full  overflow-hidden flex justify-center items-center flex-col py-20 mt-24">
         <h1 className="text-secondary text-2xl md:text-4xl font-bold text-center z-10">
           Unite a este mundo de Tintas Formoseñas
         </h1>
-        <Link href="/register" className="mt-6 bg-white hover:shadow-2xl cursor-pointer text-primary font-semibold rounded-2xl px-6 py-3 hover:bg-secondary hover:text-white hover:shadow-black transition duration-300 ease-in-out z-10">
+        <Link
+          href="/register"
+          className="mt-6 bg-white hover:shadow-2xl cursor-pointer text-primary font-semibold rounded-2xl px-6 py-3 hover:bg-secondary hover:text-white hover:shadow-black transition duration-300 ease-in-out z-10"
+        >
           Empezar
         </Link>
       </div>

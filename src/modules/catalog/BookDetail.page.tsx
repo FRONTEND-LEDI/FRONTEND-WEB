@@ -4,9 +4,16 @@ import { ArrowLeft } from "lucide-react";
 import Navbar from "../../common/components/navbar";
 import Footer from "../../common/components/Footer";
 import { useBook } from "../../common/hooks/useBook";
-import { useBookProgress } from "../../common/hooks/useProgress";
+import {
+  useBookProgress,
+  useEnsureProgressOnOpen,
+  useUpdatePosition,
+} from "../../common/hooks/useProgress";
+
 import Modal from "../../common/components/books/Modal";
 import PDFModalViewer from "../../common/components/books/PDFModalViewer";
+import VideoPlayer from "../../common/components/media/VideoPlayer";
+import LoadingGate from "../../common/components/LoadingGate";
 
 const BookDetailPage: React.FC = () => {
   const [, params] = useRoute("/libro/:id");
@@ -14,18 +21,31 @@ const BookDetailPage: React.FC = () => {
 
   const { data: book, isLoading } = useBook(id);
   const { data: progress } = useBookProgress(id);
+  const { ensure, initialPosition } = useEnsureProgressOnOpen(book || null);
+  const { sendThrottled } = useUpdatePosition(progress);
   const [open, setOpen] = useState(false);
 
-  if (isLoading)
-    return <span className="loading loading-spinner loading-xl"></span>;
+  // estados solo para la sesión actual del modal
+  const [startPage, setStartPage] = useState<number | null>(null);
+  const [startSecond, setStartSecond] = useState<number | null>(null);
+
+  const format = book?.format?.toLowerCase();
+  const isEbook = format === "ebook";
+  const isMedia = format === "audiobook" || format === "videobook";
+
+  const pdfUrl = book?.contentBook?.url_secura;
+  const mediaUrl = pdfUrl;
+
+  if (isLoading) return <LoadingGate message="Cargando detalles del libro…" />;
   if (!book)
     return (
-      <div role="alert" className="alert alert-error alert-dash">
-        <span>Hubo un error. No se pudo cargar el libro.</span>
+      <div className="flex justify-center items-center py-12">
+        <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+          <span>Error! No se pudo cargar el libro.</span>
+        </div>
       </div>
     );
 
-  const pdfUrl = book?.contentBook?.url_secura;
   const cover =
     book.bookCoverImage?.url_secura || "https://via.placeholder.com/400x600";
   const anthologyYear = book.yearBook
@@ -35,7 +55,7 @@ const BookDetailPage: React.FC = () => {
   const pagesLabel =
     typeof book.totalPages === "number"
       ? `${book.totalPages} páginas`
-      : "Páginas no disponibles";
+      : `${book.duration} segundos`;
 
   const description = book.synopsis || book.summary || "—";
   const authorObjs = Array.isArray(book.author)
@@ -46,8 +66,26 @@ const BookDetailPage: React.FC = () => {
   const shownThemes = (book.theme ?? []).slice(0, maxThemes);
   const extraThemes = Math.max((book.theme?.length ?? 0) - maxThemes, 0);
 
-  //const resumePage =
-  progress?.currentPage && progress.currentPage > 1 ? progress.currentPage : 1;
+  // Calculá reanudaciones, pero solo para capturarlas al ABRIR
+  const resumePageCalc = isEbook
+    ? Math.max(
+        1,
+        Number(
+          progress?.unit === "page" ? progress?.position : initialPosition || 1
+        )
+      )
+    : 1;
+
+  const resumeSecondsCalc = isMedia
+    ? (progress?.unit === "second" && Number(progress?.position)) || 0
+    : 0;
+
+  const openReader = async () => {
+    await ensure(); // crea si no existía
+    if (isEbook) setStartPage(resumePageCalc);
+    if (isMedia) setStartSecond(resumeSecondsCalc);
+    setOpen(true);
+  };
 
   return (
     <div className="flex flex-col min-h-screen bg-fund">
@@ -57,7 +95,7 @@ const BookDetailPage: React.FC = () => {
           <div className="relative w-full max-w-xs md:w-1/3">
             {/* Back button */}
             <Link href="/catalogo">
-              <button className="absolute top-2 left-2 z-10 bg-primary/85 hover:bg-primary/95 text-white p-2 rounded-full transition-colors shadow-lg">
+              <button className="absolute top-2 left-2 z-10 bg-primary/85 hover:bg-primary/95 text-white p-2 rounded-full transition-colors shadow-lg cursor-pointer">
                 <ArrowLeft size={20} />
               </button>
             </Link>
@@ -133,52 +171,65 @@ const BookDetailPage: React.FC = () => {
             {/* Acciones por formato */}
             <div className="flex flex-wrap gap-4">
               {/* Botón para abrir el modal */}
-              {book.format === "ebook" && (
+              {isEbook && (
                 <button
-                  onClick={() => setOpen(true)}
-                  className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow"
+                  onClick={openReader}
+                  className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow cursor-pointer"
                   disabled={!pdfUrl}
                 >
-                  {progress?.currentPage && progress.currentPage > 1
-                    ? `Reanudar`
-                    : "Leer"}
+                  {progress ? "Seguir Leyendo" : "Leer"}
                 </button>
               )}
 
-              {book.format === "audiolibro" && (
+              {isMedia && (
                 <button
-                  disabled
-                  className="bg-yellow-100 text-yellow-700 font-semibold py-2 px-4 rounded-lg cursor-not-allowed"
-                  title="Audiolibro próximamente"
+                  onClick={openReader}
+                  className="bg-amber-500 hover:bg-amber-600 text-white font-semibold py-2 px-4 rounded-lg shadow cursor-pointer"
+                  disabled={!isMedia}
                 >
-                  Escuchar
-                </button>
-              )}
-
-              {book.format === "video" && (
-                <button
-                  disabled
-                  className="bg-yellow-100 text-yellow-700 font-semibold py-2 px-4 rounded-lg cursor-not-allowed"
-                  title="Video próximamente"
-                >
-                  Ver video
+                  {progress
+                    ? "Reanudar"
+                    : book.format === "audiobook"
+                    ? "Escuchar"
+                    : "Ver video"}
                 </button>
               )}
             </div>
 
-            {/* Modal: solo se monta si hay pdfUrl */}
-            {pdfUrl && (
+            {/* Modal lector PDF */}
+            {isEbook && pdfUrl && (
               <Modal
                 isOpen={open}
                 onClose={() => setOpen(false)}
                 title={book.title}
               >
-                {/* Lectura vertical */}
+                {/* se abre el pdf  */}
                 <PDFModalViewer
                   pdfUrl={pdfUrl}
-                  onPageChange={(_page) => {
-                    // Tguardamos el progreso
+                  initialPage={startPage ?? 1} // estable mientras esté abierto
+                  onPageChange={(page) => {
+                    // actualizamos posición (página) con throttle
+                    sendThrottled(page);
                   }}
+                />
+              </Modal>
+            )}
+            {isMedia && mediaUrl && (
+              <Modal
+                isOpen={open}
+                onClose={() => setOpen(false)}
+                title={book.title}
+              >
+                <VideoPlayer
+                  src={mediaUrl}
+                  poster={book.bookCoverImage?.url_secura}
+                  title={book.title}
+                  initialTime={startSecond ?? 0} // estable mientras esté abierto
+                  onProgress={(cur) => {
+                    // actualizamos posición (segundos) con throttle
+                    sendThrottled(Math.floor(cur));
+                  }}
+                  onEnded={() => {}}
                 />
               </Modal>
             )}
