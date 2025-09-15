@@ -102,7 +102,7 @@ export default function LandingPage() {
         </ul>
       </div>
 {/* Seccion Presentacion */}
-      <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
+      <div className=" flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
         <div className="w-full md:w-1/2 flex justify-center">
           <img src="/hostImage/LOGO-VERTICAL.svg" className="w-72 h-auto drop-shadow-lg" alt="Ledi el zorro" />
         </div>
@@ -164,9 +164,9 @@ export default function LandingPage() {
       <p className="text-xs">60-100</p>
     </div>
   </div>
-
+</div>
 {/* Seccion FInal - Seccion web */}
-<div className="bg-white flex flex-col md:flex-row-reverse items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl mt-16">
+<div className=" flex flex-col md:flex-row-reverse items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl mt-16">
 <div className='flex justify-center w-100 gap-4'>
 <div>
     <img alt="wallpaper" src="/landingImages/12.png"/> 
@@ -186,8 +186,8 @@ export default function LandingPage() {
             donde vayas!
           </p>
         </div>
-      </div>
-      <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
+ </div>
+      <div className=" flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
         <div className="w-full md:w-1/2 flex justify-center">
           <img src="/landingImages/QR_code_for_mobile_English_Wikipedia.svg.png" className="w-72 h-auto drop-shadow-lg" alt="visitanos en PlayStore" />
         
@@ -203,19 +203,19 @@ export default function LandingPage() {
         </div>
       </div>
 
+    </div>
       {/* Last Call  */}
-      <div className="relative bg-primary w-full  overflow-hidden flex justify-center items-center flex-col py-20 mt-24">
+      <div className="relative bg-primary w-full overflow-hidden flex justify-center items-center flex-col py-20 mt-24">
         <h1 className="text-secondary text-2xl md:text-4xl font-bold text-center z-10">
           Unite a este mundo de Tintas Formoseñas
         </h1>
         <Link
           href="/register"
-          className="mt-6 bg-white hover:shadow-2xl cursor-pointer text-primary font-semibold rounded-2xl px-6 py-3 hover:bg-secondary hover:text-white hover:shadow-black transition duration-300 ease-in-out z-10"
+          className="mt-6  hover:shadow-2xl cursor-pointer text-primary font-semibold rounded-2xl px-6 py-3 hover:bg-secondary hover:text-white hover:shadow-black transition duration-300 ease-in-out z-10"
         >
           Empezar
         </Link>
       </div>
-
       <Footer />
     </div>
   );

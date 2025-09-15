@@ -41,3 +41,24 @@ export const getAuthorsbyId = async (id: string) => {
     return [];
   }
 };
+export const getBookbyAuthorId = async (id: string) => {
+  try {
+    const response = await fetch(`http://localhost:3402/book/author/${id}`, {
+      method: "GET",
+      headers: {
+        "Content-Type": "application/json",
+      },
+    });
+
+    const result = await response.json();
+
+    if (!response.ok) {
+      throw new Error(result.error || "No se pudo obtener el Libro del autor");
+    }
+
+    return result;
+  } catch (error) {
+    console.error( error);
+    return [];
+  }
+};

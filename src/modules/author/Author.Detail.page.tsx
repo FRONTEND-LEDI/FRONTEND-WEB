@@ -5,7 +5,7 @@ import {  getAuthorsbyId } from "../../db/services/author";
 import { Author } from "./Author.page";
 
 
-export function capitalizeSentence(text: string) {
+ function capitalizeSentence(text: string) {
   if (!text) return "";
   text = text.trim();
   return text.charAt(0).toUpperCase() + text.slice(1).toLowerCase();
