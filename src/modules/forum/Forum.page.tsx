@@ -5,6 +5,7 @@ import Popular from '../../common/components/forumComponents/mostPopular';
 import SearchingBar from '../../common/components/forumComponents/searchBar';
 import AddPost from '../../common/components/forumComponents/addPost';
 import Navbar from '../../common/components/navbar';
+import { TypeAnimation } from 'react-type-animation';
 type Foro = {
   id: string;
   nombre: string;
@@ -80,9 +81,34 @@ export default function ForumPage() {
     <>
       {!foroSeleccionado && (
         <div style={{ backgroundImage: `url('/landingImages/bibliotecabg.png')` }}
-         className="w-full rounded-xl  p-10 text-center shadow-lg ">
-          <h2 className="text-2xl font-bold text-white">¡Bienvenido al Club de Lectura!</h2>
-          <p className="text-white mt-2">Selecciona un foro a la izquierda para explorar más publicaciones.</p>
+         className="w-full rounded-xl p-10 text-center shadow-lg bg-cover bg-center">
+       <TypeAnimation
+  sequence={[
+    'Bienvenido al Club de Lectura!',
+    2000, 
+    '',       
+    1000, 
+    'Comparte tus ideas y únete a discusiones!',
+    3000, 
+    '', 
+    500,
+  ]}
+  wrapper="span"
+  speed={{type: 'keyStrokeDelayInMs', value: 80}}
+  cursor={true}
+   
+  style={{
+    fontSize: '2em',
+    display: 'inline-block',
+   textShadow: '4px 4px 8px black',
+
+    fontWeight: 'bold',
+    color: 'white',
+  }}
+  repeat={Infinity}
+/>
+
+<p className="text-white mt-2 semibold text-shadow-2xl shadow-black ">Selecciona un foro a la izquierda para explorar más publicaciones.</p>
         </div>
       )}
       {foroSeleccionado && (

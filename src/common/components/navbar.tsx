@@ -22,7 +22,7 @@ export default function Navbar() {
               <Link href="/catalogo">Catálogo</Link>
               <Link href="/clubdeLectura">Club de Lectura</Link>
               <Link href="/biblioGames">BiblioGames</Link>
-              <Link href="/autores">Autores</Link>
+              <Link href="/Autores">Autores</Link>
             </div>
 
             {/* Botón de perfil */}

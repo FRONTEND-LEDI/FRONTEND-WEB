@@ -1,6 +1,8 @@
 @import "tailwindcss";
 @plugin "daisyui"; 
-
+body{
+  background-color: #f2f2f2 ;
+}
 
 @theme {
   --color-fund: #f2f2f2;
@@ -29,3 +31,7 @@
 .karaoke{
   font-family: 'LT Karaoke', sans-serif;
 }
+.custom-cursor-section {
+  cursor: url('/game.png'), auto;
+}
+

@@ -11,6 +11,8 @@ import BookReaderPage from "../modules/catalog/BookReader.page";
 import Profile from "../modules/profile/Profile.page";
 import ForumPage from "../modules/forum/Forum.page";
 import { BiblioGames } from "../modules/games/Games.page";
+import { Author } from "../modules/author/Author.page";
+import { AuthorDetail } from "../modules/author/Author.Detail.page";
 
 const AppRouter = () => {
   return (
@@ -38,6 +40,19 @@ const AppRouter = () => {
         <ForumPage/>
       </ProtectedRoute>
       </Route>
+      
+    <Route path="/Autores">
+      <ProtectedRoute>
+        <Author/>
+      </ProtectedRoute>
+      </Route>
+      <Route path="/authors/:id">
+      <ProtectedRoute>
+        <AuthorDetail/>
+      </ProtectedRoute>
+      </Route>
+
+
       <Route path="/BiblioGames">
       <ProtectedRoute>
         <BiblioGames/>
@@ -46,7 +61,7 @@ const AppRouter = () => {
 
       <Route path="/libro/:id">
         <ProtectedRoute>
-          <BookDetailPage />
+          <BookDetailPage/>
         </ProtectedRoute>
       </Route>
 
