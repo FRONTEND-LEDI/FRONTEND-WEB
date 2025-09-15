@@ -11,6 +11,8 @@ import Profile from "../modules/profile/Profile.page";
 import ForumPage from "../modules/forum/Forum.page";
 import { BiblioGames } from "../modules/games/Games.page";
 import LoadingGate from "../common/components/LoadingGate";
+import { Author } from "../modules/author/Author.page";
+import { AuthorDetail } from "../modules/author/Author.Detail.page";
 
 // Admin
 import AdminRoute from "./AdminRoute";
