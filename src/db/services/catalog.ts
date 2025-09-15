@@ -18,6 +18,12 @@ export async function getAllYears(token: string | null): Promise<(number | strin
   return res.json();
 }
 
+export async function getAllGenres(token: string | null): Promise<string[]> {
+  const res = await fetch(`${URL}/booksGenres`, { headers: authHeaders(token), credentials: "include" })
+  if (!res.ok) throw new Error("Error al obtener géneros")
+  return res.json()
+}
+
 export async function getAllSubgenres(token: string | null): Promise<string[]> {
   const res = await fetch(`${URL}/booksSubgenres`, { headers: authHeaders(token), credentials: "include" });
   if (!res.ok) throw new Error("Error al obtener subgéneros");
@@ -36,7 +42,8 @@ export async function getBooksByFiltering(filters: FilterState, token: string | 
     theme: [],                         
     subgenre: filters.subgenres ?? [],
     yearBook: filters.years ?? [],  
-    genre: [],                       
+    genre: filters.genres ?? [],
+    format: filters.formats ?? [],
   };
 
   const res = await fetch(`${URL}/booksByFiltering`, {
@@ -49,8 +56,8 @@ export async function getBooksByFiltering(filters: FilterState, token: string | 
 
   const books = (await res.json()) as Book[];
 
-  if (filters.formats && filters.formats.length > 0) {
-    return books.filter((b) => b.format && filters.formats.includes(b.format));
-  }
+  // if (filters.formats && filters.formats.length > 0) {
+  //   return books.filter((b) => b.format && filters.formats.includes(b.format));
+  // }
   return books;
 }

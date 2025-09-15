@@ -5,19 +5,21 @@ import Footer from "../../common/components/Footer";
 import { useAuth } from "../../context/AuthContext";
 // import SearchBar from "../../common/components/catalog/SearchBar";
 import { useCatalogOptions } from "../../common/hooks/useCatalogOptions";
-import FiltersBar from "../../common/components/catalog/FiltersBar";
+//import FiltersBar from "../../common/components/catalog/FiltersBar";
 import { emptyFilters, type FilterState } from "../../types/filters";
 import { useBooks } from "../../common/hooks/useBooks";
 import {
   normalizeAuthors,
   formatAuthorsForCard,
 } from "../../common/utils/authorHelper";
+import ImprovedFiltersBar from "../../common/components/catalog/ImprovedFilterBar";
+import LoadingGate from "../../common/components/LoadingGate";
 
 const CatalogPage: React.FC = () => {
   const { token } = useAuth();
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<FilterState>(emptyFilters);
-  const { years, subgenres, formats } = useCatalogOptions(token);
+  const { years, genres, subgenres, formats } = useCatalogOptions(token);
 
   const { data, isLoading, error } = useBooks({ query, filters, token });
   const books = data ?? [];
@@ -28,23 +30,26 @@ const CatalogPage: React.FC = () => {
 
       <main className="flex-1 max-w-7xl mx-auto p-4 pt-23">
         {/* filtros y buscador */}
-        <FiltersBar
-          years={years}
-          subgenres={subgenres}
-          formats={formats}
+        <ImprovedFiltersBar
+          years={years || []}
+          genres={genres || []}
+          subgenres={subgenres || []}
+          formats={formats || []}
           filters={filters}
           onChange={setFilters}
           onSearch={setQuery}
         />
 
         {isLoading ? (
-          <span className="loading loading-spinner loading-xl"></span>
+          <LoadingGate message="Cargando los libros…" />
         ) : error ? (
-          <div role="alert" className="alert alert-error alert-dash">
-            <span>Error! No se pudieron cargar los libros.</span>
+          <div className="flex justify-center items-center py-12">
+            <div className="bg-red-50 border border-red-200 rounded-lg p-4 text-red-700">
+              <span>Error! No se pudieron cargar los libros.</span>
+            </div>
           </div>
         ) : (
-          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-4">
+          <div className="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-5">
             {books.map((book) => {
               const authors = normalizeAuthors(book.author);
               const authorLabel = formatAuthorsForCard(authors);
@@ -57,8 +62,9 @@ const CatalogPage: React.FC = () => {
                   author={authorLabel}
                   bookCoverImage={
                     book.bookCoverImage?.url_secura ||
-                    "https://via.placeholder.com/150"
+                    "/portada-no-disponible.png"
                   }
+                  format={book.format}
                 />
               );
             })}
