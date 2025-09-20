@@ -40,7 +40,7 @@ const BookCard: React.FC<BookCardProps> = ({
     } else if (formatLower.includes("videobook")) {
       IconComponent = Clapperboard;
       bgColor = "bg-red-400/80";
-      iconColor = "text-white/";
+      iconColor = "text-white";
       tooltipText = "Video libro";
     } else {
       // formato por defecto si no coincide con ninguno
@@ -61,14 +61,20 @@ const BookCard: React.FC<BookCardProps> = ({
   return (
     <Link
       href={`/libro/${id}`}
-      className="rounded-2xl shadow p-4 flex flex-col items-center bg-fund hover:shadow-lg transition hover:transform-[scale(1.1)] hover:bg-violet-50 relative"
+      className="rounded-2xl shadow p-4 flex flex-col items-center bg-fund hover:shadow-lg transition-transform duration-200 hover:scale-105  hover:bg-secondary/20 relative"
     >
       {renderFormatIcon()}
-      <img
-        src={bookCoverImage || "/portada-no-disponible.png"}
-        alt={title}
-        className="w-full h-100% object-cover rounded-lg mb-2"
-      />
+      <div className="relative w-full aspect-[2/3] overflow-hidden rounded-lg mb-2">
+        <img
+          src={bookCoverImage || "/portada-no-disponible.png"}
+          alt={`Portada de ${title}`}
+          className="absolute inset-0 w-full h-full object-cover"
+          loading="lazy"
+          onError={(e) => {
+            e.currentTarget.src = "/portada-no-disponible.png";
+          }}
+        />
+      </div>
       <h3 className="text-lg font-semibold text-center line-clamp-2">
         {title}
       </h3>

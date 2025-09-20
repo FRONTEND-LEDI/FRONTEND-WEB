@@ -111,6 +111,10 @@ const BookDetailPage: React.FC = () => {
     setOpen(false);
   };
 
+  const goBack = () => {
+    window.history.back();
+  };
+
   return (
     <div className="flex flex-col min-h-screen bg-fund">
       <Navbar />
@@ -118,11 +122,14 @@ const BookDetailPage: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
           <div className="relative w-full max-w-xs md:w-1/3">
             {/* Back button */}
-            <Link href="/catalogo">
-              <button className="absolute top-2 left-2 z-10 bg-primary/85 hover:bg-primary/95 text-white p-2 rounded-full transition-colors shadow-lg cursor-pointer">
-                <ArrowLeft size={20} />
-              </button>
-            </Link>
+            {/*<Link href="/catalogo">*/}
+            <button
+              onClick={goBack}
+              className="absolute top-2 left-2 z-10 bg-primary/85 hover:bg-primary/95 text-white p-2 rounded-full transition-colors shadow-lg cursor-pointer"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            {/* </Link> */}
 
             {/* Portada */}
             <img

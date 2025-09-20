@@ -3,7 +3,7 @@ import { Link } from "wouter";
 export default function Herolanding() {
   return (
     <div
-      className="hero min-h-screen py-20"
+      className="hero min-h-screen"
       style={{ backgroundImage: `url('./landingImages/bibliotecabg.png')` }}
     >
       <div className="hero-overlay"></div>
