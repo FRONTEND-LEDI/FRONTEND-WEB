@@ -43,10 +43,14 @@ export const getAuthorsbyId = async (id: string) => {
 };
 export const getBookbyAuthorId = async (id: string) => {
   try {
-    const response = await fetch(`http://localhost:3402/book/author/${id}`, {
+    // Tu token (puedes guardarlo en una variable o constante)
+    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzc1ZTBjMjA1Y2I1NGI1NzdhNWFlNSIsInJvbCI6IlVzZXIiLCJpYXQiOjE3NTgzMTAzMTksImV4cCI6MTc1ODMxMzkxOX0.wOV8wv-FMJCDccumGb2jhZOnR_jHXh2uKQCAuZcoQwA";
+    
+    const response = await fetch(`http://localhost:3402/book/autor/${id}`, {  
       method: "GET",
       headers: {
         "Content-Type": "application/json",
+        "Authorization": `Bearer ${token}`, // ← Agregar esta línea
       },
     });
 
@@ -58,7 +62,7 @@ export const getBookbyAuthorId = async (id: string) => {
 
     return result;
   } catch (error) {
-    console.error( error);
+    console.error(error);
     return [];
   }
 };

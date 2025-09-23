@@ -69,6 +69,7 @@ export default function ForumPage() {
       </div>
       <div className="divider divider-horizontal"></div>
       {/* Panel derecho */}
+      
      <div className="flex-1  w-5xl justify-center items-center relative overflow-hidden  space-y-6">
 <div className="flex-1 relative overflow-hidden space-y-6">
   <div className="flex-1 relative overflow-hidden p-8 space-y-6">
@@ -110,6 +111,7 @@ export default function ForumPage() {
 
 <p className="text-white mt-2 semibold text-shadow-2xl shadow-black ">Selecciona un foro a la izquierda para explorar más publicaciones.</p>
         </div>
+        
       )}
       {foroSeleccionado && (
         <>
@@ -130,6 +132,7 @@ export default function ForumPage() {
         </>
       )}
       
+  <div className="divider">Recientes</div>
       <Popular posts={postsFiltrados} />
     </>
   )}

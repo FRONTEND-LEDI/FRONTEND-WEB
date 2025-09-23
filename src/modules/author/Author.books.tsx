@@ -1,72 +1,94 @@
 import { Author } from "./Author.page";
-import { getBookbyAuthorId } from "../../db/services/author";
+    import { CircleChevronDown } from 'lucide-react';
+import { useLocation } from "wouter"; // ← Agregar esta importación
+
+export interface Book {
+  _id: string;
+  title: string;
+  summary: string;
+  synopsis: string;
+  bookCoverImage?: {
+    url_secura: string;
+  };
+}
 
 export interface AuthorBooksProps {
   author: Author;
-
+  books: Book[];
 }
 
+export function AuthorBooks({ author, books }: AuthorBooksProps) {
+  const [, setLocation] = useLocation(); // ← Hook para navegación
+  
+  if (!books || books.length === 0) return null;
 
-export function AuthorBooks({ author }: AuthorBooksProps) {
-  if (!author || !author.books) return null;
-
+  // Función corregida que recibe el bookId
+  const handleReadBook = (bookId: string) => {
+    setLocation(`/libro/${bookId}`); // ← Usar el ID real del libro
+  };
 
   return (
-    <div className="p-6 max-w-3xl mx-auto">
-      <ul className="list bg-base-100 rounded-box shadow-md">
-        <li className="p-4 pb-2 text-xs opacity-60 tracking-wide">
+    <div className=" ">
+ <ul className="w-100 border-l-2 border-gray-200 border-0 border-b-transparent ">
+        <li className="p-4 pb-2 text-xs  opacity-80 tracking-wide">
           Libros de {author.name}
         </li>
 
-        {author.books.map((book, index) => (
-          <li key={index} className="list-row flex flex-col md:flex-row gap-4 p-4 border-b">
+        {books.map((book) => (
+          <li
+            key={book._id}
+            className="list-row flex flex-col md:flex-row gap-4  border-gray-200 border-0 p-4 border-b"
+          >
+            {/* Imagen de portada */}
             <div className="flex-shrink-0">
               <img
-                className="w-24 h-36 rounded-lg object-cover"
-                src={book.coverUrl}
+                className="w-16 h-24 rounded-lg object-cover"
+                src={book.bookCoverImage?.url_secura}
                 alt={book.title}
               />
             </div>
+
+            {/* Datos del libro */}
             <div className="flex-1">
               <div className="font-bold text-sm md:text-base">{book.title}</div>
-              {book.subtitle && (
-                <div className="text-xs uppercase font-semibold opacity-60">
-                  {book.subtitle}
-                </div>
-              )}
-              <p className="text-xs mt-2">{book.description}</p>
-            </div>
-            <div className="flex flex-col gap-2 md:justify-start md:items-end mt-2 md:mt-0">
-              <button className="btn btn-square btn-ghost">
-                {/* Icono de reproducir / leer */}
-                <svg
-                  className="w-5 h-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M6 3L20 12 6 21 6 3z"></path>
-                </svg>
-              </button>
-              <button className="btn btn-square btn-ghost">
-                {/* Icono de favorito */}
-                <svg
-                  className="w-5 h-5"
-                  xmlns="http://www.w3.org/2000/svg"
-                  viewBox="0 0 24 24"
-                  fill="none"
-                  stroke="currentColor"
-                  strokeWidth="2"
-                  strokeLinecap="round"
-                  strokeLinejoin="round"
-                >
-                  <path d="M19 14c1.49-1.46 3-3.21 3-5.5A5.5 5.5 0 0 0 16.5 3c-1.76 0-3 .5-4.5 2-1.5-1.5-2.74-2-4.5-2A5.5 5.5 0 0 0 2 8.5c0 2.3 1.5 4.05 3 5.5l7 7Z"></path>
-                </svg>
-              </button>
+              <p className="text-xs line-clamp-2 mt-1">{book.synopsis}</p>
+              
+              <div className=" flex-row md:justify-center flex items-center 
+                  gap-1
+                  px-2
+                  
+                    bg-primary 
+                    text-white font-light
+                    rounded-lg 
+                    shadow-md 
+                    text-xs
+                    cursor-pointer 
+                    
+                    hover:bg-primary/90 w-20 h-8
+                    transition-colors md:items-end  md:mt-1"
+                    >
+                <div className="flex w-full flex-col lg:flex-row">
+                <button
+                  onClick={() => handleReadBook(book._id)} 
+                  title="Leer libro"
+                  className="px-2 py-1 cursor-pointer"
+                >Leer 
+                </button>
+              
+  <div className="divider lg:divider-horizontal m-0 mt-2 "></div>
+
+  <div className="dropdown dropdown-bottom">
+  <div tabIndex={0} role="button" className="btn m-0 py-0 px-0 border-0 flex justify-center items-center bg-transparent shadow-none ml-1 w-4 text-white">
+    <CircleChevronDown />
+  </div>
+  <ul tabIndex={0} className="dropdown-content menu bg-primary text-white rounded-box z-1 w-42 ">
+    <li><a>Guardar en lista</a></li>
+    <li><a>Leyendo</a></li>
+    <li><a>Terminado</a></li>
+  </ul>
+</div>
+              </div>
+              </div>
             </div>
           </li>
         ))}
@@ -74,3 +96,14 @@ export function AuthorBooks({ author }: AuthorBooksProps) {
     </div>
   );
 }
+{/* <div className="flex flex-col md:flex-row gap-8 w-full justify-center items-start mt-20 px-4">
+  {/* Columna 1: Autor */}
+  // <div className="flex-1 max-w-3xl">
+    {/* contenido autor */}
+  // </div>
+
+  {/* Columna 2: Libros */}
+  // <div className="w-full md:w-96">
+  //   <AuthorBooks author={author} books={books} />
+  // </div>
+// </div> */}

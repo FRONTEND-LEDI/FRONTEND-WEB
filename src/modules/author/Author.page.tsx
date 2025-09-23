@@ -34,14 +34,14 @@ export function Author() {
           {authors.map((author) => (
             <div
               key={author._id}
-              className="card bg-base-100 shadow-lg rounded-xl  w-72 overflow-hidden hover:shadow-2xl transition-all "
+              className="card backdrop-blur-sm shadow-lg rounded-xl  w-72 overflow-hidden hover:shadow-2xl transition-all "
             >
               {/* Imagen */}
               <figure className="h-70 w-72">
                 <img
                   src={author.avatar.url_secura}
                   alt={author.name}
-                  className="w-full h-full object-cover"
+                  className="w-full h-full object-cover shadow-lg"
                 />
               </figure>
 
@@ -49,7 +49,7 @@ export function Author() {
               <div className="card-body p-4">
                 <h2 className="card-title text-lg font-semibold text-primary flex items-center gap-2">
                   {author.name}
-                  <span className="badge badge-secondary text-white">Autor</span>
+                  <span className="badge badge-secondary backdrop-blur-sm">Autor</span>
                 </h2>
 
                 <p className="text-sm text-gray-600 line-clamp-1">
