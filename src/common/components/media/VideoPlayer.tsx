@@ -17,7 +17,7 @@ interface VideoPlayerProps {
   onEnded?: () => void;
 }
 
-const PROGRESS_INTERVAL = 5000;
+//const PROGRESS_INTERVAL = 7000;
 
 export default function VideoPlayer({
   src,
@@ -32,37 +32,41 @@ export default function VideoPlayer({
   const [duration, setDuration] = useState<number>(0);
   const endedRef = useRef(false); // evita múltiples onEnded
 
+  // Reporte de progreso sin intervalos
   useEffect(() => {
     const v = ref.current;
     if (!v) return;
+
     const onLoadedMeta = () => {
       setDuration(v.duration || 0);
       if (initialTime > 0 && initialTime < (v.duration || Infinity)) {
         v.currentTime = initialTime;
       }
     };
-    v.addEventListener("loadedmetadata", onLoadedMeta);
-    return () => v.removeEventListener("loadedmetadata", onLoadedMeta);
-  }, [initialTime]);
 
-  // Reportar progreso + fallback de fin
-  useEffect(() => {
-    const v = ref.current;
-    if (!v) return;
-    const tick = () => {
+    const onTimeUpdate = () => {
       const cur = v.currentTime || 0;
       const dur = v.duration || duration || 0;
-      if (onProgress) onProgress(cur, dur);
+      onProgress?.(cur, dur);
+    };
 
-      // fallback: algunos navegadores no disparan 'ended'
-      if (!endedRef.current && onEnded && dur > 0 && cur >= dur - 0.5) {
+    const onEndedEv = () => {
+      if (!endedRef.current) {
         endedRef.current = true;
-        onEnded();
+        onEnded?.();
       }
     };
-    const timer = setInterval(tick, PROGRESS_INTERVAL);
-    return () => clearInterval(timer);
-  }, [onProgress, onEnded, duration]);
+
+    v.addEventListener("loadedmetadata", onLoadedMeta);
+    v.addEventListener("timeupdate", onTimeUpdate);
+    v.addEventListener("ended", onEndedEv);
+
+    return () => {
+      v.removeEventListener("loadedmetadata", onLoadedMeta);
+      v.removeEventListener("timeupdate", onTimeUpdate);
+      v.removeEventListener("ended", onEndedEv);
+    };
+  }, [initialTime, onProgress, onEnded, duration]);
 
   // Atajos teclado
   useEffect(() => {
@@ -104,6 +108,12 @@ export default function VideoPlayer({
           poster={poster}
           controls
           playsInline
+          preload="metadata"
+          controlsList="nodownload noplaybackrate noremoteplayback"
+          disablePictureInPicture
+          // opcional: deshabilitar casting remoto
+          disableRemotePlayback
+          onContextMenu={(e) => e.preventDefault()}
           className="w-full max-h-[70vh] rounded-lg shadow-lg bg-black"
           aria-label={title}
           onEnded={() => {
@@ -124,31 +134,6 @@ export default function VideoPlayer({
             />
           ))}
         </video>
-
-        {/*<div className="mt-3 flex items-center gap-3 text-white/90">
-          <span className="text-sm opacity-75">{title}</span>
-          <div className="ml-auto flex items-center gap-2">
-            <label htmlFor="rate" className="text-xs opacity-75">
-              Velocidad
-            </label>
-            <select
-              id="rate"
-              className="select select-sm bg-white/20 text-white"
-              onChange={(e) => {
-                const v = ref.current;
-                if (!v) return;
-                v.playbackRate = Number(e.target.value);
-              }}
-              defaultValue="1"
-            >
-              {[0.75, 1, 1.25, 1.5, 1.75, 2].map((r) => (
-                <option key={r} value={r}>
-                  {r}x
-                </option>
-              ))}
-            </select>
-          </div>
-        </div>*/}
       </div>
     </div>
   );

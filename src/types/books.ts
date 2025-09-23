@@ -40,3 +40,21 @@ export type AdminCreateBookInput = {
   imgFile: File; // campo "img"
   bookFile: File; // campo "file"
 };
+
+export interface BookWithProgress extends Book {
+  progressPct: number;
+}
+
+export const FALLBACK_COVER =
+  "https://placehold.co/400x600/png?text=Sin+Portada";
+
+export function authorNames(authors: AuthorItem[] = []): string {
+  return authors
+    .map((a) => (typeof a === "string" ? a : a?.name ?? "").trim())
+    .filter(Boolean)
+    .join(", ");
+}
+
+export function coverUrlOf(b: Book, fallback = FALLBACK_COVER): string {
+  return b.bookCoverImage?.url_secura?.trim() || fallback;
+}

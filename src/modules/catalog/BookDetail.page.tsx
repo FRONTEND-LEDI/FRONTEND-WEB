@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useRef } from "react";
 import { useRoute, Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "../../common/components/navbar";
@@ -21,9 +21,18 @@ const BookDetailPage: React.FC = () => {
 
   const { data: book, isLoading } = useBook(id);
   const { data: progress } = useBookProgress(id);
-  const { ensure, initialPosition } = useEnsureProgressOnOpen(book || null);
-  const { sendThrottled } = useUpdatePosition(progress);
+  const { ensure, initialPosition, unit, total } = useEnsureProgressOnOpen(
+    book || null
+  );
+  const { sendThrottled, finishOnce } = useUpdatePosition(
+    progress?._id,
+    unit,
+    total
+  );
+
   const [open, setOpen] = useState(false);
+  const lastPageRef = useRef(1);
+  const openedAtRef = useRef<number>(0);
 
   // estados solo para la sesión actual del modal
   const [startPage, setStartPage] = useState<number | null>(null);
@@ -82,9 +91,28 @@ const BookDetailPage: React.FC = () => {
 
   const openReader = async () => {
     await ensure(); // crea si no existía
+    openedAtRef.current = Date.now();
     if (isEbook) setStartPage(resumePageCalc);
     if (isMedia) setStartSecond(resumeSecondsCalc);
     setOpen(true);
+  };
+
+  // cerrar modal
+  const closeReader = () => {
+    if (isEbook) {
+      const t = Number(book?.totalPages ?? total ?? 0);
+      const dwellMs = Date.now() - openedAtRef.current;
+      // sólo si realmente estuvo un ratito y llegó a la última página
+      if (t > 0 && lastPageRef.current >= t && dwellMs > 1500) {
+        finishOnce();
+      }
+    }
+    // en media ya marca en onEnded acá no es necesario
+    setOpen(false);
+  };
+
+  const goBack = () => {
+    window.history.back();
   };
 
   return (
@@ -94,11 +122,14 @@ const BookDetailPage: React.FC = () => {
         <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
           <div className="relative w-full max-w-xs md:w-1/3">
             {/* Back button */}
-            <Link href="/catalogo">
-              <button className="absolute top-2 left-2 z-10 bg-primary/85 hover:bg-primary/95 text-white p-2 rounded-full transition-colors shadow-lg cursor-pointer">
-                <ArrowLeft size={20} />
-              </button>
-            </Link>
+            {/*<Link href="/catalogo">*/}
+            <button
+              onClick={goBack}
+              className="absolute top-2 left-2 z-10 bg-primary/85 hover:bg-primary/95 text-white p-2 rounded-full transition-colors shadow-lg cursor-pointer"
+            >
+              <ArrowLeft size={20} />
+            </button>
+            {/* </Link> */}
 
             {/* Portada */}
             <img
@@ -198,38 +229,33 @@ const BookDetailPage: React.FC = () => {
 
             {/* Modal lector PDF */}
             {isEbook && pdfUrl && (
-              <Modal
-                isOpen={open}
-                onClose={() => setOpen(false)}
-                title={book.title}
-              >
+              <Modal isOpen={open} onClose={closeReader} title={book.title}>
                 {/* se abre el pdf  */}
                 <PDFModalViewer
                   pdfUrl={pdfUrl}
-                  initialPage={startPage ?? 1} // estable mientras esté abierto
+                  initialPage={startPage ?? 1}
                   onPageChange={(page) => {
-                    // actualizamos posición (página) con throttle
-                    sendThrottled(page);
+                    lastPageRef.current = page; // <-- guarda última página alcanzada
+                    const t = Number(book?.totalPages ?? total ?? 0);
+                    sendThrottled(page, t); // <-- solo posición/percent
                   }}
                 />
               </Modal>
             )}
             {isMedia && mediaUrl && (
-              <Modal
-                isOpen={open}
-                onClose={() => setOpen(false)}
-                title={book.title}
-              >
+              <Modal isOpen={open} onClose={closeReader} title={book.title}>
                 <VideoPlayer
                   src={mediaUrl}
                   poster={book.bookCoverImage?.url_secura}
                   title={book.title}
-                  initialTime={startSecond ?? 0} // estable mientras esté abierto
-                  onProgress={(cur) => {
-                    // actualizamos posición (segundos) con throttle
-                    sendThrottled(Math.floor(cur));
+                  initialTime={startSecond ?? 0}
+                  onProgress={(cur, dur) => {
+                    sendThrottled(Math.floor(cur), Math.floor(dur || 0));
                   }}
-                  onEnded={() => {}}
+                  onEnded={() => {
+                    // terminamos
+                    finishOnce();
+                  }}
                 />
               </Modal>
             )}
