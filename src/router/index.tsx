@@ -11,12 +11,9 @@ import Profile from "../modules/profile/Profile.page";
 import ForumPage from "../modules/forum/Forum.page";
 import { BiblioGames } from "../modules/games/Games.page";
 import LoadingGate from "../common/components/LoadingGate";
-<<<<<<< HEAD
 import { Author } from "../modules/author/Author.page";
 import { AuthorDetail } from "../modules/author/Author.Detail.page";
-=======
 import NotFound from "../common/components/notFound/NotFound";
->>>>>>> 0e84cd5a9065dfb5458b3f6ee88b82650a1f289c
 
 // Admin
 import AdminRoute from "./AdminRoute";

@@ -14,6 +14,7 @@ import { Link, useLocation } from "wouter";
 import { useAuth } from "../../context/AuthContext";
 import LoadingGate from "../../common/components/LoadingGate";
 
+
 export default function LandingPage() {
   // cuando hay token, redirigir al /home
   const { user, loading } = useAuth();
@@ -101,14 +102,8 @@ export default function LandingPage() {
           </li>
         </ul>
       </div>
-<<<<<<< HEAD
 {/* Seccion Presentacion */}
       <div className=" flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
-=======
-
-      {/* Seccion Presentacion */}
-      <div className="bg-white flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
->>>>>>> 0e84cd5a9065dfb5458b3f6ee88b82650a1f289c
         <div className="w-full md:w-1/2 flex justify-center">
           <img
             src="/hostImage/LOGO-VERTICAL.svg"
@@ -190,17 +185,7 @@ export default function LandingPage() {
         </div>
       </div>
 
-<<<<<<< HEAD
-<div className="card flex-row bg-base-100 shadow-lg w-50 h-20 overflow-hidden">
-    <figure className="w-1/3 h-full">
-      <img src="/landingImages/family-grandfather-grandpa-svgrepo-com.svg" className="bg-orange-400 w-full h-full object-cover" />
-    </figure>
-    <div className="card-body w-2/3 p-2">
-      <h2 className="card-title text-sm leading-tight">Adulto Mayor</h2>
-      <p className="text-xs">60-100</p>
-    </div>
-  </div>
-</div>
+  
 {/* Seccion FInal - Seccion web */}
 <div className=" flex flex-col md:flex-row-reverse items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl mt-16">
 <div className='flex justify-center w-100 gap-4'>
@@ -211,18 +196,6 @@ export default function LandingPage() {
     <img alt="wallpaper" src="/landingImages/123.png"/>
 </div>
 </div>
-=======
-      {/* Seccion FInal - Seccion web */}
-      <div className="bg-white flex flex-col md:flex-row-reverse items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl mt-16">
-        <div className="flex justify-center w-100 gap-4">
-          <div>
-            <img alt="wallpaper" src="/landingImages/12.png" />
-          </div>
-          <div>
-            <img alt="wallpaper" src="/landingImages/123.png" />
-          </div>
-        </div>
->>>>>>> 0e84cd5a9065dfb5458b3f6ee88b82650a1f289c
         <div className="md:w-1/2 text-center md:text-left justify-center flex  flex-col self-center max-w-xl">
           <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
             Tu biblioteca virtual de bolsillo
@@ -262,20 +235,38 @@ export default function LandingPage() {
         </div>
       </div>
 
-    </div>
+    
       {/* Last Call  */}
-      <div className="relative bg-primary w-full overflow-hidden flex justify-center items-center flex-col py-20 mt-24">
-        <h1 className="text-secondary text-2xl md:text-4xl font-bold text-center z-10">
-          Unite a este mundo de Tintas Formoseñas
-        </h1>
-        <Link
-          href="/register"
-          className="mt-6  hover:shadow-2xl cursor-pointer text-primary font-semibold rounded-2xl px-6 py-3 hover:bg-secondary hover:text-white hover:shadow-black transition duration-300 ease-in-out z-10"
-        >
-          Empezar
-        </Link>
-      </div>
+
+    <div className=" bg-primary w-full overflow-hidden flex justify-center items-center flex-col py-20 mt-24">
+      <h1 className="text-secondary text-2xl md:text-4xl font-bold text-center z-10 mb-8">
+        Unite a este mundo de Tintas Formoseñas
+      </h1>
+
+     <Link
+      to="/register"
+      className="
+         relative flex items-center justify-center h-[50px] w-[200px] cursor-pointer overflow-hidden 
+          rounded-[30px] border-2 border-white bg-transparent
+          text-white transition-all duration-700 ease-in-out 
+           hover:text-white hover:border-none
+          after:content-[''] after:absolute after:left-0 after:top-0 
+          after:h-full after:w-0 after:bg-secondary
+          after:transition-all after:duration-1500 after:ease-in-out
+          hover:after:w-full
+      "
+    >
+      <span className="z-[1] font-extrabold tracking-[1px]">Empezar</span>
+    </Link>
+    </div>
+  
+
+
+    
+      <div>
       <Footer />
     </div>
+    </div>
   );
+
 }
