@@ -8,7 +8,7 @@ export default function Navbar() {
     <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
       <div className="max-full mx-auto px-12 py-4 flex justify-between items-center">
        <div className="flex colum self-baseline">
-        <img src="/public/hostImage/LOGO-COLOR.svg" style={{height: 50, padding: 0}} alt=""  />
+       
 
         <h1 className="flex karaoke items-center text-2xl font-bold text-white">
           Tintas Formoseñas

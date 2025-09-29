@@ -103,7 +103,7 @@ export default function LandingPage() {
         </ul>
       </div>
 {/* Seccion Presentacion */}
-      <div className=" flex flex-col md:flex-row items-center bg-secondary justify-center p-8 gap-8 w-full ">
+      <div className=" flex flex-col md:flex-row items-center justify-center p-8 gap-8 w-full ">
         <div className="w-full md:w-1/2 flex justify-center">
           <img
             src="/hostImage/LOGO-VERTICAL.svg"
@@ -187,17 +187,11 @@ export default function LandingPage() {
 
   
 {/* Seccion FInal - Seccion movil */}
-<div className=" flex flex-col md:flex-row-reverse bg-primary items-center justify-center p-8 gap-8 w-full mx-auto  mt-16">
-<div className='flex justify-center w-100 gap-4'>
-<div>
-    <img alt="wallpaper" src="/landingImages/12.png"/> 
-</div>
-<div >
-    <img alt="wallpaper" src="/landingImages/123.png"/>
-</div>
-</div>
-        <div className="md:w-1/2 text-center md:text-left justify-center flex  flex-col self-center max-w-xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
+<div className=" flex flex-col md:flex-row-reverse  p-2 gap-8 w-full mx-auto  mt-16">
+  <div className="flex justify-center items-center lg:flex-row md:flex-col w-full p-8">
+
+ <div className="md:w-1/2 gap-8  md:text-left   self-start flex  flex-col  max-w-xl">
+          <h2 className="text-3xl md:text-4xl mt-8 font-bold text-primary mb-4">
             Tu biblioteca virtual de bolsillo
           </h2>
           <p className="text-gray-700 text-base md:text-lg leading-relaxed">
@@ -206,7 +200,19 @@ export default function LandingPage() {
             y seguí tu progreso en tiempo real. ¡La lectura ahora te acompaña a
             donde vayas!
           </p>
-        </div>
+           <div className="video-container">
+     
+    </div>
+ </div>
+ <div className='flex justify-center w-100 gap-2 mt-8'>
+<div>
+    <img alt="wallpaper" className="h-90 w-200" src="/landingImages/2.jpg"/> 
+</div>
+<div >
+    <img alt="wallpaper" className="h-90 w-180" src="/landingImages/1.jpg"/>
+</div>
+</div>
+ </div>
  </div>
       <div className=" flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
         <div className="w-full md:w-1/2 flex justify-center">
@@ -238,10 +244,10 @@ export default function LandingPage() {
     
       {/* Last Call  */}
 
-    <div  className="min-h-screen w-full bg-cover bg-center flex flex-col justify-start items-center p-0 gap-2 mb-0 mt-8"
-  style={{ backgroundImage: `url('/ilustracion.svg')` }}
+    <div  className="min-h-screen w-full bg-cover bg-center flex flex-col justify-start items-center p-14 gap-12 mb-0 mt-8"
+  style={{ backgroundImage: `url('/ilustracion.png')` }}
 >
-      <h1 className="text-primary text-2xl md:text-4xl font-bold text-center z-10 ">
+      <h1 className="text-primary text-4xl md:text-4xl font-bold text-center z-10 ">
         Unite a este mundo de Tintas Formoseñas
       </h1>
 <img src="./hostImage/LOGO-COLOR.svg" alt="" className="h-40 m-0 
@@ -256,7 +262,7 @@ bounce-hover" />
           after:content-[''] after:absolute after:left-0 after:top-0 
           after:h-full after:w-0 after:bg-primary
           after:transition-all after:duration-1500 after:ease-in-out
-          hover:after:w-full mb-8
+          hover:after:w-full
       "
     >
       <span className="z-[1] font-extrabold tracking-[1px]">Empezar</span>
