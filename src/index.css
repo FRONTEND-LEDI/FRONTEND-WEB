@@ -66,3 +66,17 @@ body{
   scrollbar-width: none;
   -ms-overflow-style: none;
 }
+
+
+@keyframes bounceOnce {
+  0%, 100% {
+    transform: translateY(0);
+  }
+  50% {
+    transform: translateY(-15%);
+  }
+}
+
+.bounce-hover:hover {
+  animation: bounceOnce 2s ease-in-out infinite;
+}

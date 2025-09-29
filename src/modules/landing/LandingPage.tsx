@@ -103,7 +103,7 @@ export default function LandingPage() {
         </ul>
       </div>
 {/* Seccion Presentacion */}
-      <div className=" flex flex-col md:flex-row items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl">
+      <div className=" flex flex-col md:flex-row items-center bg-secondary justify-center p-8 gap-8 w-full ">
         <div className="w-full md:w-1/2 flex justify-center">
           <img
             src="/hostImage/LOGO-VERTICAL.svg"
@@ -186,8 +186,8 @@ export default function LandingPage() {
       </div>
 
   
-{/* Seccion FInal - Seccion web */}
-<div className=" flex flex-col md:flex-row-reverse items-center justify-center p-8 gap-8 max-w-6xl mx-auto rounded-xl mt-16">
+{/* Seccion FInal - Seccion movil */}
+<div className=" flex flex-col md:flex-row-reverse bg-primary items-center justify-center p-8 gap-8 w-full mx-auto  mt-16">
 <div className='flex justify-center w-100 gap-4'>
 <div>
     <img alt="wallpaper" src="/landingImages/12.png"/> 
@@ -197,7 +197,7 @@ export default function LandingPage() {
 </div>
 </div>
         <div className="md:w-1/2 text-center md:text-left justify-center flex  flex-col self-center max-w-xl">
-          <h2 className="text-3xl md:text-4xl font-bold text-primary mb-4">
+          <h2 className="text-3xl md:text-4xl font-bold text-white mb-4">
             Tu biblioteca virtual de bolsillo
           </h2>
           <p className="text-gray-700 text-base md:text-lg leading-relaxed">
@@ -238,34 +238,32 @@ export default function LandingPage() {
     
       {/* Last Call  */}
 
-    <div className=" bg-primary w-full overflow-hidden flex justify-center items-center flex-col py-20 mt-24">
-      <h1 className="text-secondary text-2xl md:text-4xl font-bold text-center z-10 mb-8">
+    <div  className="min-h-screen w-full bg-cover bg-center flex flex-col justify-start items-center p-0 gap-2 mb-0 mt-8"
+  style={{ backgroundImage: `url('/ilustracion.svg')` }}
+>
+      <h1 className="text-primary text-2xl md:text-4xl font-bold text-center z-10 ">
         Unite a este mundo de Tintas Formoseñas
       </h1>
-
+<img src="./hostImage/LOGO-COLOR.svg" alt="" className="h-40 m-0 
+bounce-hover" />
      <Link
       to="/register"
       className="
          relative flex items-center justify-center h-[50px] w-[200px] cursor-pointer overflow-hidden 
-          rounded-[30px] border-2 border-white bg-transparent
-          text-white transition-all duration-700 ease-in-out 
+          rounded-[30px] border-2 border-primary bg-transparent
+          text-primary transition-all duration-700 ease-in-out 
            hover:text-white hover:border-none
           after:content-[''] after:absolute after:left-0 after:top-0 
-          after:h-full after:w-0 after:bg-secondary
+          after:h-full after:w-0 after:bg-primary
           after:transition-all after:duration-1500 after:ease-in-out
-          hover:after:w-full
+          hover:after:w-full mb-8
       "
     >
       <span className="z-[1] font-extrabold tracking-[1px]">Empezar</span>
     </Link>
-    </div>
-  
-
-
     
-      <div>
-      <Footer />
     </div>
+      <Footer />
     </div>
   );
 
