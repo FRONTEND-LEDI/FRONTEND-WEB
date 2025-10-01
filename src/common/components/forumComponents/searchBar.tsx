@@ -1,9 +1,4 @@
-type Foro = {
-  id: string;
-  nombre: string;
-  posts: string[];
-};
-
+import type { Foro } from "./types";
 
 type SearchProps = {
   searchTerm: string;
@@ -16,7 +11,7 @@ export default function SearchingBar({ searchTerm, setSearchTerm, foroSelecciona
     <form className="flex gap-2 mb-4" onSubmit={(e) => e.preventDefault()}>
       <input
         type="text"
-        placeholder={`Buscar en ${foroSeleccionado ? foroSeleccionado.nombre : "todas las publicaciones"}`}
+        placeholder={`Buscar en ${foroSeleccionado ? foroSeleccionado.title : "todas las publicaciones"}`}
         value={searchTerm}
         onChange={(e) => setSearchTerm(e.target.value)}
         className="flex-grow border border-primary rounded-2xl px-3 py-2"

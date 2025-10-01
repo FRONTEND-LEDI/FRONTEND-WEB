@@ -1,14 +1,9 @@
 import { useState } from "react";
-
-type Foro = {
-  id: string;
-  nombre: string;
-  posts: string[];
-};
+import type { Foro } from "./types";
 
 type AddPostProps = {
   foroSeleccionado: Foro | null;
-  agregarPost: (post: string) => void;
+  agregarPost: (contenido: string) => void;
 };
 
 export default function AddPost({ foroSeleccionado, agregarPost }: AddPostProps) {
@@ -20,7 +15,6 @@ export default function AddPost({ foroSeleccionado, agregarPost }: AddPostProps)
     agregarPost(nuevoPost);
     setNuevoPost("");
 
-    // cerrar modal después de agregar post
     const modal = document.getElementById("post_modal") as HTMLDialogElement | null;
     if (modal) modal.close();
   };
@@ -34,15 +28,13 @@ export default function AddPost({ foroSeleccionado, agregarPost }: AddPostProps)
 
   return (
     <>
-      {/* Botón para abrir modal */}
-      <button className="btn" style={{ borderRadius: "18px", cursor: "pointer", }}  onClick={openModal}>
+      <button className="btn" style={{ borderRadius: "18px", cursor: "pointer" }} onClick={openModal}>
         Crear Post
       </button>
 
-      {/* Modal */}
       <dialog id="post_modal" className="modal modal-bottom sm:modal-middle">
         <form onSubmit={handleSubmit} className="modal-box flex flex-col gap-4">
-          <h3 className="font-bold text-lg">Nuevo post en {foroSeleccionado.nombre}</h3>
+          <h3 className="font-bold text-lg">Nuevo post en {foroSeleccionado.title}</h3>
           
           <textarea
             className="textarea w-full"
@@ -53,7 +45,7 @@ export default function AddPost({ foroSeleccionado, agregarPost }: AddPostProps)
           />
 
           <div className="modal-action flex gap-2">
-            <button type="submit"  className="btn btn-primary">
+            <button type="submit" className="btn btn-primary">
               Crear
             </button>
             <button

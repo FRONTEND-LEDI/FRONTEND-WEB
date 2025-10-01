@@ -18,23 +18,6 @@ body{
   --color-primary: #d97706;
   --color-secondary: #f8d49a;
 }
-@font-face {
-  font-family: "LT Karaoke";
-  src: url("./assets/fonts/LTKaraoke-Regular.ttf") format("truetype");
-  font-weight: normal;
-  font-style: normal;
-}
-
-@font-face {
-  font-family: "LT Karaoke";
-  src: url("./assets/fonts/LTKaraoke-Bold.ttf") format("truetype");
-  font-weight: bold;
-  font-style: normal;
-}
-.karaoke {
-  font-family: "LT Karaoke", sans-serif;
-}
-
 /* ! necesario para los efectos del buscador con IA */
 
 @keyframes gradient-x {
@@ -80,15 +63,17 @@ body{
 .bounce-hover:hover {
   animation: bounceOnce 2s ease-in-out infinite;
 }
-/* ⬇️ este contenedor lo manda abajo a la derecha */
+
 .scroll-container {
   position: absolute;  
-  bottom: 80px;     
+  bottom: 50px;     
   right: 30px;      
-  z-index: 50;       
+  z-index: 50;  
+  display: flex;
+  flex-direction: column;     
 }
 
-/* el mismo estilo que ya tenías */
+
 .scrolldown {
   --color: white;
   --sizeX: 40px;
