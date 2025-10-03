@@ -1,48 +1,41 @@
 import { Link } from "wouter";
 import { useAuth } from "../../context/AuthContext";
+
 export default function Navbar() {
   const { user, logout } = useAuth();
- 
- const resetTour = () => {
+
+  const resetTour = () => {
     localStorage.removeItem("seenTour");
     window.location.reload(); // refresca la página para que vuelva a aparecer el modal
   };
- 
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
-      <div className="max-full mx-auto px-12 py-4 flex justify-between items-center">
-       <div className="flex colum self-baseline">
-       
-        <div className="flex colum self-baseline">
-          <img
-            src="/public/hostImage/LOGO-COLOR.svg"
-            style={{ height: 50, padding: 0 }}
-            alt=""
-          />
+      <div className="max-w-full mx-auto px-12 py-4 flex justify-between items-center">
+        {/* Logo / Título */}
+        <h1 className="flex karaoke items-center text-2xl font-bold text-white">
+          Tintas Formoseñas
+        </h1>
 
-          <h1 className="flex karaoke items-center text-2xl font-bold text-white">
-            Tintas Formoseñas
-          </h1>
-        </div>
+        {/* Si el usuario está logueado */}
         {user ? (
           <div className="flex font-semibold text-white gap-12 items-center">
             {/* Links en pantalla grande */}
             <div className="hidden lg:flex gap-12 items-center">
               <Link id="Inicio" href="/home">Inicio</Link>
               <Link id="Catalogo" href="/catalogo">Catálogo</Link>
-              <Link id="ClubDeLectura" href="/ClubdeLectura">Club de Lectura</Link>
-              <Link id="Bibliogames" href="/biblioGames">BiblioGames</Link>
-              <Link id="Autores" href="/Autores">Autores</Link>
-             <button
-          onClick={resetTour}
-          className="text-xs text-white bg-red-500 px-2 py-1 rounded ml-4"
-        >
-          Reset Tour
-        </button>
-       </div>
+              <Link id="ClubDeLectura" href="/clubdelectura">Club de Lectura</Link>
+              <Link id="Bibliogames" href="/bibliogames">BiblioGames</Link>
+              <Link id="Autores" href="/autores">Autores</Link>
+              <button
+                onClick={resetTour}
+                className="text-xs text-white bg-red-500 px-2 py-1 rounded ml-4"
+              >
+                Reset Tour
+              </button>
+            </div>
 
-            {/* Botón de perfil */}
+            {/* Menú perfil */}
             <div className="dropdown dropdown-end dropdown-hover">
               <div
                 tabIndex={0}
@@ -58,44 +51,37 @@ export default function Navbar() {
                 </div>
               </div>
 
-              {/* menú combinado: muestra todo en movil, solo perfil/cerrar en grande */}
+              {/* Menú desplegable */}
               <ul
                 tabIndex={0}
                 className="dropdown-content menu bg-base-100 text-black rounded-box w-52 p-2 shadow z-50"
               >
-                {/* Solo visible en mobile */}
+                {/* Título con nombre usuario */}
                 <li className="menu-title">
                   <span className="font-bold text-gray-900 text-lg">
-                    {user.userName || "Ayelén"}
+                    {user.userName || "Usuario"}
                   </span>
                 </li>
-                <li className="lg:hidden">
-                  <Link href="/home">Inicio</Link>
-                </li>
-                <li className="lg:hidden">
-                  <Link href="/catalogo">Catálogo</Link>
-                </li>
-                <li className="lg:hidden">
-                  <Link href="/club">Club de Lectura</Link>
-                </li>
-                <li className="lg:hidden">
-                  <Link href="/autores">Autores</Link>
-                </li>
+
+                {/* Links visibles solo en móvil */}
+                <li className="lg:hidden"><Link href="/home">Inicio</Link></li>
+                <li className="lg:hidden"><Link href="/catalogo">Catálogo</Link></li>
+                <li className="lg:hidden"><Link href="/clubdelectura">Club de Lectura</Link></li>
+                <li className="lg:hidden"><Link href="/autores">Autores</Link></li>
+
                 {user.rol === "Admin" && (
                   <li>
                     <Link href="/admin">Panel de Administración</Link>
                   </li>
                 )}
-                <li>
-                  <Link href="/profile">Perfil</Link>
-                </li>
-                <li>
-                  <button onClick={logout}>Cerrar sesión</button>
-                </li>
+
+                <li><Link href="/profile">Perfil</Link></li>
+                <li><button onClick={logout}>Cerrar sesión</button></li>
               </ul>
             </div>
           </div>
         ) : (
+          // Si no está logueado, botones de login y registro
           <div className="flex justify-evenly gap-6">
             <Link
               href="/login"
@@ -115,3 +101,4 @@ export default function Navbar() {
     </nav>
   );
 }
+

@@ -25,7 +25,7 @@ export default function Herolanding() {
   <div className="absolute inset-0 bg-black/20 " />
   <div className="relative z-10"></div>
       <div className="hero-content mt-18 text-neutral-content text-center">
-        <div className="max-w-md flex justify-center flex-col items-center">
+        <div className="max-w-md ml-20 flex justify-center flex-col items-center">
           <h1 className="text-3xl karaoke md:text-5xl font-bold p-6 text-white ">
             Bienvenido
           </h1>
@@ -39,12 +39,7 @@ export default function Herolanding() {
             className="w-50 h-80  object-contain  drop-shadow-lg  "
           />
           <div className="mt-6 flex gap-4">
-            {/* <Link
-              href="/register"
-              className="bg-orange-400 karaoke hover:bg-yellow-500 text-white font-semibold px-6 py-2 rounded-full shadow"
-            >
-              Empezar
-            </Link> */}
+          
     <RouteLink
       to="/register"
       className="
