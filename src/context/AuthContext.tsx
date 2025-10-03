@@ -18,7 +18,6 @@ type User = {
     format?: string[];
   };
 };
-
 type AuthContextType = {
   user: User | null;
   token: string | null;

@@ -44,7 +44,7 @@ export const getAuthorsbyId = async (id: string) => {
 export const getBookbyAuthorId = async (id: string) => {
   try {
     // Tu token (puedes guardarlo en una variable o constante)
-    const token = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4Yzc1ZTBjMjA1Y2I1NGI1NzdhNWFlNSIsInJvbCI6IlVzZXIiLCJpYXQiOjE3NTgzMTAzMTksImV4cCI6MTc1ODMxMzkxOX0.wOV8wv-FMJCDccumGb2jhZOnR_jHXh2uKQCAuZcoQwA";
+    const token="eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZGVmNjllZmQwYTRkODQ4OWU1MTViOCIsInJvbCI6IlVzZXIiLCJpYXQiOjE3NTk0NTAzNzIsImV4cCI6MTc1OTQ1Mzk3Mn0.BErE1XTHbmsk0ZhhlVPSmw5LYTSOU5XqTn31ljwz8DI";
     
     const response = await fetch(`http://localhost:3402/book/autor/${id}`, {  
       method: "GET",

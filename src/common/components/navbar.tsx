@@ -1,8 +1,35 @@
 import { Link } from "wouter";
 import { useAuth } from "../../context/AuthContext";
-
+import { useTour } from "@reactour/tour";
+import { useEffect, useState } from "react";
 export default function Navbar() {
   const { user, logout } = useAuth();
+ const { setSteps, setIsOpen } = useTour();
+  const [showTourButton, setShowTourButton] = useState(false);
+
+  useEffect(() => {
+    if (user) {
+      // check si ya vio el tour
+      const seenTour = localStorage.getItem("seenTour");
+      if (!seenTour) setShowTourButton(true);
+    }
+  }, [user]);
+
+  const startTour = () => {
+    if (!setSteps || !setIsOpen) return;
+    setSteps([
+      { selector: "#Inicio", content: "Aquí puedes volver al inicio." },
+      { selector: "#Catalogo", content: "Explora todo el catálogo de libros." },
+      { selector: "#ClubDeLectura", content: "Únete a Club de Lectura y comparte tus opiniones." },
+      { selector: "#Bibliogames", content: "Juega en la sección BiblioGames." },
+      { selector: "#Autores", content: "Descubre tus autores favoritos." },
+    ]);
+    setIsOpen(true);
+
+    // marcar como visto
+    localStorage.setItem("seenTour", "true");
+    setShowTourButton(false);
+  };
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
@@ -18,11 +45,19 @@ export default function Navbar() {
           <div className="flex font-semibold text-white gap-12 items-center">
             {/* Links en pantalla grande */}
             <div className="hidden lg:flex gap-12 items-center">
-              <Link href="/home">Inicio</Link>
-              <Link href="/catalogo">Catálogo</Link>
-              <Link href="/clubdeLectura">Club de Lectura</Link>
-              <Link href="/biblioGames">BiblioGames</Link>
-              <Link href="/Autores">Autores</Link>
+              <Link id="Inicio" href="/home">Inicio</Link>
+              <Link id="Catalogo" href="/catalogo">Catálogo</Link>
+              <Link id="ClubdeLectura" href="/clubdeLectura">Club de Lectura</Link>
+              <Link id="Bibliogames" href="/biblioGames">BiblioGames</Link>
+              <Link id="Autores" href="/Autores">Autores</Link>
+               {showTourButton && (
+        <button
+          onClick={startTour}
+          className="ml-4 px-3 py-1 rounded cursor-pointer bg-white text-primary"
+        >
+          Iniciar Tour
+        </button>
+      )}
             </div>
 
             {/* Botón de perfil */}

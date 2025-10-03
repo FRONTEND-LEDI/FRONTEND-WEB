@@ -5,6 +5,7 @@ import { getAuthorsbyId } from "../../db/services/author";
 import { getBookbyAuthorId } from "../../db/services/author";
 import { Author } from "./Author.page";
 import { AuthorBooks } from "./Author.books";
+import Footer from "../../common/components/Footer";
 
 function capitalizeSentence(text: string) {
   if (!text) return "";
@@ -38,7 +39,7 @@ export function AuthorDetail() {
   return (
     <div >
         <Navbar/>
-   <div className="flex flex-col sm:flex-row lg:flex-row gap-8 w-full justify-center items-start mt-20 px-4">
+   <div className="flex flex-col sm:flex-row lg:flex-row gap-8 w-full justify-center items-start mt-18 px-4">
   {/* Columna 1: Biografía del autor */}
   <div className=" mt-4 md:w-2/4 justify-center">
     <div className="flex gap-6">
@@ -53,23 +54,23 @@ export function AuthorDetail() {
       </div>
       <div className="overflow-x-auto">
         <table className="table">
-          <thead>
+          <thead className="text-bold text-black">
             <tr>
               <th>{author.name}</th>
             </tr>
           </thead>
-          <tbody>
+          <tbody className="text-xs text-gray-500">
             <tr>
               <th>Fecha de nacimiento</th>
-              <td>23-56-09</td>
+              <td></td>
             </tr>
             <tr className="hover:bg-base-300">
               <th>Trabajo</th>
-              <td>Docente</td>
+              <td></td>
             </tr>
             <tr>
               <th>Géneros</th>
-              <td>Romance, Amor, Nostalgia</td>
+              <td></td>
             </tr>
           </tbody>
         </table>
@@ -90,19 +91,10 @@ export function AuthorDetail() {
     <AuthorBooks author={author} books={books} />
   </div>
 </div>
+<Footer />
 </div>
   );
  }
-// <div className="flex flex-col md:flex-row gap-8 w-full justify-center items-start mt-20 px-4">
-//   {/* Columna izquierda: Autor (principal) */}
-//   <div className="flex-1 w-full md:w-3/4">
-//     {/* 👇 acá va todo el contenido del autor */}
-//   </div>
 
-//   {/* Columna derecha: Libros (sidebar chico) */}
-//   <div className="w-full md:w-1/4">
-//     <AuthorBooks author={author} books={books} />
-//   </div>
-// </div>
 
 
