@@ -40,7 +40,7 @@ export default function Profile() {
     <div className="flex flex-col min-h-screen bg-fund overflow-x-hidden">
       <Navbar />
 
-      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-28 pb-10 overflow-x-hidden">
+      <main className="flex-1 w-full max-w-7xl mx-auto px-4 sm:px-6 pt-30 pb-10 overflow-x-hidden">
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-6">
           {/* izquierda */}
           <aside className="lg:col-span-3">

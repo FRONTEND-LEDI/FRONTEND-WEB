@@ -148,7 +148,7 @@ const BookDetailPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-fund">
       <Navbar />
-      <main className="relative flex-1 max-w-5xl mx-auto px-4 py-23 ">
+      <main className="relative flex-1 max-w-5xl mx-auto px-4 py-30">
         <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
           <div className="relative w-full max-w-xs md:w-1/3">
             {/* Back button */}
