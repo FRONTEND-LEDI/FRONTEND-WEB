@@ -29,6 +29,14 @@ export default function HomePage() {
 
   const openBookDetail = (id: string) => navigate(`/libro/${id}`);
 
+  // validacion para cuando recomendaciones o libros por progreso vengan vacios
+  // Helpers de visibilidad
+  const showRecs =
+    !recsLoading && !recsError && Array.isArray(recs) && recs.length > 0;
+
+  const showContinue =
+    !contLoading && !contError && Array.isArray(cont) && cont.length > 0;
+
   return (
     <div className="flex flex-col min-h-screen bg-fund overflow-x-hidden">
       <Navbar />
@@ -39,45 +47,44 @@ export default function HomePage() {
             illustrationUrl="/hostImage/avatarLanding.png"
           />
 
-          {/* Recomendaciones */}
-          <section className="bg-card rounded-2xl p-4 sm:p-8 shadow-sm">
-            <SectionHeader
-              title="Recomendado para ti"
-              subtitle="Selección basada en tus preferencias"
-            />
-            {recsLoading && <SkeletonRow />}
-            {recsError && <ErrorRow msg="No pudimos cargar recomendaciones" />}
-            {!recsLoading && !recsError && recs && recs.length > 0 && (
-              <Carousel ariaLabel="Libros recomendados">
-                {recs.map((b: Book) => (
-                  <BookCard
-                    key={b._id}
-                    id={b._id}
-                    title={b.title}
-                    authorNames={authorNames(b.author)}
-                    coverUrl={coverUrlOf(b)}
-                    onOpen={() => openBookDetail(b._id)}
-                    format={b.format}
-                  />
-                ))}
-              </Carousel>
-            )}
-          </section>
+          {/* Recomendaciones (sólo si hay) */}
+          {(recsLoading || showRecs) && (
+            <section className="bg-card rounded-2xl p-4 sm:p-8 shadow-sm">
+              <SectionHeader
+                title="Recomendado para ti"
+                subtitle="Selección basada en tus preferencias"
+              />
+              {recsLoading && <SkeletonRow />}
+              {showRecs && (
+                <Carousel ariaLabel="Libros recomendados">
+                  {recs!.map((b: Book) => (
+                    <BookCard
+                      key={b._id}
+                      id={b._id}
+                      title={b.title}
+                      authorNames={authorNames(b.author)}
+                      coverUrl={coverUrlOf(b)}
+                      onOpen={() => openBookDetail(b._id)}
+                      format={b.format}
+                    />
+                  ))}
+                </Carousel>
+              )}
+              {/* Si no hay datos y terminó de cargar, la sección no se renderiza */}
+            </section>
+          )}
 
-          {/* Seguir leyendo */}
-          <section className="bg-card rounded-2xl p-4 sm:p-8 shadow-sm">
-            <SectionHeader
-              title="Seguir leyendo"
-              subtitle="Retoma donde lo dejaste"
-            />
-            {contLoading && <SkeletonRow />}
-            {contError && <ErrorRow msg="No pudimos cargar tu progreso" />}
-            {!contLoading &&
-              !contError &&
-              Array.isArray(cont) &&
-              cont.length > 0 && (
+          {/* Seguir leyendo (sólo si hay) */}
+          {(contLoading || showContinue) && (
+            <section className="bg-card rounded-2xl p-4 sm:p-8 shadow-sm">
+              <SectionHeader
+                title="Seguir leyendo"
+                subtitle="Retoma donde lo dejaste"
+              />
+              {contLoading && <SkeletonRow />}
+              {showContinue && (
                 <Carousel ariaLabel="Libros que estás leyendo">
-                  {cont.map((it: BookWithProgress) => (
+                  {cont!.map((it: BookWithProgress) => (
                     <BookCard
                       key={it._id}
                       id={it._id}
@@ -91,7 +98,8 @@ export default function HomePage() {
                   ))}
                 </Carousel>
               )}
-          </section>
+            </section>
+          )}
         </div>
       </main>
       <Footer />
@@ -115,12 +123,12 @@ function SkeletonRow() {
   );
 }
 
-function ErrorRow({ msg }: { msg: string }) {
-  return (
-    <div className="flex items-center justify-center py-12">
-      <p className="text-sm text-muted-foreground bg-muted/50 px-4 py-2 rounded-lg">
-        {msg}
-      </p>
-    </div>
-  );
-}
+// function ErrorRow({ msg }: { msg: string }) {
+//   return (
+//     <div className="flex items-center justify-center py-12">
+//       <p className="text-sm text-muted-foreground bg-muted/50 px-4 py-2 rounded-lg">
+//         {msg}
+//       </p>
+//     </div>
+//   );
+// }
