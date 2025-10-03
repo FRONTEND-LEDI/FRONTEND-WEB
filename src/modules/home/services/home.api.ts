@@ -1,4 +1,5 @@
 import type { Book, BookWithProgress } from "../../../types/books";
+import { getAllProgress } from "../../../db/services/progress";
 // import { FALLBACK_COVER } from "../../../types/books";
 
 const API_URL = import.meta.env.VITE_API_URL ?? "http://localhost:3402";
@@ -9,6 +10,25 @@ const authHeaders = (token: string | null): HeadersInit => {
   return h;
 };
 
+type ApiBooksProgressItem = {
+  _id: string;
+  title: string;
+  author?: Array<{ _id: string; name: string }>;
+  bookCoverImage?: { url_secura?: string };
+  summary?: string;
+  synopsis?: string;
+  available: boolean;
+  subgenre?: string[];
+  theme?: string[];
+  yearBook?: string;
+  contentBook?: { url_secura?: string };
+  totalPages?: number;
+  duration?: number;
+  genre?: string;
+  level?: string;
+  format?: "ebook" | "audiobook" | "videobook" | string;
+  fileExtension: string;
+};
 // tipos para recomendaciones
 type ApiRecommendation = {
   _id: string;
@@ -36,6 +56,29 @@ type ApiRecommendation = {
   updatedAt?: string;
   author?: Array<{ _id: string; name: string }>;
 };
+
+function mapApiToBook(api: ApiBooksProgressItem): Book {
+  return {
+    _id: api._id,
+    title: api.title,
+    author: api.author ?? [],
+    bookCoverImage: { url_secura: api.bookCoverImage?.url_secura },
+    summary: api.summary,
+    synopsis: api.synopsis,
+    available: api.available,
+    subgenre: api.subgenre,
+    theme: api.theme,
+    yearBook: api.yearBook,
+    contentBook: { url_secura: api.contentBook?.url_secura },
+    totalPages: api.totalPages,
+    duration: api.duration,
+    genre: api.genre,
+    level: api.level,
+    format: api.format as Book["format"],
+    fileExtension: api.fileExtension,
+  };
+}
+const clampRound = (n: number) => Math.max(0, Math.min(100, Math.round(n)));
 
 function mapApiRecToBook(api: ApiRecommendation): Book {
   return {
@@ -81,55 +124,34 @@ export async function fetchRecommendations(
   return (arr as ApiRecommendation[]).map(mapApiRecToBook);
 }
 
-// tipos para "seguir leyendo"
-function coalesceProgress(api: any): number {
-  if (typeof api?.progressPct === "number") return api.progressPct;
-  if (typeof api?.progress === "number") return api.progress;
-  if (typeof api?.progress?.percentage === "number")
-    return api.progress.percentage;
-  return 0;
-}
-
-function mapApiProgressToBook(api: any): BookWithProgress {
-  const base: Book = {
-    _id: api._id,
-    title: api.title,
-    author: api.author ?? [],
-    bookCoverImage: { url_secura: api.bookCoverImage?.url_secura },
-    summary: api.summary,
-    synopsis: api.synopsis,
-    available: api.available,
-    subgenre: api.subgenre,
-    theme: api.theme,
-    yearBook: api.yearBook,
-    contentBook: { url_secura: api.contentBook?.url_secura },
-    totalPages: api.totalPages,
-    duration: api.duration,
-    genre: api.genre,
-    level: api.level,
-    format: api.format,
-    fileExtension: api.fileExtension ?? "PDF",
-  };
-  return { ...base, progressPct: coalesceProgress(api) };
-}
-
 export async function fetchContinueReading(
   token: string | null
 ): Promise<BookWithProgress[]> {
-  const res = await fetch(`${API_URL}/booksProgress`, {
+  // 1) Libros con progreso (sin percent)
+  const resBooks = await fetch(`${API_URL}/booksProgress`, {
     headers: authHeaders(token),
     credentials: "include",
   });
-  if (!res.ok) throw new Error("Error al obtener progreso");
+  if (!resBooks.ok) throw new Error("Error al obtener libros con progreso");
+  const booksRaw: ApiBooksProgressItem[] = await resBooks.json();
 
-  const raw = await res.json();
-  const arr: unknown = Array.isArray(raw)
-    ? raw
-    : raw && typeof raw === "object" && "json" in raw
-    ? (raw as any).json
-    : [];
+  // 2) Todos los progresos del usuario
+  const progresses = await getAllProgress(token); // /Progress -> { result: [...] } ya normalizado a []
 
-  if (!Array.isArray(arr)) throw new Error("Formato de progreso no reconocido");
+  // 3) idBook -> percent (si hubiera duplicados, elegimos el más alto)
+  const progressMap = new Map<string, number>();
+  for (const p of progresses) {
+    const id = p?.idBook;
+    if (!id) continue;
+    const current = clampRound(Number(p?.percent ?? 0));
+    const prev = progressMap.get(id) ?? 0;
+    if (current >= prev) progressMap.set(id, current);
+  }
 
-  return (arr as any[]).map(mapApiProgressToBook);
+  // 4) Compose BookWithProgress
+  return (booksRaw ?? []).map((api) => {
+    const book = mapApiToBook(api);
+    const progressPct = progressMap.get(book._id) ?? 0;
+    return { ...book, progressPct };
+  });
 }

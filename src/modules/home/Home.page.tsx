@@ -4,7 +4,7 @@ import Navbar from "../../common/components/navbar";
 import Footer from "../../common/components/Footer";
 import HomeHero from "./components/HomeHero";
 import SectionHeader from "./components/SectionHeader";
-import Carousel from "./components/Carousel";
+import Carousel from "../../common/components/Carousel";
 import BookCard from "./components/BookCard";
 import { useRecommendations } from "./hooks/useRecommendations";
 import { useContinueReading } from "./hooks/useContinueReading";
