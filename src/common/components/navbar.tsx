@@ -14,11 +14,17 @@ export default function Navbar() {
       <div className="max-full mx-auto px-12 py-4 flex justify-between items-center">
        <div className="flex colum self-baseline">
        
+        <div className="flex colum self-baseline">
+          <img
+            src="/public/hostImage/LOGO-COLOR.svg"
+            style={{ height: 50, padding: 0 }}
+            alt=""
+          />
 
-        <h1 className="flex karaoke items-center text-2xl font-bold text-white">
-          Tintas Formoseñas
-        </h1>
-      </div>
+          <h1 className="flex karaoke items-center text-2xl font-bold text-white">
+            Tintas Formoseñas
+          </h1>
+        </div>
         {user ? (
           <div className="flex font-semibold text-white gap-12 items-center">
             {/* Links en pantalla grande */}

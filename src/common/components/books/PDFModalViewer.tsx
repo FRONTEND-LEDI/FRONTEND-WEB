@@ -33,6 +33,38 @@ export default function PDFModalViewer({
   // Página visible aprox
   const [visiblePage, setVisiblePage] = useState(1);
 
+  // num página, visible o no
+  const [isMouseMoving, setIsMouseMoving] = useState(true);
+  const mouseTimerRef = useRef<number | null>(null);
+
+  useEffect(() => {
+    const container = containerRef.current;
+    if (!container) return;
+
+    const handleMouseMove = () => {
+      setIsMouseMoving(true);
+
+      // Limpiar timeout anterior
+      if (mouseTimerRef.current) {
+        clearTimeout(mouseTimerRef.current);
+      }
+
+      // Ocultar después de 2 segundos sin movimiento
+      mouseTimerRef.current = setTimeout(() => {
+        setIsMouseMoving(false);
+      }, 1000);
+    };
+
+    container.addEventListener("mousemove", handleMouseMove);
+
+    return () => {
+      container.removeEventListener("mousemove", handleMouseMove);
+      if (mouseTimerRef.current) {
+        clearTimeout(mouseTimerRef.current);
+      }
+    };
+  }, []);
+
   useEffect(() => {
     let cancelled = false;
     const load = async () => {
@@ -205,9 +237,9 @@ export default function PDFModalViewer({
       ref={containerRef}
       className="px-6 py-4 overflow-auto h-full bg-transparent"
     >
-      <div className="mb-4 text-sm text-center text-white/80">
+      {/*<div className="mb-4 text-sm text-center text-white/80">
         Página {visiblePage} de {numPages || "…"}
-      </div>
+      </div>*/}
 
       <div className="flex flex-col gap-6 items-center">
         {pages.map((p) => (
@@ -222,6 +254,14 @@ export default function PDFModalViewer({
             Cargando documento…
           </div>
         )}
+      </div>
+      {/* Indicador de página fijo en la parte inferior */}
+      <div
+        className={`fixed bottom-6 left-1/2 -translate-x-1/2 px-4 py-2 bg-black/70 backdrop-blur-sm rounded-full text-sm text-white shadow-lg transition-opacity duration-300 pointer-events-none ${
+          isMouseMoving ? "opacity-100" : "opacity-20"
+        }`}
+      >
+        Página {visiblePage} de {numPages || "…"}
       </div>
     </div>
   );

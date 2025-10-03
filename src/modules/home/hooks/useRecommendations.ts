@@ -6,6 +6,8 @@ export function useRecommendations(token: string | null) {
   return useQuery<Book[], Error>({
     queryKey: ["recommendations"],
     queryFn: () => fetchRecommendations(token),
-    staleTime: 1000 * 60 * 5,
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 }

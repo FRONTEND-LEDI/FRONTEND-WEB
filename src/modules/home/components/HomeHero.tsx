@@ -45,7 +45,7 @@ export default function HomeHero({ userName, illustrationUrl }: Props) {
           src={illustrationUrl || "/placeholder.svg"}
           alt=""
           aria-hidden
-          className="pointer-events-none absolute right-10 bottom-0 w-48 md:w-72 opacity-90 drop-shadow-lg"
+          className="pointer-events-none absolute right-10 bottom-0 top-0 w-48 md:w-72 opacity-90 drop-shadow-lg"
         />
       )}
     </section>

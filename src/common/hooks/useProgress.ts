@@ -55,8 +55,10 @@ export function useEnsureProgressOnOpen(book: Book | null | undefined) {
           },
           token
         );
-        // refresca cache de este libro
+        // refresca cache de este libro y lista de "seguir leyendo"
         qc.setQueryData(["progress", book._id], created);
+        qc.invalidateQueries({ queryKey: ["continueReading"] });
+        qc.invalidateQueries({ queryKey: ["progressAll"] });
       }
     } finally {
       creatingRef.current = false;
@@ -75,6 +77,7 @@ export function useUpdatePosition(
   const { token } = useAuth();
   const lastSentRef = useRef<number>(0);
   const finishedOnceRef = useRef(false);
+  const qc = useQueryClient();
 
   const { mutate } = useMutation({
     mutationFn: (data: {
@@ -97,6 +100,11 @@ export function useUpdatePosition(
         },
         token
       ),
+    // para refrescar cuando cambia
+    onSuccess: (_data) => {
+      qc.invalidateQueries({ queryKey: ["continueReading"] });
+      qc.invalidateQueries({ queryKey: ["progressAll"] });
+    },
   });
 
   // actualiza posició/percent

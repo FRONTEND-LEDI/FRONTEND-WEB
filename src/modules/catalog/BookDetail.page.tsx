@@ -1,4 +1,5 @@
 import React, { useState, useRef } from "react";
+import { useQueryClient } from "@tanstack/react-query";
 import { useRoute, Link } from "wouter";
 import { ArrowLeft } from "lucide-react";
 import Navbar from "../../common/components/navbar";
@@ -31,7 +32,13 @@ const BookDetailPage: React.FC = () => {
   );
 
   const [open, setOpen] = useState(false);
+
+  // mantener actualizado el progreso al cerrar el modal
+  const qc = useQueryClient();
+
   const lastPageRef = useRef(1);
+  const lastSecondRef = useRef(0);
+
   const openedAtRef = useRef<number>(0);
 
   // estados solo para la sesión actual del modal
@@ -98,17 +105,40 @@ const BookDetailPage: React.FC = () => {
   };
 
   // cerrar modal
-  const closeReader = () => {
+  const closeReader = async () => {
     if (isEbook) {
       const t = Number(book?.totalPages ?? total ?? 0);
+      // flush inmediato sin throttle
+      sendThrottled(lastPageRef.current, t, Date.now(), 0);
+      qc.setQueryData(["progress", id], (prev: any) => {
+        if (!prev) return prev;
+        const position = lastPageRef.current;
+        const percent = t > 0 ? Math.round((position / t) * 10000) / 100 : 0;
+        return { ...prev, position, percent, total: t, unit: "page" };
+      });
+
       const dwellMs = Date.now() - openedAtRef.current;
       // sólo si realmente estuvo un ratito y llegó a la última página
       if (t > 0 && lastPageRef.current >= t && dwellMs > 1500) {
         finishOnce();
       }
+    } else if (isMedia) {
+      const t = Number(total ?? 0);
+      // flush inmediato de ultimo segundo visto y obligar a refrescar
+      sendThrottled(lastSecondRef.current, t, Date.now(), 0);
+      qc.setQueryData(["progress", id], (prev: any) => {
+        if (!prev) return prev;
+        const position = lastSecondRef.current;
+        const percent = t > 0 ? Math.round((position / t) * 10000) / 100 : 0;
+        return { ...prev, position, percent, total: t, unit: "second" };
+      });
     }
     // en media ya marca en onEnded acá no es necesario
     setOpen(false);
+
+    // invalidar y refetchar el progreso del libro
+    await qc.invalidateQueries({ queryKey: ["progress", id] });
+    qc.invalidateQueries({ queryKey: ["continueReading"] });
   };
 
   const goBack = () => {
@@ -118,7 +148,7 @@ const BookDetailPage: React.FC = () => {
   return (
     <div className="flex flex-col min-h-screen bg-fund">
       <Navbar />
-      <main className="relative flex-1 max-w-5xl mx-auto px-4 py-23 ">
+      <main className="relative flex-1 max-w-5xl mx-auto px-4 py-30">
         <div className="flex flex-col md:flex-row gap-8 items-center md:items-start">
           <div className="relative w-full max-w-xs md:w-1/3">
             {/* Back button */}
@@ -250,6 +280,7 @@ const BookDetailPage: React.FC = () => {
                   title={book.title}
                   initialTime={startSecond ?? 0}
                   onProgress={(cur, dur) => {
+                    lastSecondRef.current = Math.floor(cur);
                     sendThrottled(Math.floor(cur), Math.floor(dur || 0));
                   }}
                   onEnded={() => {

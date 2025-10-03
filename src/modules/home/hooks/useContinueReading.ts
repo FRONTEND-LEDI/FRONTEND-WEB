@@ -6,6 +6,9 @@ export function useContinueReading(token: string | null) {
   return useQuery<BookWithProgress[], Error>({
     queryKey: ["continueReading"],
     queryFn: () => fetchContinueReading(token),
-    staleTime: 1000 * 60 * 5,
+    // para que refleje la última lectura
+    staleTime: 0,
+    refetchOnMount: "always",
+    refetchOnWindowFocus: true,
   });
 }

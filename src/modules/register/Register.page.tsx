@@ -5,7 +5,6 @@ import Button from "../../common/components/Button";
 import useForm from "../../common/hooks/useForm";
 
 const RegisterPage = () => {
-
   // Estado de error y éxito
   const [error, setError] = useState("");
   const [, setLocation] = useLocation();
@@ -18,15 +17,22 @@ const RegisterPage = () => {
     email: "",
     password: "",
     confirm: "",
-    birthDate: "", 
+    birthDate: "",
   });
-  
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setError("");
 
     // Validaciones básicas
-    if (!values.name || !values.lastname || !values.username || !values.email || !values.password || !values.birthDate) {
+    if (
+      !values.name ||
+      !values.lastname ||
+      !values.username ||
+      !values.email ||
+      !values.password ||
+      !values.birthDate
+    ) {
       setError("Por favor completá todos los campos.");
       return;
     }
@@ -63,37 +69,81 @@ const RegisterPage = () => {
     };
 
     localStorage.setItem("registroPendiente", JSON.stringify(usuarioPendiente));
-  
-  // redirigir al test
+
+    // redirigir al test
     setLocation("/test");
   };
 
   return (
     <div className="flex flex-col lg:flex-row min-h-screen bg-fund">
       {/* columna izquierda con la imagen */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:justify-end lg:pr-2">
-        <img src="/hostImage/zorro-loginIA.png" alt="Zorro registro" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:justify-end lg:pr-20">
+        <img
+          src="/hostImage/avatarLanding.png"
+          alt="Zorro registro"
+          className="max-h-[90px] lg:max-h-[350px] w-auto object-contain"
+        />
       </div>
       {/* columna derecha con el formulario */}
       <div className="w-full lg:m-6 lg:w-1/2 flex items-center justify-center p-4 lg:justify-start lg:pl-4">
-        
         <form
           className="bg-white p-8 rounded-lg shadow-md w-full max-w-sm space-y-4"
           onSubmit={handleSubmit}
         >
-          <h1 className="text-2xl text-primary font-bold text-center">Registremos tu cuenta</h1>
+          <h1 className="text-2xl text-primary font-bold text-center">
+            Registremos tu cuenta
+          </h1>
 
           {/* Mensaje de error si existe */}
           {error && <p className="text-red-500 text-sm text-center">{error}</p>}
 
           {/* Campos del formulario */}
-          <Input label="Nombre" name="name" value={values.name} onChange={handleChange} />
-          <Input label="Apellido" name="lastname" value={values.lastname} onChange={handleChange} />
-          <Input label="Nombre de usuario" name="username" value={values.username} onChange={handleChange} />
-          <Input label="Correo electrónico" name="email" type="email" value={values.email} onChange={handleChange} />
-          <Input label="Fecha de nacimiento" name="birthDate" type="date" value={values.birthDate} onChange={handleChange} />
-          <Input label="Contraseña" name="password" type="password" value={values.password} onChange={handleChange} />
-          <Input label="Confirmar contraseña" name="confirm" type="password" value={values.confirm} onChange={handleChange} />
+          <Input
+            label="Nombre"
+            name="name"
+            value={values.name}
+            onChange={handleChange}
+          />
+          <Input
+            label="Apellido"
+            name="lastname"
+            value={values.lastname}
+            onChange={handleChange}
+          />
+          <Input
+            label="Nombre de usuario"
+            name="username"
+            value={values.username}
+            onChange={handleChange}
+          />
+          <Input
+            label="Correo electrónico"
+            name="email"
+            type="email"
+            value={values.email}
+            onChange={handleChange}
+          />
+          <Input
+            label="Fecha de nacimiento"
+            name="birthDate"
+            type="date"
+            value={values.birthDate}
+            onChange={handleChange}
+          />
+          <Input
+            label="Contraseña"
+            name="password"
+            type="password"
+            value={values.password}
+            onChange={handleChange}
+          />
+          <Input
+            label="Confirmar contraseña"
+            name="confirm"
+            type="password"
+            value={values.confirm}
+            onChange={handleChange}
+          />
           <Button type="submit">Continuar</Button>
           <p className="text-center text-sm">
             ¿Ya tenés cuenta?{" "}
@@ -104,7 +154,6 @@ const RegisterPage = () => {
         </form>
       </div>
     </div>
-    
   );
 };
 
