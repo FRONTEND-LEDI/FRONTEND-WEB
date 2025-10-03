@@ -56,7 +56,7 @@ export const getUserId = async (token: string) => {
     const response = await fetch(`${API_URL}/getUser`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "x-client": "web",
       },
       credentials: "include",
@@ -68,7 +68,6 @@ export const getUserId = async (token: string) => {
       throw new Error(result.error || "No se pudo obtener el del usuario");
     }
 
-    console.log(" resultado de getUserId", result.user_data);
     return result.user_data;
   } catch (error) {
     console.error("Error en getUserId:", error);
@@ -76,16 +75,16 @@ export const getUserId = async (token: string) => {
   }
 };
 
-export const getOneUser = async(token: string): Promise<FullUser> => {
+export const getOneUser = async (token: string): Promise<FullUser> => {
   try {
     const response = await fetch(`${API_URL}/oneUser`, {
       method: "GET",
       headers: {
-        "Authorization": `Bearer ${token}`,
+        Authorization: `Bearer ${token}`,
         "x-client": "web",
       },
       credentials: "include",
-    }); 
+    });
 
     const result = await response.json();
 
@@ -93,7 +92,6 @@ export const getOneUser = async(token: string): Promise<FullUser> => {
       throw new Error(result.error || "No se pudo obtener datos del usuario");
     }
 
-    console.log(" resultado de getOneUser", result.result);
     return result.result as FullUser;
   } catch (error) {
     console.error("Error en getOneUser:", error);

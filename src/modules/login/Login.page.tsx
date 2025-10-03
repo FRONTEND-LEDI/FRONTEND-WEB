@@ -95,8 +95,12 @@ const LoginPage = () => {
       {submitting && <LoadingGate message="Ingresando…" />}
 
       {/* columna izquierda con la imagen */}
-      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:justify-end lg:pr-2">
-        <img src="/hostImage/zorro-loginIA.png" alt="Zorro login" className="max-h-[90px] lg:max-h-[350px] w-auto object-contain" />
+      <div className="w-full lg:w-1/2 flex items-center justify-center p-4 lg:justify-end lg:pr-20">
+        <img
+          src="/hostImage/avatarLanding.png"
+          alt="Zorro login"
+          className="max-h-[90px] lg:max-h-[350px] w-auto object-contain"
+        />
       </div>
 
       {/* columna derecha con el formulario */}

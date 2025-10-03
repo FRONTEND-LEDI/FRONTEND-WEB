@@ -10,7 +10,8 @@ import { getAuthorAvatarUrl } from "../../../types/author";
 import { Link } from "wouter";
 import toast from "react-hot-toast";
 import LoadingGate from "../../../common/components/LoadingGate";
-import { User, Search, Edit, Trash2, Plus, Users } from "lucide-react";
+import { User, Search, Edit, Trash2, Plus } from "lucide-react";
+import { FaUserPen } from "react-icons/fa6";
 
 export default function AdminAuthorsList() {
   const { token } = useAuth();
@@ -47,7 +48,7 @@ export default function AdminAuthorsList() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
-              <Users className="w-6 h-6 text-white" />
+              <FaUserPen className="w-6 h-6 text-white" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-900">

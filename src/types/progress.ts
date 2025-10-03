@@ -1,4 +1,3 @@
-// src/types/progress.ts
 export type ProgressStatus = "reading" | "finished" | "abandoned" | "pending";
 
 export interface BookProgress {

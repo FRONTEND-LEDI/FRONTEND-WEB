@@ -1,13 +1,10 @@
-import {
-  BarChart3,
-  Library,
-  BookOpen,
-  NotebookPen,
-  Users,
-  TrendingUp,
-  MonitorDot,
-  MessagesSquare,
-} from "lucide-react";
+import { BarChart3, TrendingUp, MonitorDot } from "lucide-react";
+import { GiBookshelf } from "react-icons/gi";
+import { FaUserPen } from "react-icons/fa6";
+import { ImUsers } from "react-icons/im";
+import { FaPeopleRoof } from "react-icons/fa6";
+import { LuBookUp } from "react-icons/lu";
+import { TbUserUp } from "react-icons/tb";
 import { useQuery } from "@tanstack/react-query";
 import { useAuth } from "../../context/AuthContext";
 import { getAllBooks } from "../../db/services/books";
@@ -68,7 +65,7 @@ export default function AdminDashboard() {
               </p>
             </div>
             <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
-              <Library className="w-6 h-6 text-orange-600" />
+              <GiBookshelf className="w-6 h-6 text-orange-600" />
             </div>
           </div>
           {booksCountQ.isError && (
@@ -91,8 +88,8 @@ export default function AdminDashboard() {
                 +5% no sé
               </p>
             </div>
-            <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
-              <NotebookPen className="w-6 h-6 text-amber-600" />
+            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
+              <FaUserPen className="w-6 h-6 text-purple-600" />
             </div>
           </div>
           {authorsCountQ.isError && (
@@ -114,7 +111,7 @@ export default function AdminDashboard() {
               </p>
             </div>
             <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <Users className="w-6 h-6 text-blue-600" />
+              <ImUsers className="w-6 h-6 text-blue-600" />
             </div>
           </div>
         </div>
@@ -131,8 +128,8 @@ export default function AdminDashboard() {
                 <MonitorDot className="w-3 h-3" />8 clubes activos ponele
               </p>
             </div>
-            <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
-              <MessagesSquare className="w-6 h-6 text-purple-600" />
+            <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
+              <FaPeopleRoof className="w-6 h-6 text-amber-600" />
             </div>
           </div>
         </div>
@@ -149,7 +146,7 @@ export default function AdminDashboard() {
             className="flex items-center gap-4 p-4 rounded-lg border border-orange-200 hover:border-orange-300 hover:bg-orange-50 transition-colors group"
           >
             <div className="w-10 h-10 bg-orange-100 rounded-lg flex items-center justify-center group-hover:bg-orange-200">
-              <BookOpen className="w-5 h-5 text-orange-600" />
+              <LuBookUp className="w-5 h-5 text-orange-600" />
             </div>
             <div>
               <h3 className="font-medium text-gray-900">Agregar Libro</h3>
@@ -164,7 +161,7 @@ export default function AdminDashboard() {
             className="flex items-center gap-4 p-4 rounded-lg border border-orange-200 hover:border-orange-300 hover:bg-orange-50 transition-colors group"
           >
             <div className="w-10 h-10 bg-amber-100 rounded-lg flex items-center justify-center group-hover:bg-amber-200">
-              <NotebookPen className="w-5 h-5 text-amber-600" />
+              <TbUserUp className="w-5 h-5 text-amber-600" />
             </div>
             <div>
               <h3 className="font-medium text-gray-900">Agregar Autor</h3>

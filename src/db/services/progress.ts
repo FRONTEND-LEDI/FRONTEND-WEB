@@ -39,6 +39,8 @@ export async function createProgress(
     idBook: string;
     status: ProgressStatus;
     position: number;
+    percent: number;
+    total: number;
     startDate: string;
     unit: "page" | "second";
   },
@@ -52,12 +54,19 @@ export async function createProgress(
   });
   if (!res.ok) throw new Error("No se pudo crear el progreso");
   const payload = await res.json();
-  return payload?.data as BookProgress;
+  return (payload?.data ?? payload?.result) as BookProgress;
 }
 
-// ! PUT - actualiza la posición */
+// ! PUT - actualiza la posición y estado */
 export async function updateProgressPosition(
-  input: { id: string; position: number },
+  input: {
+    id: string;
+    position: number;
+    percent: number;
+    total: number;
+    unit: "page" | "second";
+    status?: ProgressStatus;
+  },
   token: string | null
 ): Promise<BookProgress> {
   const res = await fetch(`${URL}/progress`, {
@@ -68,5 +77,5 @@ export async function updateProgressPosition(
   });
   if (!res.ok) throw new Error("No se pudo actualizar la posición");
   const payload = await res.json();
-  return payload?.result as BookProgress;
+  return (payload?.result ?? payload?.data) as BookProgress;
 }

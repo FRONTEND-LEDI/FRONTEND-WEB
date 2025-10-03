@@ -7,7 +7,8 @@ import type { Book } from "../../../types/books";
 import { Link } from "wouter";
 import toast from "react-hot-toast";
 import LoadingGate from "../../../common/components/LoadingGate";
-import { Edit, Trash2, Plus, Search, Library } from "lucide-react";
+import { Edit, Trash2, Plus, Search } from "lucide-react";
+import { GiBookshelf } from "react-icons/gi";
 
 export default function AdminBooksList() {
   const { token, user } = useAuth();
@@ -57,7 +58,7 @@ export default function AdminBooksList() {
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
             <div className="w-12 h-12 bg-gradient-to-r from-orange-500 to-amber-500 rounded-lg flex items-center justify-center">
-              <Library className="w-6 h-6 text-white" />
+              <GiBookshelf className="w-6 h-6 text-white" />
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-900">

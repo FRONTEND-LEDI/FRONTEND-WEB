@@ -28,7 +28,7 @@ const CatalogPage: React.FC = () => {
     <div className="flex flex-col min-h-screen bg-fund">
       <Navbar />
 
-      <main className="flex-1 max-w-7xl mx-auto p-4 pt-23">
+      <main className="flex-1 max-w-7xl mx-auto p-4 pt-30 mb-10">
         {/* filtros y buscador */}
         <ImprovedFiltersBar
           years={years || []}

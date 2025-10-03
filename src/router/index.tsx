@@ -33,7 +33,12 @@ const AppRouter = () => {
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/test" component={Test} />
-      <Route path="/profile" component={Profile} />
+
+      <Route path="/profile">
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+      </Route>
 
       <Route path="/probando">
         <LoadingGate message="Cargando…" />

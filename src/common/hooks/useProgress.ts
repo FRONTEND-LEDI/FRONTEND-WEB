@@ -1,7 +1,7 @@
 import { useCallback, useRef } from "react";
 import { useQuery, useMutation, useQueryClient } from "@tanstack/react-query";
 import type { Book } from "../../types/books";
-import type { BookProgress } from "../../types/progress";
+import type { ProgressStatus } from "../../types/progress";
 import {
   getProgressByBook,
   createProgress,
@@ -28,7 +28,14 @@ export function useEnsureProgressOnOpen(book: Book | null | undefined) {
 
   const fmt = book?.format?.toLowerCase();
   const unit: "page" | "second" = fmt === "ebook" ? "page" : "second";
+  const total =
+    fmt === "ebook"
+      ? Number(book?.totalPages ?? 0)
+      : Number(book?.duration ?? 0);
+
   const initialPosition = fmt === "ebook" ? 1 : 0;
+  const initialPercent =
+    total > 0 ? Math.round((initialPosition / total) * 10000) / 100 : 0;
 
   const ensure = useCallback(async () => {
     if (!book || creatingRef.current) return;
@@ -41,47 +48,102 @@ export function useEnsureProgressOnOpen(book: Book | null | undefined) {
             idBook: book._id,
             status: "reading",
             position: initialPosition,
+            percent: initialPercent,
+            total,
             startDate: new Date().toISOString(),
             unit,
           },
           token
         );
-        // refresca cache de este libro
+        // refresca cache de este libro y lista de "seguir leyendo"
         qc.setQueryData(["progress", book._id], created);
+        qc.invalidateQueries({ queryKey: ["continueReading"] });
+        qc.invalidateQueries({ queryKey: ["progressAll"] });
       }
     } finally {
       creatingRef.current = false;
     }
-  }, [book, token, initialPosition, unit, qc]);
+  }, [book, token, initialPosition, unit, initialPercent, total, qc]);
 
-  return { ensure, initialPosition };
+  return { ensure, initialPosition, unit, total };
 }
 
-/** Actualiza la posición con throttle (para scroll/pdf o tiempo de video) */
-export function useUpdatePosition(progress?: BookProgress | null) {
+/** Actualiza la posición con throttle (calculo de percent + finished) */
+export function useUpdatePosition(
+  progressId?: string,
+  unit?: "page" | "second",
+  fixedTotal?: number
+) {
   const { token } = useAuth();
-  const qc = useQueryClient();
   const lastSentRef = useRef<number>(0);
+  const finishedOnceRef = useRef(false);
+  const qc = useQueryClient();
 
   const { mutate } = useMutation({
-    mutationFn: (position: number) =>
-      updateProgressPosition({ id: progress!._id, position }, token),
-    onSuccess: (data) => {
-      // refresca cache del progreso de este libro
-      qc.setQueryData(["progress", data.idBook], data);
+    mutationFn: (data: {
+      position: number;
+      total: number;
+      unit: "page" | "second";
+      status?: ProgressStatus;
+    }) =>
+      updateProgressPosition(
+        {
+          id: progressId!,
+          position: data.position,
+          percent:
+            data.total > 0
+              ? Math.round((data.position / data.total) * 10000) / 100
+              : 0,
+          total: data.total,
+          unit: data.unit,
+          status: data.status,
+        },
+        token
+      ),
+    // para refrescar cuando cambia
+    onSuccess: (_data) => {
+      qc.invalidateQueries({ queryKey: ["continueReading"] });
+      qc.invalidateQueries({ queryKey: ["progressAll"] });
     },
   });
 
+  // actualiza posició/percent
   const sendThrottled = useCallback(
-    (position: number, nowMs: number = Date.now(), everyMs: number = 3000) => {
-      if (!progress?._id) return;
-      if (nowMs - lastSentRef.current >= everyMs) {
-        lastSentRef.current = nowMs;
-        mutate(position);
-      }
+    (
+      position: number,
+      overrideTotal?: number,
+      nowMs: number = Date.now(),
+      everyMs: number = 3000
+    ) => {
+      if (!progressId || !unit) return;
+      if (nowMs - lastSentRef.current < everyMs) return;
+
+      const total = Number(overrideTotal ?? fixedTotal ?? 0);
+      const clampedPos =
+        unit === "page"
+          ? Math.max(1, Math.min(position, total || position))
+          : Math.max(0, position);
+
+      lastSentRef.current = nowMs;
+      mutate({
+        position: clampedPos,
+        total,
+        unit,
+      });
     },
-    [mutate, progress?._id]
+    [mutate, progressId, unit, fixedTotal]
   );
 
-  return { sendThrottled };
+  // Enviar FIN una sola vez (percent=100, position=total)
+  const finishOnce = useCallback(() => {
+    if (!progressId || !unit) return;
+    const total = Number(fixedTotal ?? 0);
+    if (total <= 0) return;
+    if (finishedOnceRef.current) return; // evita spam
+    finishedOnceRef.current = true;
+
+    mutate({ position: total, total, unit, status: "finished" });
+  }, [mutate, progressId, unit, fixedTotal]);
+
+  return { sendThrottled, finishOnce };
 }
