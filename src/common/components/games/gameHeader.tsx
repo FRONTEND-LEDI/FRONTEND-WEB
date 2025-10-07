@@ -8,7 +8,7 @@ export function GameHeader({  points = 0 }: {  points?: number }) {
   };
 
   return (
-    <div className="w-full flex justify-between items-center p-2 bg-[#0a0e27] border-b border-orange-500 text-orange-400 font-mono">
+    <div className="w-full flex justify-between items-center p-2 bg-[#0a0e27] border-b border-orange-500 text-orange-400 font-mono pt-10">
       {/* Botón Salir */}
       <button
         onClick={handleSalir}

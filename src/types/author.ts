@@ -10,9 +10,17 @@ export type AuthorAvatar =
 
 export type Author = {
   _id: string;
-  name: string;
+  fullName: string;
+  profession: string;
+  birthdate: string;
+  birthplace: string;
+  nationality: string;
+  writingGenre:string;
   biography: string;
-  avatar?: AuthorAvatar;
+  avatar: {
+    id_image: string;
+   url_secura: string;
+  };
 };
 
 export function getAuthorAvatarUrl(a?: AuthorAvatar): string | undefined {

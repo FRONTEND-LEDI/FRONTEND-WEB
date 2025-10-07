@@ -3,10 +3,9 @@ import { useRoute } from "wouter";
 import Navbar from "../../common/components/navbar";
 import { getAuthorsbyId } from "../../db/services/author";
 import { getBookbyAuthorId } from "../../db/services/author";
-import { Author } from "./Author.page";
 import { AuthorBooks } from "./Author.books";
 import Footer from "../../common/components/Footer";
-
+import type { Author } from "../../types/author";
 function capitalizeSentence(text: string) {
   if (!text) return "";
   text = text.trim();
@@ -47,7 +46,7 @@ export function AuthorDetail() {
         <div className="w-48 rounded-full">
           <img
             src={author.avatar.url_secura}
-            alt={author.name}
+            alt={author.fullName}
             className="w-full h-96 object-cover rounded-lg shadow-md"
           />
         </div>
@@ -56,21 +55,21 @@ export function AuthorDetail() {
         <table className="table">
           <thead className="text-bold text-black">
             <tr>
-              <th>{author.name}</th>
+              <th>{author.fullName}</th>
             </tr>
           </thead>
           <tbody className="text-xs text-gray-500">
             <tr>
               <th>Fecha de nacimiento</th>
-              <td></td>
+              <td>{author.birthdate}</td>
             </tr>
             <tr className="hover:bg-base-300">
               <th>Trabajo</th>
-              <td></td>
+              <td>{author.profession}</td>
             </tr>
             <tr>
               <th>Géneros</th>
-              <td></td>
+              <td className="gap-2" >{author.writingGenre}</td>
             </tr>
           </tbody>
         </table>

@@ -4,16 +4,16 @@ import { getAuthors } from "../../db/services/author";
 import { Link } from "wouter";
 import { Letras } from "./Author.concurso";
 import Footer from "../../common/components/Footer";
-
-export interface Author {
-  _id: string;
-  name: string;
-  biography: string;
-  avatar: {
-    id_image: string;
-    url_secura: string;
-  };
-}
+import type { Author } from "../../types/author";
+// export interface Author {
+//   _id: string;
+//   fullName: string;
+//   biography: string;
+//   avatar: {
+//     id_image: string;
+//     url_secura: string;
+//   };
+// }
 
 export function Author() {
   const [authors, setAuthors] = useState<Author[]>([]);
@@ -70,7 +70,7 @@ export function Author() {
                   <figure className="aspect-square w-full overflow-hidden bg-gray-200">
                     <img
                       src={author.avatar.url_secura}
-                      alt={`Foto de ${author.name}`}
+                      alt={`Foto de ${author.fullName}`}
                       className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
                       loading="lazy"
                     />
@@ -80,14 +80,16 @@ export function Author() {
                   <div className="card-body p-5">
                     <div className="flex items-start justify-between gap-2 mb-2">
                       <h2 className="card-title text-lg font-bold text-gray-800 flex-1">
-                        {author.name}
+                        {author.fullName}
                       </h2>
                       <span className="badge badge-primary badge-sm">
                         Autor
                       </span>
                     </div>
 
-                  
+                  <span className="badge badge-primary badge-sm">
+                       {author.writingGenre}
+                      </span>
                     {author.biography && (
       <p className="text-sm text-gray-600 line-clamp-2 mb-3 capitalize">
   {author.biography}

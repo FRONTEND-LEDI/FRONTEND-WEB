@@ -31,7 +31,7 @@ createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-   <TourProvider steps={steps}>
+   <TourProvider  steps={steps}>
   <App />
 </TourProvider>
       </AuthProvider>
