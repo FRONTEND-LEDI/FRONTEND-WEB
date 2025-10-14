@@ -179,7 +179,7 @@ const BookDetailPage: React.FC = () => {
                 ? authorObjs.map((a, idx) => (
                     <span key={a._id}>
                       <Link
-                        href={`/autor/${a._id}`}
+                        href={`/authors/${a._id}`}
                         className="text-amber-600 hover:underline"
                       >
                         {a.fullName}

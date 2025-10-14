@@ -105,7 +105,7 @@ const ImprovedFiltersBar: React.FC<Props> = ({
           <div className="absolute -top-2 -right-2 z-10">
             <div className="bg-gradient-to-r from-orange-500 via-amber-500 to-yellow-500 bg-[length:200%_200%] animate-gradient-x text-white text-xs px-2 py-1 rounded-full flex items-center gap-1 shadow-lg">
               <Sparkles className="h-3 w-3 animate-pulse" />
-              <span className="font-medium">IA</span>
+              <span className="font-medium">Buscar</span>
             </div>
           </div>
 
