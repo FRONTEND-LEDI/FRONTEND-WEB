@@ -197,7 +197,7 @@ const BookDetailPage: React.FC = () => {
               </span>
               <span className="bg-white/60 px-3 py-1 rounded-full border">
                 <strong>Antología:</strong>{" "}
-                {anthologyYear ? `Antología ${anthologyYear}` : "—"}
+                {anthologyYear ? ` ${anthologyYear}` : "—"}
               </span>
               <span className="bg-white/60 px-3 py-1 rounded-full border">
                 <strong>Nivel:</strong> {book.level || "—"}

@@ -30,10 +30,10 @@ const INITIAL = {
 };
 
 const LEVEL_OPTIONS = [
-  { value: "adulto mayor", label: "Adulto Mayor" },
-  { value: "joven adulto", label: "Joven Adulto" },
-  { value: "secundario", label: "Secundario" },
-  { value: "inicial", label: "Inicial" },
+  { value: "Adulto Mayor", label: "Adulto Mayor" },
+  { value: "Joven Adulto", label: "Joven Adulto" },
+  { value: "Secundario", label: "Secundario" },
+  { value: "Inicial", label: "Inicial" },
 ];
 
 const LANGUAGE_OPTIONS = [
