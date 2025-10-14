@@ -73,8 +73,8 @@ getFormat().then(setFormats);
   return (
     <div className="flex flex-col items-center justify-center min-h-screen  bg-fund py-10 px-4">
       {/* Barra de pasos */}
-      <div className="w-full max-w-3xl fixed top-4 h-2">
-        <ul className="steps w-full">
+      <div className="w-full max-w-3xl  text-gray-700 fixed top-4 h-2">
+        <ul className="steps w-full  text-gray-700">
           {dialog.map((_, index) => (
             <li
               key={index}
@@ -86,7 +86,7 @@ getFormat().then(setFormats);
         <Link
           href="/home"
           onClick={() => completeRegistration(selectedGenres, selectedFormats, selectedAvatar, navigate)}
-          className="absolute right-0 text-sm underline text-gray-500 cursor-pointer"
+          className="absolute right-0 text-sm underline text-gray-700 cursor-pointer"
         >
           Omitir
         </Link>
@@ -125,16 +125,16 @@ getFormat().then(setFormats);
               : [...prev, nombre]
           )
         }
-        className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
+        className={`text-center   bg-secondary shadow-lg px-4 justify-center items-center flex  cursor-pointer hover:scale-105 transition rounded-4xl py-1 ${
           isSelected ? "ring-4 ring-primary" : ""
         }`}
       >
-        <img
+        {/* <img
           src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
           alt={nombre}
           className="rounded-lg h-10 w-15 object-cover mx-auto"
-        />
-        <p className="mt-2 font-medium">{nombre}</p>
+        /> */}
+        <p className="mt-2 font-medium text-primary">{nombre}</p>
       </div>
     );
   })}
@@ -153,16 +153,16 @@ getFormat().then(setFormats);
               : [...prev, nombre]
           )
         }
-        className={`text-center cursor-pointer hover:scale-105 transition rounded-lg p-2 ${
+        className={`text-center   bg-secondary shadow-lg px-4 justify-center items-center flex  cursor-pointer hover:scale-105 transition rounded-4xl py-1 ${
           isSelected ? "ring-4 ring-primary" : ""
         }`}
       >
-        <img
+        {/* <img
           src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
           alt={nombre}
           className="rounded-lg h-20 w-full object-cover mx-auto"
-        />
-        <p className="mt-2 font-medium">{nombre}</p>
+        /> */}
+        <p className="mt-2 font-medium text-primary">{nombre}</p>
       </div>
     );
   })}

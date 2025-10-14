@@ -1,3 +1,4 @@
+
 export default function Footer() {
   return (
     <footer className="bg-primary text-white">
@@ -50,9 +51,16 @@ export default function Footer() {
                   Club de Lectura
                 </a>
               </li>
+               <li>
+                <a
+                  href="/BiblioGames"
+                  className="hover:text-white transition-colors"
+                >
+                  BiblioGames
+                </a>
+              </li>
             </ul>
           </div>
-
           <div>
             <h3 className="font-semibold text-foreground mb-3">Soporte</h3>
             <ul className="space-y-2 text-sm text-secondary">

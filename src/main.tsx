@@ -5,6 +5,7 @@ import App from "./App.tsx";
 import { AuthProvider } from "./context/AuthContext.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
+import { TourProvider } from '@reactour/tour'
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -16,11 +17,23 @@ const queryClient = new QueryClient({
   },
 });
 
+const steps = [
+  { selector: "#Inicio", content: "Aquí puedes volver al inicio." },
+  { selector: "#Catalogo", content: "Explora todo el catálogo de libros." },
+  { selector: "#ClubDeLectura", content: "Únete al Club de Lectura." },
+  { selector: "#Bibliogames", content: "Juega en la sección BiblioGames." },
+  { selector: "#Autores", content: "Descubre tus autores favoritos." },
+  { selector: "#Recomendaciones", content: "Libros recomendados para ti." },
+  { selector: "#SeguirLeyendo", content: "Aquí puedes continuar tus lecturas." },
+];
+
 createRoot(document.getElementById("root")!).render(
   <StrictMode>
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
-        <App />
+   <TourProvider  steps={steps}>
+  <App />
+</TourProvider>
       </AuthProvider>
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>

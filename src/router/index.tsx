@@ -11,6 +11,8 @@ import Profile from "../modules/profile/Profile.page";
 import ForumPage from "../modules/forum/Forum.page";
 import { BiblioGames } from "../modules/games/Games.page";
 import LoadingGate from "../common/components/LoadingGate";
+import { Author } from "../modules/author/Author.page";
+import { AuthorDetail } from "../modules/author/Author.Detail.page";
 import NotFound from "../common/components/notFound/NotFound";
 
 // Admin
@@ -24,6 +26,8 @@ import AdminAuthorsList from "../modules/admin/authors/AdminAuthorsList";
 import AdminAuthorsNew from "../modules/admin/authors/AdminAuthorsNew";
 import AdminAuthorsEdit from "../modules/admin/authors/AdminAuthorsEdit";
 import AdminNotFound from "../common/components/notFound/AdminNotFound";
+import { BookSelector } from "../common/components/games/BookSelector";
+import { CreatuHistoria } from "../common/components/games/CreaTuHistoria";
 
 const AppRouter = () => {
   return (
@@ -61,15 +65,32 @@ const AppRouter = () => {
           <ForumPage />
         </ProtectedRoute>
       </Route>
-      <Route path="/BiblioGames">
-        <ProtectedRoute>
-          <BiblioGames />
-        </ProtectedRoute>
+      
+    <Route path="/Autores">
+      <ProtectedRoute>
+        <Author/>
+      </ProtectedRoute>
       </Route>
+      <Route path="/authors/:id">
+      <ProtectedRoute>
+        <AuthorDetail/>
+      </ProtectedRoute>
+      </Route>
+
+
+<Route path="/BiblioGames">
+  <ProtectedRoute>
+    <BiblioGames />
+  </ProtectedRoute>
+</Route>
+
+<Route path="/games/select-book/:gameType" component={BookSelector} />
+<Route path="/games/historia/:bookId" component={CreatuHistoria} />
+{/* <Route path="/games/preguntados/:bookId" component={Preguntados} /> */}
 
       <Route path="/libro/:id">
         <ProtectedRoute>
-          <BookDetailPage />
+          <BookDetailPage/>
         </ProtectedRoute>
       </Route>
 
