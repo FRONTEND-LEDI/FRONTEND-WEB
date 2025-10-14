@@ -10,7 +10,7 @@ import { User, Upload, Save, X } from "lucide-react";
 export default function AdminAuthorsNew() {
   const { token } = useAuth();
   const [, navigate] = useLocation();
-  const [name, setName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [biography, setBiography] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -25,12 +25,12 @@ export default function AdminAuthorsNew() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      if (!name.trim()) return toast.error("Falta nombre");
+      if (!fullName.trim()) return toast.error("Falta nombre");
       if (!biography.trim()) return toast.error("Falta biografía");
       if (!avatarFile) return toast.error("Falta avatar");
       setLoading(true);
       await adminCreateAuthor(
-        { name: name.trim(), biography: biography.trim(), avatarFile },
+        { name: fullName.trim(), biography: biography.trim(), avatarFile },
         token
       );
       toast.success("Autor creado");
@@ -72,8 +72,8 @@ export default function AdminAuthorsNew() {
                 <input
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                   placeholder="Ingresa el nombre del autor"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
               </div>
 

@@ -39,7 +39,7 @@ export default function AdminAuthorsList() {
 
   const authorsAll = (data ?? []) as Author[];
   const authors = authorsAll.filter((a) =>
-    q.trim() ? a.name.toLowerCase().includes(q.trim().toLowerCase()) : true
+    q.trim() ? a.fullName.toLowerCase().includes(q.trim().toLowerCase()) : true
   );
 
   return (
@@ -120,7 +120,7 @@ export default function AdminAuthorsList() {
                       {url ? (
                         <img
                           src={url || "/placeholder.svg"}
-                          alt={a.name}
+                          alt={a.fullName}
                           className="w-12 h-12 rounded-full object-cover border-2 border-orange-100"
                         />
                       ) : (
@@ -130,7 +130,9 @@ export default function AdminAuthorsList() {
                       )}
                     </td>
                     <td className="py-4 px-6">
-                      <div className="font-medium text-gray-900">{a.name}</div>
+                      <div className="font-medium text-gray-900">
+                        {a.fullName}
+                      </div>
                     </td>
                     <td className="py-4 px-6">
                       <div

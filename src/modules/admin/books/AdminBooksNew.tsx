@@ -247,7 +247,7 @@ export default function AdminBooksNew() {
                               className="w-5 h-5 rounded-full object-cover"
                             />
                           ) : null}
-                          {a?.name ?? id}
+                          {a?.fullName ?? id}
                           <button
                             type="button"
                             className="ml-1 text-orange-600 hover:text-orange-800"
@@ -540,7 +540,7 @@ function AuthorPicker({
   const [q, setQ] = useState("");
 
   const filtered = authors.filter((a) =>
-    q.trim() ? a.name.toLowerCase().includes(q.trim().toLowerCase()) : true
+    q.trim() ? a.fullName.toLowerCase().includes(q.trim().toLowerCase()) : true
   );
 
   return (
@@ -572,7 +572,7 @@ function AuthorPicker({
               {url ? (
                 <img
                   src={url}
-                  alt={a.name}
+                  alt={a.fullName}
                   className="w-8 h-8 rounded-full object-cover border"
                 />
               ) : (
@@ -580,7 +580,7 @@ function AuthorPicker({
               )}
               <div className="min-w-0">
                 <div className="text-sm font-medium text-gray-900 truncate">
-                  {a.name}
+                  {a.fullName}
                 </div>
                 <div className="text-xs text-gray-500 truncate">
                   {a.biography}

@@ -17,7 +17,7 @@ export default function AdminAuthorsEdit() {
   const [, navigate] = useLocation();
   const { token } = useAuth();
 
-  const [name, setName] = useState("");
+  const [fullName, setFullName] = useState("");
   const [biography, setBiography] = useState("");
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
@@ -28,7 +28,7 @@ export default function AdminAuthorsEdit() {
     (async () => {
       try {
         const a = await getAuthorById(id, token);
-        setName(a.name ?? "");
+        setFullName(a.fullName ?? "");
         setBiography(a.biography ?? "");
         setPreview(getAuthorAvatarUrl(a.avatar) ?? null);
       } catch (e: any) {
@@ -48,13 +48,13 @@ export default function AdminAuthorsEdit() {
   async function onSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      if (!name.trim()) return toast.error("Falta nombre");
+      if (!fullName.trim()) return toast.error("Falta nombre");
       if (!biography.trim()) return toast.error("Falta biografía");
       setSaving(true);
       await adminUpdateAuthor(
         id,
         {
-          name: name.trim(),
+          name: fullName.trim(),
           biography: biography.trim(),
           avatarFile: avatarFile || undefined,
         },
@@ -106,8 +106,8 @@ export default function AdminAuthorsEdit() {
                 <input
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
                   placeholder="Ingresa el nombre del autor"
-                  value={name}
-                  onChange={(e) => setName(e.target.value)}
+                  value={fullName}
+                  onChange={(e) => setFullName(e.target.value)}
                 />
               </div>
 

@@ -10,7 +10,7 @@ export type AuthorAvatar =
 
 export type Author = {
   _id: string;
-  name: string;
+  fullName: string;
   biography: string;
   avatar?: AuthorAvatar;
 };
