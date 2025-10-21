@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Foro } from "./types";
+import type { Foro } from "../../../types/forum";
 
 type AddPostProps = {
   foroSeleccionado: Foro | null;

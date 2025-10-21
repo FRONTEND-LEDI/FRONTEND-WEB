@@ -5,6 +5,7 @@ export type Coment = {
   idForo: string;
   createAt: string;
   content: string;
+  __v?:number;
 };
 
 export type Foro = {

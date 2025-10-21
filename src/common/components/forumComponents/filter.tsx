@@ -1,4 +1,4 @@
-import type { Foro } from "./types";
+import type { Foro } from "../../../types/forum";
 
 type FilterProps = {
   setForoSeleccionado: (foro: Foro | null) => void; 

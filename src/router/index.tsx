@@ -28,6 +28,7 @@ import AdminAuthorsEdit from "../modules/admin/authors/AdminAuthorsEdit";
 import AdminNotFound from "../common/components/notFound/AdminNotFound";
 import { BookSelector } from "../common/components/games/BookSelector";
 import { CreatuHistoria } from "../common/components/games/CreaTuHistoria";
+import { Quiz } from "../common/components/games/Preguntados";
 
 const AppRouter = () => {
   return (
@@ -86,7 +87,7 @@ const AppRouter = () => {
 
 <Route path="/games/select-book/:gameType" component={BookSelector} />
 <Route path="/games/historia/:bookId" component={CreatuHistoria} />
-{/* <Route path="/games/preguntados/:bookId" component={Preguntados} /> */}
+<Route path="/games/preguntados/:bookId" component={Quiz} />
 
       <Route path="/libro/:id">
         <ProtectedRoute>

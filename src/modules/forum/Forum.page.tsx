@@ -7,9 +7,10 @@ import AddPost from '../../common/components/forumComponents/addPost';
 import Navbar from '../../common/components/navbar';
 import { TypeAnimation } from 'react-type-animation';
 import { socket } from "./../../db/services/socket";
-import type { Foro, Coment } from '../../common/components/forumComponents/types';
-
+import type { Coment, Foro } from "../../types/forum";
+import { useAuth } from "../../context/AuthContext";
 export default function ForumPage() {
+  const {user} = useAuth()
   const [foros, setForos] = useState<Foro[]>([]);
   const [foroSeleccionado, setForoSeleccionado] = useState<Foro | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
@@ -94,22 +95,19 @@ export default function ForumPage() {
     };
   }, [foroSeleccionado?._id]);
 
-  // 🔹 Agregar post → enviar al backend
-  const agregarPost = (contenido: string) => {
-    if (!foroSeleccionado) return;
+const agregarPost = (contenido: string) => {
+  if (!foroSeleccionado || !user) return; // ✅ Verifica que user exista
 
-    const nuevoPost = {
-      content: contenido,
-      idForo: foroSeleccionado._id,
-      idUser: "usuario123", // Aquí deberías usar el usuario actual desde el contexto
-      createAt: new Date().toISOString(),
-    };
-
-    console.log("Enviando nuevo post:", nuevoPost);
-    socket.emit("new-public", nuevoPost);
+  const nuevoPost = {
+    content: contenido,
+    idForo: foroSeleccionado._id,
+    idUser: user.id, // ✅ Usa el ID real del usuario autenticado
   };
 
-  // 🔹 Filtrar posts
+  console.log("Enviando nuevo post:", nuevoPost);
+  socket.emit("new-public", nuevoPost);
+};
+
   const postsFiltrados = foroSeleccionado && foroSeleccionado.posts
     ? foroSeleccionado.posts.filter(post =>
         post.content.toLowerCase().includes(searchTerm.toLowerCase())
