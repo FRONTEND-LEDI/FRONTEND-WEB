@@ -1,6 +1,6 @@
 import type { AdminCreateBookInput } from "../../types/books";
 
-const URL = "http://localhost:3402";
+import { API_BASE_URL } from "../config";
 
 const authHeaders = (token: string | null): HeadersInit => {
   const h: HeadersInit = { "x-client": "web" };
@@ -63,7 +63,7 @@ export async function adminCreateBook(
     throw new Error("Para audio/video es obligatorio duration.");
   }
 
-  const res = await fetch(`${URL}/books`, {
+  const res = await fetch(`${API_BASE_URL}/books`, {
     method: "POST",
     headers: authHeaders(token), // NO pongas Content-Type: lo maneja el browser en multipart
     body: buildBookFormData(payload),
@@ -78,7 +78,7 @@ export async function adminCreateBook(
 }
 
 export async function adminDeleteBook(id: string, token: string | null) {
-  const res = await fetch(`${URL}/book/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/book/${id}`, {
     method: "DELETE",
     headers: authHeaders(token),
     credentials: "include",
@@ -111,7 +111,7 @@ export async function adminUpdateBook(
       fd.append(k, String(v));
   }
 
-  const res = await fetch(`${URL}/book/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/book/${id}`, {
     method: "PUT", // cuando esté listo en el back
     headers: authHeaders(token),
     body: fd,

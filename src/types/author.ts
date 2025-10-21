@@ -2,7 +2,7 @@ export type AuthorAvatar =
   | string
   | {
       id_image?: string;
-      url_secura?: string; // viene así desde el back
+      url_secura?: string;
       secure_url?: string;
       url?: string;
       [k: string]: any;
@@ -15,7 +15,7 @@ export type Author = {
   birthdate: string;
   birthplace: string;
   nationality: string;
-  writingGenre: string;
+  writingGenre: string[];
   biography: string;
   avatar: {
     id_image: string;

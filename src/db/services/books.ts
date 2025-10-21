@@ -1,5 +1,5 @@
 import type { Book } from "../../types/books";
-const URL = "http://localhost:3402";
+import { API_BASE_URL } from "../config";
 
 const authHeaders = (token: string | null): HeadersInit => {
   const h: HeadersInit = {
@@ -11,7 +11,7 @@ const authHeaders = (token: string | null): HeadersInit => {
 };
 
 export const getAllBooks = async (token: string | null): Promise<Book[]> => {
-  const res = await fetch(`${URL}/books`, {
+  const res = await fetch(`${API_BASE_URL}/books`, {
     headers: authHeaders(token),
     credentials: "include",
   });
@@ -19,19 +19,28 @@ export const getAllBooks = async (token: string | null): Promise<Book[]> => {
   return res.json() as Promise<Book[]>;
 };
 
-export async function getBooksByQuery(query: string, token: string | null): Promise<Book[]> {
-  const res = await fetch(`${URL}/books/${encodeURIComponent(query)}`, {
-    method: "GET",
-    headers: authHeaders(token),
-    credentials: "include",
-  });
+export async function getBooksByQuery(
+  query: string,
+  token: string | null
+): Promise<Book[]> {
+  const res = await fetch(
+    `${API_BASE_URL}/books/${encodeURIComponent(query)}`,
+    {
+      method: "GET",
+      headers: authHeaders(token),
+      credentials: "include",
+    }
+  );
   if (!res.ok) throw new Error("Error al buscar libros");
   return res.json() as Promise<Book[]>;
 }
 
 // obtener un libro por id
-export async function getBookById(id: string, token: string | null): Promise<Book> {
-  const res = await fetch(`${URL}/book/${id}`, {
+export async function getBookById(
+  id: string,
+  token: string | null
+): Promise<Book> {
+  const res = await fetch(`${API_BASE_URL}/book/${id}`, {
     headers: authHeaders(token),
     credentials: "include",
   });

@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3402";
+import { API_BASE_URL } from "../config";
 
 const authHeaders = (token: string | null): HeadersInit => {
   const h: HeadersInit = { "x-client": "web" };
@@ -36,7 +36,7 @@ export async function adminCreateAuthor(
   data: CreateAuthorInput,
   token: string | null
 ) {
-  const res = await fetch(`${API_URL}/author/create`, {
+  const res = await fetch(`${API_BASE_URL}/author/create`, {
     method: "POST",
     headers: authHeaders(token),
     body: buildAuthorFormData(data),
@@ -69,7 +69,7 @@ export async function adminUpdateAuthor(
       biography: data.biography,
     });
   }
-  const res = await fetch(`${API_URL}/author/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/author/${id}`, {
     method: "PUT",
     headers,
     body,
@@ -83,7 +83,7 @@ export async function adminUpdateAuthor(
 
 // Eliminar autor (DELETE /author/:id)
 export async function adminDeleteAuthor(id: string, token: string | null) {
-  const res = await fetch(`${API_URL}/author/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/author/${id}`, {
     method: "DELETE",
     headers: authHeaders(token),
     credentials: "include",
@@ -95,7 +95,7 @@ export async function adminDeleteAuthor(id: string, token: string | null) {
 
 // Obtener autor por id (GET /author/:id)
 export async function getAuthorById(id: string, token: string | null) {
-  const res = await fetch(`${API_URL}/author/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/author/${id}`, {
     headers: authHeaders(token),
     credentials: "include",
   });
@@ -106,7 +106,7 @@ export async function getAuthorById(id: string, token: string | null) {
 
 // trae todos los autores
 export async function searchAuthors(token: string | null) {
-  const res = await fetch(`${API_URL}/AllAuthores`, {
+  const res = await fetch(`${API_BASE_URL}/AllAuthores`, {
     headers: authHeaders(token),
     credentials: "include",
   });
