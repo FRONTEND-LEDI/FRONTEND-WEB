@@ -7,27 +7,57 @@ const authHeaders = (token: string | null): HeadersInit => {
 };
 
 export type CreateAuthorInput = {
-  name: string;
+  fullName: string;
   biography: string;
-  avatarFile: File; // field name esperado por el back: "avatar"
+  profession: string;
+  birthplace: string;
+  birthdate: string;
+  nationality: string;
+  writingGenre: string[];
+  avatarFile: File;
 };
 
 export type UpdateAuthorInput = {
-  name?: string;
+  fullName?: string;
   biography?: string;
-  avatarFile?: File; // opcional
+  profession?: string;
+  birthplace?: string;
+  birthdate?: string;
+  nationality?: string;
+  writingGenre?: string[];
+  avatarFile?: File;
 };
 
 function buildAuthorFormData(
   data: CreateAuthorInput | UpdateAuthorInput
 ): FormData {
   const fd = new FormData();
-  if ("name" in data && typeof data.name !== "undefined")
-    fd.append("name", String(data.name));
-  if ("biography" in data && typeof data.biography !== "undefined")
-    fd.append("biography", String(data.biography));
-  if ("avatarFile" in data && data.avatarFile)
+
+  const fields: (keyof CreateAuthorInput)[] = [
+    "fullName",
+    "biography",
+    "profession",
+    "birthplace",
+    "birthdate",
+    "nationality",
+  ];
+
+  for (const field of fields) {
+    if (field in data && typeof data[field] === "string") {
+      fd.append(field, data[field] as string);
+    }
+  }
+
+  if ("writingGenre" in data && Array.isArray(data.writingGenre)) {
+    for (const genre of data.writingGenre) {
+      fd.append("writingGenre", genre);
+    }
+  }
+
+  if ("avatarFile" in data && data.avatarFile) {
     fd.append("avatar", (data as any).avatarFile);
+  }
+
   return fd;
 }
 
@@ -65,7 +95,7 @@ export async function adminUpdateAuthor(
     // JSON cuando no hay archivo
     headers = { ...headers, "Content-Type": "application/json" };
     body = JSON.stringify({
-      name: data.name,
+      name: data.fullName,
       biography: data.biography,
     });
   }
