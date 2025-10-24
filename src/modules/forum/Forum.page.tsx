@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useMemo, useCallback } from "react";
 import FilterForum from '../../common/components/forumComponents/filter';
 import Popular from '../../common/components/forumComponents/mostPopular';
 import SearchingBar from '../../common/components/forumComponents/searchBar';
@@ -9,211 +9,228 @@ import { TypeAnimation } from 'react-type-animation';
 import { socket } from "./../../db/services/socket";
 import type { Coment, Foro } from "../../types/forum";
 import { useAuth } from "../../context/AuthContext";
+import ForumOverview from "../../common/components/forumComponents/recentPost";
+
 export default function ForumPage() {
-  const {user} = useAuth()
+  const { user } = useAuth();
+  const [comentarios, setComentarios] = useState<Coment[]>([]);
   const [foros, setForos] = useState<Foro[]>([]);
   const [foroSeleccionado, setForoSeleccionado] = useState<Foro | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
+  const [socketConnected, setSocketConnected] = useState(false);
+   
+  // 🔍 Debugging de eventos del socket
+  useEffect(() => {
+    const handleAnyEvent = (eventName: string, ...args: any[]) => {
+      console.log(`📨 [SOCKET EVENT] "${eventName}":`, args);
+    };
+    socket.onAny(handleAnyEvent);
+    return () => socket.offAny(handleAnyEvent);
+  }, []);
 
-  useEffect(() => {;
-    socket.emit("get-all-foros");
-
-    const handleAllForos = (data: any[]) => {
-      console.log(" Foros recibidos:", data);
-      setForos(data as Foro[]);
+  // 🔌 Conexión del socket
+  useEffect(() => {
+    const handleConnect = () => {
+      console.log("Socket ID:", socket.id);
+      setSocketConnected(true);
+      socket.emit("get-all-foros");
+    };
+    const handleDisconnect = (reason: string) => setSocketConnected(false);
+    const handleConnectError = (error: Error) => {
+      console.error("Error de conexión:", error.message);
+      setSocketConnected(false);
     };
 
-    const handleError = (err: any) => {
-      console.error(" Error:", err);
-    };
+    socket.on("connect", handleConnect);
+    socket.on("disconnect", handleDisconnect);
+    socket.on("connect_error", handleConnectError);
 
-    socket.on("all-foros", handleAllForos);
-    socket.on("error", handleError);
+    if (!socket.connected) socket.connect();
+    else socket.emit("get-all-foros");
 
     return () => {
-      socket.off("all-foros", handleAllForos);
-      socket.off("error", handleError);
+      socket.off("connect", handleConnect);
+      socket.off("disconnect", handleDisconnect);
+      socket.off("connect_error", handleConnectError);
     };
   }, []);
 
- 
+  // 📚 Obtener todos los foros
   useEffect(() => {
-    const handleComentCreated = (nuevo: any) => {
-      console.log("Nuevo comentario:", nuevo);
-      if (foroSeleccionado && nuevo.idForo === foroSeleccionado._id) {
+    const handleAllForos = (data: any) => {
+      if (Array.isArray(data)) setForos(data as Foro[]);
+      else console.error("[FOROS] Los datos recibidos no son un array:", data);
+    };
+    socket.on("all-foros", handleAllForos);
+    socket.on("error", console.error);
+    return () => {
+      socket.off("all-foros", handleAllForos);
+      socket.off("error", console.error);
+    };
+  }, []);
+
+  // 📝 Escuchar comentarios de un foro
+  useEffect(() => {
+    const handleComentsInForo = (data: Coment[]) => {
+      const safeData = Array.isArray(data) ? data : [];
+      setForoSeleccionado(prev => {
+        if (!prev) return prev;
+        return { ...prev, posts: [...safeData].reverse() };
+      });
+
+      // Actualizar comentarios globales
+      setComentarios(prev => {
+        const nuevos = safeData.filter(c => !prev.find(p => p._id === c._id));
+        return [...prev, ...nuevos];
+      });
+
+      setLoading(false);
+    };
+
+    socket.on("coments-in-the-foro", handleComentsInForo);
+    return () => socket.off("coments-in-the-foro", handleComentsInForo);
+  }, []);
+
+  // ✨ Escuchar comentarios nuevos en tiempo real
+  useEffect(() => {
+    const handleComentCreated = (newComment: Coment) => {
+      // Solo agregar al foro seleccionado si corresponde
+      if (foroSeleccionado && newComment.idForo === foroSeleccionado._id) {
         setForoSeleccionado(prev => {
           if (!prev) return prev;
-          const posts = prev.posts || [];
-          return {
-            ...prev,
-            posts: [nuevo as Coment, ...posts],
-          };
+          const exists = prev.posts?.find(p => p._id === newComment._id);
+          if (exists) return prev;
+          return { ...prev, posts: [newComment, ...(prev.posts || [])] };
         });
       }
+      // Actualizar comentarios globales
+      setComentarios(prev => {
+        if (!prev.find(c => c._id === newComment._id)) return [...prev, newComment];
+        return prev;
+      });
     };
 
     socket.on("coment-created", handleComentCreated);
-
-    return () => {
-      socket.off("coment-created", handleComentCreated);
-    };
+    return () => socket.off("coment-created", handleComentCreated);
   }, [foroSeleccionado?._id]);
 
- 
+  // 🔍 Cargar datos del foro seleccionado
   useEffect(() => {
-    if (!foroSeleccionado) return;
-
-    console.log(" Cargando foro:", foroSeleccionado._id);
+    if (!foroSeleccionado?._id) return;
     setLoading(true);
-    socket.emit("get-foro-id", foroSeleccionado._id);
+    socket.emit("all-public-foro", foroSeleccionado._id);
 
-    const handleForoData = (foro: any) => {
-      console.log(" Datos del foro recibidos:", foro);
-  
-      const foroConPosts = {
-        ...foro,
-        posts: Array.isArray(foro.posts) ? foro.posts : []
-      };
-      setForoSeleccionado(foroConPosts as Foro);
+    const timeout = setTimeout(() => {
+      console.log("No se recibieron comentarios en 5 segundos");
       setLoading(false);
-    };
-
-    const handleForoNotFound = () => {
-      console.log(" Foro no encontrado");
-      setLoading(false);
-      alert("Foro no encontrado");
-      setForoSeleccionado(null);
-    };
-
-    socket.on("foro-data", handleForoData);
-    socket.on("foro-not-found", handleForoNotFound);
-
-    return () => {
-      socket.off("foro-data", handleForoData);
-      socket.off("foro-not-found", handleForoNotFound);
-    };
+    }, 5000);
+    return () => clearTimeout(timeout);
   }, [foroSeleccionado?._id]);
 
-const agregarPost = (contenido: string) => {
-  if (!foroSeleccionado || !user) return; // ✅ Verifica que user exista
+  // 📤 Agregar post
+  const agregarPost = useCallback(
+    (contenido: string) => {
+      if (!foroSeleccionado || !user) return console.error("Falta foro o usuario");
+      if (!socket.connected) return socket.connect();
 
-  const nuevoPost = {
-    content: contenido,
-    idForo: foroSeleccionado._id,
-    idUser: user.id, // ✅ Usa el ID real del usuario autenticado
-  };
+      socket.emit("new-public", {
+        content: contenido,
+        idForo: foroSeleccionado._id,
+        idUser: user.id,
+      });
+    },
+    [foroSeleccionado, user]
+  );
 
-  console.log("Enviando nuevo post:", nuevoPost);
-  socket.emit("new-public", nuevoPost);
-};
-
-  const postsFiltrados = foroSeleccionado && foroSeleccionado.posts
-    ? foroSeleccionado.posts.filter(post =>
-        post.content.toLowerCase().includes(searchTerm.toLowerCase())
-      )
-    : [];
-
- 
+  // 🔍 Filtrar posts por búsqueda
+  const postsFiltrados = useMemo(() => {
+    if (!foroSeleccionado?.posts) return [];
+    return foroSeleccionado.posts.filter(post =>
+      post.content.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+  }, [foroSeleccionado?.posts, searchTerm]);
 
   return (
-    <div className="mt-20 flex h-screen bg-fund">
-      <Navbar/>
+    <div className="flex items-center justify-center bg-fund">
+      <Navbar />
+      <main className="flex-1 max-w-7xl mx-auto p-4 pt-30 mb-10">
+        {!foroSeleccionado ? (
+          <>
+            <div
+              style={{ backgroundImage: `url('/landingImages/bibliotecabg.png')` }}
+              className="w-full rounded-xl p-10 text-center shadow-lg bg-cover bg-center"
+            >
+              <TypeAnimation
+                sequence={[
+                  'Bienvenido al Club de Lectura!',
+                  2000,
+                  '',
+                  1000,
+                  'Comparte tus ideas y únete a discusiones!',
+                  3000,
+                  '',
+                  500,
+                ]}
+                wrapper="span"
+                speed={{ type: 'keyStrokeDelayInMs', value: 80 }}
+                cursor
+                style={{
+                  fontSize: '2em',
+                  display: 'inline-block',
+                  textShadow: '4px 4px 8px black',
+                  fontWeight: 'bold',
+                  color: 'white',
+                }}
+                repeat={Infinity}
+              />
+              <p className="text-white mt-2 font-semibold text-shadow-2xl shadow-black">
+                Selecciona una antología para unirte a las discusiones y compartir tus reflexiones literarias
+              </p>
+            </div>
 
-      <div className="w-2xs flex flex-col items-center h-full p-4">
-        <FilterForum setForoSeleccionado={setForoSeleccionado} foros={foros} />
-      </div>
-      <div className="divider divider-horizontal"></div>
+            <section>
+              <FilterForum setForoSeleccionado={setForoSeleccionado} foros={foros} comentarios={comentarios} />
+            </section>
 
-      {/* Panel derecho */}
-      <div className="flex-1 w-5xl justify-center items-center relative overflow-hidden">
-        <div className="flex-1 relative overflow-hidden p-8 space-y-6">
-          {loading ? (
-            <>
-              <div className="h-10 rounded-lg bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer" />
-              <div className="h-screen w-full rounded-xl bg-gradient-to-r from-gray-100 via-gray-200 to-gray-100 animate-shimmer" />
-            </>
-          ) : (
-            <>
-              {!foroSeleccionado ? (
-                <div
-                  style={{ backgroundImage: `url('/landingImages/bibliotecabg.png')` }}
-                  className="w-full rounded-xl p-10 text-center shadow-lg bg-cover bg-center"
-                >
-                  <TypeAnimation
-                    sequence={[
-                      'Bienvenido al Club de Lectura!',
-                      2000,
-                      '',
-                      1000,
-                      'Comparte tus ideas y únete a discusiones!',
-                      3000,
-                      '',
-                      500,
-                    ]}
-                    wrapper="span"
-                    speed={{ type: 'keyStrokeDelayInMs', value: 80 }}
-                    cursor={true}
-                    style={{
-                      fontSize: '2em',
-                      display: 'inline-block',
-                      textShadow: '4px 4px 8px black',
-                      fontWeight: 'bold',
-                      color: 'white',
-                    }}
-                    repeat={Infinity}
-                  />
-                  <p className="text-white mt-2 font-semibold text-shadow-2xl shadow-black">
-                    Selecciona un foro a la izquierda para explorar más publicaciones.
-                  </p>
-                </div>
-              ) : (
-                <>
-                  <div className="flex items-center justify-between">
-                    <button
-                      onClick={() => setForoSeleccionado(null)}
-                      className="px-4 py-2 rounded-lg hover:bg-secondary cursor-pointer transition"
-                    >
-                      ← Volver
-                    </button>
-                    <h2 className="text-xl text-primary font-bold text-center flex-1">
-                      {foroSeleccionado.title}
-                    </h2>
-                    <div className="w-[80px]" />
-                  </div>
+            <section>
+              <ForumOverview foros={foros} />
+            </section>
+          </>
+        ) : (
+          <>
+            <div className="flex flex-col gap-2">
+              <button
+                onClick={() => setForoSeleccionado(null)}
+                className="px-4 py-2 rounded-lg text-gray-500 hover:bg-secondary w-25 justify-baseline cursor-pointer transition"
+              >
+                ← Volver
+              </button>
+              <h2 className="text-xl text-primary font-semibold flex-1">{foroSeleccionado.title}</h2>
+              <p className="text-gray-600 text-md">Discusiones sobre la colección literaria</p>
+            </div>
 
-                  <SearchingBar
-                    searchTerm={searchTerm}
-                    setSearchTerm={setSearchTerm}
-                    foroSeleccionado={foroSeleccionado}
-                  />
-                  <AddPost
-                    foroSeleccionado={foroSeleccionado}
-                    agregarPost={agregarPost}
-                  />
+            <SearchingBar
+              searchTerm={searchTerm}
+              setSearchTerm={setSearchTerm}
+              foroSeleccionado={foroSeleccionado}
+            />
 
-                  <div className="divider">Recientes</div>
-                  <Popular posts={postsFiltrados} />
-                </>
-              )}
-            </>
-          )}
-        </div>
-      </div>
+            <AddPost foroSeleccionado={foroSeleccionado} agregarPost={agregarPost} />
 
-      {/* Shimmer animation */}
-      <style>
-        {`
-          @keyframes shimmer {
-            0% { background-position: -200% 0; }
-            100% { background-position: 200% 0; }
-          }
-          .animate-shimmer {
-            background-size: 200% 100%;
-            animation: shimmer 1.2s linear infinite;
-          }
-        `}
-      </style>
+            <div className="divider">Recientes</div>
+
+            {loading ? (
+              <div className="text-center text-gray-500">
+                <div className="loading loading-spinner loading-lg"></div>
+                <p className="mt-2">Cargando posts...</p>
+              </div>
+            ) : (
+              <Popular posts={postsFiltrados} />
+            )}
+          </>
+        )}
+      </main>
     </div>
   );
 }
