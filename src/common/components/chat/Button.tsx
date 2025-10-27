@@ -1,8 +1,7 @@
 'use client'
-import { BotMessageSquare, X, Send } from 'lucide-react'
+import {  X, Send } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
-import { sendMessageToChatBot } from '@/services/chatbot'
-import ReactMarkdown from 'react-markdown'
+
 
 // Tipo para los mensajes
 type Message = {
@@ -68,13 +67,12 @@ export default function ButtonIA() {
         <button
          data-tour="bot-flotante"
           onClick={() => setIsOpen(true)}
-          className="fixed bottom-15 right-6 group flex h-16 w-16 justify-center items-center rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 z-50"
-          style={{ backgroundColor: '#507d2a' }}
+          className="fixed bottom-15 right-6 group flex h-18 w-18 justify-center items-center rounded-full shadow-xl hover:shadow-2xl transition-all duration-300 hover:scale-110 z-50 bg-primary"
         >
-          <BotMessageSquare className="h-8 w-8 text-white group-hover:rotate-12 transition-transform duration-300" />
+          <img src='./hostImage/LOGO-COLOR.svg' className="h-12 w-12 text-white group-hover:rotate-12 transition-transform duration-300" />
           <span className="absolute top-0 right-0 flex h-3 w-3">
             <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-green-400 opacity-75"></span>
-            <span className="relative inline-flex rounded-full h-3 w-3 bg-green-500"></span>
+            <span className="relative inline-flex rounded-full h-3 w-3 bg-orange-600"></span>
           </span>
         </button>
       )}
@@ -89,16 +87,16 @@ export default function ButtonIA() {
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 bg-white rounded-2xl shadow-2xl z-50 w-full max-w-md flex flex-col overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-5"
-          style={{ height: '600px', border: '2px solid #507d2a' }}>
+        <div className="fixed bottom-6 right-6 bg-white rounded-2xl border-2 border-primary shadow-2xl z-50 w-full max-w-md flex flex-col overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-5"
+          style={{ height: '600px' }}>
           
         
           <div className="flex items-center justify-between px-5 py-4 text-white relative overflow-hidden"
-            style={{ background: 'linear-gradient(135deg, #507d2a 0%, #6a9c3d 100%)' }}>
+            style={{ background: 'linear-gradient(135deg, #d97706 0%)' }}>
             <div className="flex items-center gap-3 z-10">
               
               <div>
-                <h3 className="font-semibold text-lg">AgroBot</h3>
+                <h3 className="font-semibold text-lg">Aguazu</h3>
                 <p className="text-xs text-white text-opacity-90">Asistente inteligente</p>
               </div>
             </div>
@@ -117,11 +115,10 @@ export default function ButtonIA() {
           <div className="flex-1 bg-gradient-to-b from-gray-50 to-white p-4 overflow-y-auto flex flex-col gap-3">
             {messages.length === 0 && !isLoading && (
               <div className="flex flex-col items-center justify-center h-full text-center px-4">
-                <div className="w-16 h-16 rounded-full flex items-center justify-center mb-4"
-                  style={{ backgroundColor: 'rgba(80, 125, 42, 0.1)' }}>
-                  <BotMessageSquare className="h-8 w-8" style={{ color: '#507d2a' }} />
+                <div className="w-20 h-20 cursor-pointer animate-float rounded-full flex items-center justify-center mb-4 bg-secondary">
+                  <img src='./hostImage/LOGO-COLOR.svg' className="h-18 w-18 color-primary text-primary"  />
                 </div>
-                <p className="text-gray-600 font-medium mb-2">¡Hola! Soy AgroBot</p>
+                <p className="text-gray-600 font-medium mb-2">¡Hola! Soy Aguazu</p>
                 <p className="text-gray-400 text-sm">
                   Estoy aquí para ayudarte con información , consejos y responder tus preguntas.
                 </p>
@@ -141,7 +138,7 @@ export default function ButtonIA() {
                   }`}
                   style={msg.sender === 'user' ? { backgroundColor: '#507d2a' } : {}}
                 >
-                  <ReactMarkdown
+                  {/* <ReactMarkdown
                     components={{
                       p: ({ node, ...props }) => (
                         <p className={`m-0 leading-relaxed ${msg.sender === 'user' ? 'text-white' : 'text-gray-800'}`} {...props} />
@@ -164,7 +161,7 @@ export default function ButtonIA() {
                     }}
                   >
                     {msg.text}
-                  </ReactMarkdown>
+                  </ReactMarkdown> */}
                 </div>
                 <span className="text-xs text-gray-400 mt-1 px-2">
                   {msg.timestamp.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' })}
@@ -200,19 +197,32 @@ export default function ButtonIA() {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 disabled={isLoading}
-                className="w-full px-4 py-3 pr-12 bg-gray-50 rounded-xl border-2 border-gray-100 focus:border-[#507d2a] focus:bg-white outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
+                className="w-full px-4 py-3 pr-12 bg-gray-50 rounded-xl border-2 border-gray-100 focus:border-[#d97706] focus:bg-white outline-none transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed"
               />
             </div>
             <button
               type="submit"
               disabled={isLoading || !input.trim()}
               className="px-5 py-3 rounded-xl text-white font-medium hover:shadow-lg transition-all duration-300 disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 group"
-              style={{ backgroundColor: '#507d2a' }}
+              style={{ backgroundColor: '#d97706' }}
             >
               <Send className="h-4 w-4 group-hover:translate-x-0.5 transition-transform" />
               <span className="hidden sm:inline">{isLoading ? 'Enviando...' : 'Enviar'}</span>
             </button>
           </form>
+           <style jsx>{`
+        @keyframes float {
+          0%, 100% {
+            transform: translateY(0px);
+          }
+          50% {
+            transform: translateY(-20px);
+          }
+        }
+        .animate-float {
+          animation: float 3s ease-in-out infinite;
+        }
+      `}</style>
         </div>
       )}
     </>

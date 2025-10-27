@@ -37,7 +37,7 @@ export function BiblioGames() {
 
  
 
-      <main className="flex-1 pt-28 px-4"
+          <main className="flex-1 max-w-7xl mx-auto p-4 pt-30 mb-10"
       style={{ fontFamily: '"Press Start 2P", "Courier New", monospace' }}>
         
         {/* Header Arcade */}

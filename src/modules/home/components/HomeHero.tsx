@@ -1,5 +1,5 @@
 type Props = {
-  userName: string;
+  userName?: string;
   onContinue?: () => void;
   illustrationUrl?: string;
 };
@@ -19,7 +19,7 @@ export default function HomeHero({ userName, illustrationUrl }: Props) {
       <div className="relative max-w-3xl">
         <div className="inline-flex items-center gap-2 mb-4">
           <span className="text-sm font-medium text-orange-600">
-            Hola, {userName.split(" ")[0]}
+            Hola, {userName?.split(" ")[0]}
           </span>
           <span className="text-lg">👋</span>
         </div>

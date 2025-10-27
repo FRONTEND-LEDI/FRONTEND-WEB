@@ -6,6 +6,7 @@ import { AuthProvider } from "./context/AuthContext.tsx";
 import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { ReactQueryDevtools } from "@tanstack/react-query-devtools";
 import { TourProvider } from '@reactour/tour'
+import ButtonIA from "./common/components/chat/Button.tsx";
 
 const queryClient = new QueryClient({
   defaultOptions: {
@@ -32,6 +33,7 @@ createRoot(document.getElementById("root")!).render(
     <QueryClientProvider client={queryClient}>
       <AuthProvider>
    <TourProvider  steps={steps}>
+    <ButtonIA/>
   <App />
 </TourProvider>
       </AuthProvider>
