@@ -12,7 +12,7 @@ import { authorNames, coverUrlOf } from "../../types/books";
 import type { Book, BookWithProgress } from "../../types/books";
 import { useTour } from "@reactour/tour";
 import {useEffect, useState} from "react";
-import Greets from "../../common/components/saludo";
+
 
 export default function HomePage() {
   const { user, token } = useAuth();
@@ -95,7 +95,7 @@ export default function HomePage() {
             // userName={user?.name ?? "Lector/a"}
             illustrationUrl="/hostImage/avatarLanding.png"
           />
-          <Greets/>
+          
 
           {/* Recomendaciones (sólo si hay) */}
           {(recsLoading || showRecs) && (
