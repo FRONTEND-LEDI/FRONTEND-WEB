@@ -1,4 +1,4 @@
-const API_URL = "http://localhost:3402";
+import { API_BASE_URL } from "../config";
 
 const authHeaders = (token: string | null): HeadersInit => {
   const h: HeadersInit = { "x-client": "web" };
@@ -7,27 +7,57 @@ const authHeaders = (token: string | null): HeadersInit => {
 };
 
 export type CreateAuthorInput = {
-  name: string;
+  fullName: string;
   biography: string;
-  avatarFile: File; // field name esperado por el back: "avatar"
+  profession: string;
+  birthplace: string;
+  birthdate: string;
+  nationality: string;
+  writingGenre: string[];
+  avatarFile: File;
 };
 
 export type UpdateAuthorInput = {
-  name?: string;
+  fullName?: string;
   biography?: string;
-  avatarFile?: File; // opcional
+  profession?: string;
+  birthplace?: string;
+  birthdate?: string;
+  nationality?: string;
+  writingGenre?: string[];
+  avatarFile?: File;
 };
 
 function buildAuthorFormData(
   data: CreateAuthorInput | UpdateAuthorInput
 ): FormData {
   const fd = new FormData();
-  if ("name" in data && typeof data.name !== "undefined")
-    fd.append("name", String(data.name));
-  if ("biography" in data && typeof data.biography !== "undefined")
-    fd.append("biography", String(data.biography));
-  if ("avatarFile" in data && data.avatarFile)
+
+  const fields: (keyof CreateAuthorInput)[] = [
+    "fullName",
+    "biography",
+    "profession",
+    "birthplace",
+    "birthdate",
+    "nationality",
+  ];
+
+  for (const field of fields) {
+    if (field in data && typeof data[field] === "string") {
+      fd.append(field, data[field] as string);
+    }
+  }
+
+  if ("writingGenre" in data && Array.isArray(data.writingGenre)) {
+    for (const genre of data.writingGenre) {
+      fd.append("writingGenre", genre);
+    }
+  }
+
+  if ("avatarFile" in data && data.avatarFile) {
     fd.append("avatar", (data as any).avatarFile);
+  }
+
   return fd;
 }
 
@@ -36,7 +66,7 @@ export async function adminCreateAuthor(
   data: CreateAuthorInput,
   token: string | null
 ) {
-  const res = await fetch(`${API_URL}/author/create`, {
+  const res = await fetch(`${API_BASE_URL}/author/create`, {
     method: "POST",
     headers: authHeaders(token),
     body: buildAuthorFormData(data),
@@ -65,11 +95,11 @@ export async function adminUpdateAuthor(
     // JSON cuando no hay archivo
     headers = { ...headers, "Content-Type": "application/json" };
     body = JSON.stringify({
-      name: data.name,
+      name: data.fullName,
       biography: data.biography,
     });
   }
-  const res = await fetch(`${API_URL}/author/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/author/${id}`, {
     method: "PUT",
     headers,
     body,
@@ -83,7 +113,7 @@ export async function adminUpdateAuthor(
 
 // Eliminar autor (DELETE /author/:id)
 export async function adminDeleteAuthor(id: string, token: string | null) {
-  const res = await fetch(`${API_URL}/author/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/author/${id}`, {
     method: "DELETE",
     headers: authHeaders(token),
     credentials: "include",
@@ -95,7 +125,7 @@ export async function adminDeleteAuthor(id: string, token: string | null) {
 
 // Obtener autor por id (GET /author/:id)
 export async function getAuthorById(id: string, token: string | null) {
-  const res = await fetch(`${API_URL}/author/${id}`, {
+  const res = await fetch(`${API_BASE_URL}/author/${id}`, {
     headers: authHeaders(token),
     credentials: "include",
   });
@@ -106,7 +136,7 @@ export async function getAuthorById(id: string, token: string | null) {
 
 // trae todos los autores
 export async function searchAuthors(token: string | null) {
-  const res = await fetch(`${API_URL}/AllAuthores`, {
+  const res = await fetch(`${API_BASE_URL}/AllAuthores`, {
     headers: authHeaders(token),
     credentials: "include",
   });

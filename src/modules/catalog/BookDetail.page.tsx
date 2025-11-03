@@ -75,7 +75,7 @@ const BookDetailPage: React.FC = () => {
 
   const description = book.synopsis || book.summary || "—";
   const authorObjs = Array.isArray(book.author)
-    ? (book.author as { _id: string; name: string }[])
+    ? (book.author as { _id: string; fullName: string }[])
     : [];
 
   const maxThemes = 3;
@@ -182,7 +182,7 @@ const BookDetailPage: React.FC = () => {
                         href={`/authors/${a._id}`}
                         className="text-amber-600 hover:underline"
                       >
-                        {a.name}
+                        {a.fullName}
                       </Link>
                       {idx < authorObjs.length - 1 ? ", " : ""}
                     </span>
@@ -197,7 +197,7 @@ const BookDetailPage: React.FC = () => {
               </span>
               <span className="bg-white/60 px-3 py-1 rounded-full border">
                 <strong>Antología:</strong>{" "}
-                {anthologyYear ? `Antología ${anthologyYear}` : "—"}
+                {anthologyYear ? ` ${anthologyYear}` : "—"}
               </span>
               <span className="bg-white/60 px-3 py-1 rounded-full border">
                 <strong>Nivel:</strong> {book.level || "—"}

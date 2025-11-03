@@ -33,49 +33,46 @@ import { Quiz } from "../common/components/games/Preguntados";
 const AppRouter = () => {
   return (
     <Switch>
-      {/* Públicas / protegidas de usuario */}
+      {/* -------------------- RUTAS PÚPLICAS ----------------------------- */}
+
       <Route path="/" component={LandingPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/test" component={Test} />
 
-      <Route path="/profile">
-        <ProtectedRoute>
-          <Profile />
-        </ProtectedRoute>
-      </Route>
-
       <Route path="/probando">
         <LoadingGate message="Cargando…" />
       </Route>
+      {/* -------------------- FIN - RUTAS PÚPLICAS ----------------------------- */}
+
+      {/* -------------------------- Modulo: HOME ------------------------------------- */}
 
       <Route path="/home">
         <ProtectedRoute>
           <HomePage />
         </ProtectedRoute>
       </Route>
+      {/* -------------------------- FIN Modulo: HOME ------------------------------------- */}
 
+      {/* -------------------------- Modulo: LIBROS ------------------------------------- */}
       <Route path="/catalogo">
         <ProtectedRoute>
           <CatalogPage />
         </ProtectedRoute>
       </Route>
 
+      <Route path="/libro/:id">
+        <ProtectedRoute>
+          <BookDetailPage />
+        </ProtectedRoute>
+      </Route>
+
+      {/* -------------------------- FIN Modulo: LIBROS ------------------------------------- */}
+
       <Route path="/ClubdeLectura">
         <ProtectedRoute>
           <ForumPage />
         </ProtectedRoute>
-      </Route>
-      
-    <Route path="/Autores">
-      <ProtectedRoute>
-        <Author/>
-      </ProtectedRoute>
-      </Route>
-      <Route path="/authors/:id">
-      <ProtectedRoute>
-        <AuthorDetail/>
-      </ProtectedRoute>
       </Route>
 
 
@@ -87,15 +84,47 @@ const AppRouter = () => {
 
 <Route path="/games/select-book/:gameType" component={BookSelector} />
 <Route path="/games/historia/:bookId" component={CreatuHistoria} />
-<Route path="/games/preguntados/:bookId" component={Quiz} />
+<Route path="/games/quiz/:bookId" component={Quiz}
 
-      <Route path="/libro/:id">
+/>
+
+      <Route path="/libro/:id"/>
+      {/* -------------------------- Modulo: AUTORES ------------------------------------- */}
+      <Route path="/Autores">
         <ProtectedRoute>
-          <BookDetailPage/>
+          <Author />
         </ProtectedRoute>
       </Route>
 
-      {/* ===== ADMIN ===== */}
+      <Route path="/authors/:id">
+        <ProtectedRoute>
+          <AuthorDetail />
+        </ProtectedRoute>
+      </Route>
+      {/* -------------------------- fin Modulo: AUTORES ------------------------------------- */}
+
+      {/* ----------------------------- Modulo: PERFIL ------------------------------------- */}
+      <Route path="/profile">
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+      </Route>
+      {/* -------------------------- fin Modulo: PERFIL ------------------------------------- */}
+
+      {/* -------------------------- Modulo: BiBLIO GAMES ------------------------------------- */}
+      <Route path="/BiblioGames">
+        <ProtectedRoute>
+          <BiblioGames />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/games/select-book/:gameType" component={BookSelector} />
+      <Route path="/games/historia/:bookId" component={CreatuHistoria} />
+      {/* <Route path="/games/preguntados/:bookId" component={Preguntados} /> */}
+
+      {/* --------------------------FIN Modulo: BiBLIO GAMES ------------------------------------- */}
+
+      {/* ======================= MODULO ADMIN ============================ */}
       {/* root exacto */}
       <Route path="/admin">
         <AdminRoute>
@@ -126,6 +155,7 @@ const AppRouter = () => {
           </AdminLayout>
         </AdminRoute>
       </Route>
+      {/* ======================= FIN MODULO ADMIN ============================ */}
 
       {/* ===== 404 SIEMPRE AL FINAL ===== */}
       <Route>

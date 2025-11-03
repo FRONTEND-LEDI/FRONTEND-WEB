@@ -1,6 +1,8 @@
+import { API_BASE_URL } from "../config";
+
 export const getFormat = async () => {
   try {
-    const response = await fetch("http://localhost:3402/booksFormats", {
+    const response = await fetch(`${API_BASE_URL}/booksFormats`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",

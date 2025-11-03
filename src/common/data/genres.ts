@@ -1,0 +1,15 @@
+export const LITERARY_GENRES = [
+  "Poesía",
+  "Cuento",
+  "Novela",
+  "Ensayo",
+  "Teatro",
+  "Crónica",
+  "Biografía",
+  "Infantil",
+  "Juvenil",
+  "Histórico",
+  "Fantasía",
+  "Ciencia ficción",
+  "Otro",
+];

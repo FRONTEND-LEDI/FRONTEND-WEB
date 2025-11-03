@@ -1,19 +1,48 @@
-import { io } from "socket.io-client";
+import { io, Socket } from "socket.io-client";
 
-// Asegúrate de que la URL sea correcta
-const SOCKET_URL = "http://localhost:3402"; // O tu URL del backend
+const SOCKET_URL = "";
 
-export const socket = io(SOCKET_URL, {
-  autoConnect: true,
+// Función para obtener el token desde localStorage
+const getAuthToken = (): string | null => {
+  if (typeof window !== "undefined") {
+    return localStorage.getItem("authToken");
+  }
+  return null;
+};
+
+// Crear instancia del socket con autenticación
+export const socket: Socket = io(SOCKET_URL, {
+  autoConnect: false, // No conectar automáticamente
+  auth: (cb) => {
+    const token = getAuthToken();
+    console.log("🔑 Enviando token al servidor:", token ? "✓" : "✗");
+    cb({ token });
+  },
+  transports: ["websocket", "polling"],
   reconnection: true,
-  reconnectionDelay: 1000,
   reconnectionAttempts: 5,
-  transports: ['websocket', 'polling'], // Importante: incluir ambos
+  reconnectionDelay: 1000,
 });
 
-// Debug: Ver todos los eventos
-socket.onAny((eventName, ...args) => {
-  console.log(`📨 [Socket Event] ${eventName}:`, args);
+// Función para reconectar con nuevo token
+export const reconnectSocket = () => {
+  if (socket.connected) {
+    socket.disconnect();
+  }
+  const token = getAuthToken();
+  socket.auth = { token };
+  socket.connect();
+  console.log("🔄 Reconectando socket con token actualizado");
+};
+
+// Escuchar errores de autenticación
+socket.on("connect_error", (error) => {
+  console.error("❌ Error de conexión:", error.message);
+  
+  if (error.message.includes("authentication") || error.message.includes("token")) {
+    console.log("🔄 Intentando reconectar con nuevo token...");
+    setTimeout(reconnectSocket, 2000);
+  }
 });
 
 socket.on("connect", () => {
@@ -21,9 +50,7 @@ socket.on("connect", () => {
 });
 
 socket.on("disconnect", (reason) => {
-  console.log("❌ Socket desconectado. Razón:", reason);
+  console.log("❌ Socket desconectado:", reason);
 });
 
-socket.on("connect_error", (error) => {
-  console.error("🔥 Error de conexión:", error.message);
-});
+export default socket;

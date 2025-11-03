@@ -1,87 +1,50 @@
 // games.ts
+import type { Quiz, Gamble } from "../../types/games";
+
 const URL = "http://localhost:3402";
 
-interface Gamble {
-    title: string,
-    ecenary: string,
-    page: number,
-    option: string
-}
-
-interface Quiz {
-    title: string,
-    ecenary: string,
-    page: number,
-    options: any[],
-    completed?: boolean,
-    score?: number
-}
-
-// CREATE YOUR HISTORY - POST (envía estado de la historia)
+// CREATE YOUR HISTORY - POST
 export async function createYourHistory(bookId: string, gamble: Gamble, token?: string) {
   if (!token) {
     throw new Error("Token de autenticación requerido");
   }
-
-  const res = await fetch(`${URL}/createYourHistory/${bookId}`, {  
+  
+  const res = await fetch(`${URL}/createYourHistory/${bookId}`, {  // ✅ Corregido: paréntesis normales
     method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`,
     },
-    body: JSON.stringify(gamble), // Siempre envía datos del contexto
+    body: JSON.stringify(gamble),
   });
-
+  
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Error en createYourHistory: ${res.status} - ${text}`);
+    throw new Error(`Error en createYourHistory: ${res.status} - ${text}`); // ✅ Corregido: paréntesis normales
   }
-
+  
   return res.json();
 }
 
-// QUIZ - GET (solo obtiene preguntas)
-export async function getQuiz(bookId: string, token?: string) {
-  if (!token) {
-    throw new Error("Token de autenticación requerido");
-  }
-
-  const res = await fetch(`${URL}/quiz/${bookId}`, {  
-    method: "GET", // GET sin body
-    headers: {
-      "Content-Type": "application/json",
-      "Authorization": `Bearer ${token}`,
-    },
-    // NO body en GET
-  });
-
-  if (!res.ok) {
-    const text = await res.text();
-    throw new Error(`Error en getQuiz: ${res.status} - ${text}`);
-  }
-
-  return res.json();
-}
-
-// QUIZ - POST (para enviar resultados finales)
+// QUIZ - POST 
 export async function submitQuiz(bookId: string, quiz: Quiz, token?: string) {
   if (!token) {
     throw new Error("Token de autenticación requerido");
   }
-
-  const res = await fetch(`${URL}/quiz/${bookId}`, {  
-    method: "POST", // POST para enviar resultados
+  
+  const res = await fetch(`${URL}/quiz/${bookId}`, {  // ✅ Corregido: paréntesis normales
+    method: "POST",
     headers: {
       "Content-Type": "application/json",
       "Authorization": `Bearer ${token}`,
     },
-    body: JSON.stringify(quiz), // Envía el quiz completo con score
+    body: JSON.stringify(quiz),
   });
-
+  
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Error en submitQuiz: ${res.status} - ${text}`);
+    throw new Error(`Error en submitQuiz: ${res.status} - ${text}`); // ✅ Corregido: paréntesis normales
   }
-
+  
   return res.json();
 }

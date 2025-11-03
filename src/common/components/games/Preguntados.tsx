@@ -1,252 +1,165 @@
 import Navbar from "../navbar";
 import { GameHeader } from "./gameHeader";
 import { useState, useEffect } from "react";
-import { useParams } from "wouter";
-import { getQuiz, submitQuiz } from "../../../db/services/games";
+import { useParams, useLocation } from "wouter";
+import { submitQuiz } from "../../../db/services/games";
 import { getBookById } from "../../../db/services/books";
 import { useAuth } from "../../../context/AuthContext";
 import Footer from "../Footer";
+import StarAnimation from "./winnerAnimation";
+import { RefreshCcw } from "lucide-react";
 
-interface QuizQuestion {
-  question: string;
-  options: string[];
-  correctAnswer: number;
+interface QuizOption {
+  textOption: string;
+  status: boolean;
 }
 
 interface QuizResponse {
   title: string;
-  ecenary: string;
+  scenery: string;
   page: number;
-  options: QuizQuestion[];
+  options?: QuizOption[];
   completed?: boolean;
   score?: number;
 }
 
 export function Quiz() {
   const { bookId } = useParams();
-  const [book, setBook] = useState<any>(null);
-  const [currentQuestion, setCurrentQuestion] = useState<number>(0);
-  const [quizData, setQuizData] = useState<QuizResponse | null>(null);
-  const [selectedAnswer, setSelectedAnswer] = useState<number | null>(null);
-  const [showResult, setShowResult] = useState<boolean>(false);
-  const [isCorrect, setIsCorrect] = useState<boolean>(false);
-  const [score, setScore] = useState<number>(0);
-  const [answeredQuestions, setAnsweredQuestions] = useState<number>(0);
-  const [loading, setLoading] = useState<boolean>(true);
-  const [error, setError] = useState<string | null>(null);
-  const [quizCompleted, setQuizCompleted] = useState<boolean>(false);
-
   const { token } = useAuth();
+  const [, setLocation] = useLocation();
 
-  // Función para obtener las preguntas del quiz
-  const fetchQuiz = async (): Promise<QuizResponse | null> => {
-    if (!book) return null;
-    if (!token) {
-      setError("Debes iniciar sesión para jugar.");
-      return null;
-    }
+  const [book, setBook] = useState<any>(null);
+  const [currentQuestion, setCurrentQuestion] = useState<string>("");
+  const [options, setOptions] = useState<QuizOption[]>([]);
+  const [selectedOption, setSelectedOption] = useState<QuizOption | null>(null);
+  const [page, setPage] = useState(1);
+  const [showFeedback, setShowFeedback] = useState(false);
+  const [quizCompleted, setQuizCompleted] = useState(false);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState<string | null>(null);
+  const [finalScore, setFinalScore] = useState<number>(0);
+  const [currentScore, setCurrentScore] = useState(0);
+  const [isAnswering, setIsAnswering] = useState(false);
 
-    try {
-      setLoading(true);
-      setError(null);
-      console.log("Solicitando quiz para libro:", book._id);
-      
-      const result = await getQuiz(book._id, token);
-      console.log("Respuesta recibida:", result);
-      
-      // Validación robusta de la estructura de datos
-      if (!result) {
-        throw new Error("No se recibió respuesta del servidor");
-      }
-      
-      // El backend podría devolver los datos en diferentes formatos
-      let options = result.options || result.questions || [];
-      
-      if (!Array.isArray(options)) {
-        console.error("Options no es array:", options);
-        throw new Error("Formato de quiz inválido: las preguntas no están en formato array");
-      }
-      
-      // Asegurarnos de que cada pregunta tenga la estructura correcta
-      const validatedOptions = options.map((q: any, index: number) => ({
-        question: q.question || `Pregunta ${index + 1}`,
-        options: Array.isArray(q.options) ? q.options : [],
-        correctAnswer: q.correctAnswer !== undefined ? q.correctAnswer : 0
-      }));
-      
-      return {
-        title: result.title || book.title,
-        ecenary: result.ecenary || result.scenario || "",
-        page: result.page || 1,
-        options: validatedOptions
-      };
-      
-    } catch (err: any) {
-      console.error("Error completo al obtener quiz:", err);
-      setError(err.message || "Error desconocido al cargar el quiz.");
-      return null;
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  // Función para enviar resultados
-  const sendQuizResults = async (finalScore: number): Promise<boolean> => {
-    if (!book || !token || !quizData) return false;
-
-    try {
-      const quizState = {
-        title: book.title,
-        ecenary: quizData.ecenary,
-        page: quizData.page,
-        options: quizData.options,
-        score: finalScore,
-        completed: true
-      };
-      
-      await submitQuiz(book._id, quizState, token);
-      return true;
-    } catch (err: any) {
-      console.error("Error al enviar resultados:", err);
-      // No mostramos error al usuario si falla el envío de resultados
-      return false;
-    }
-  };
-
-  // Cargar el libro seleccionado
   useEffect(() => {
-    const fetchBook = async () => {
-      if (!bookId) return;
-      if (!token) {
-        setError("Debes iniciar sesión para cargar el libro.");
-        return;
-      }
+    const initializeQuiz = async () => {
+      if (!bookId || !token) return;
+      
       try {
         setLoading(true);
-        const b = await getBookById(bookId, token);
-        setBook(b);
+        const bookData = await getBookById(bookId, token);
+        setBook(bookData);
+
+        if (bookData.genre !== "Narrativo") {
+          setError("Los quiz solo están disponibles para libros del género Narrativo.");
+          return;
+        }
+
+        const initialResponse: QuizResponse = await submitQuiz(
+          bookId, 
+          {
+            title: bookData.title,
+            scenery: "",
+            page: 1
+          },
+          token
+        );
+
+        if (initialResponse.options && initialResponse.options.length > 0) {
+          setCurrentQuestion(initialResponse.scenery);
+          setOptions(initialResponse.options);
+          setPage(initialResponse.page);
+        } else {
+          throw new Error("No se recibieron preguntas del servidor");
+        }
+        
       } catch (err: any) {
-        console.error("Error al cargar libro:", err);
-        setError(err.message || "Error al cargar el libro.");
+        console.error("Error inicializando quiz:", err);
+        setError(err.message || "Error al cargar el quiz");
       } finally {
         setLoading(false);
       }
     };
-    fetchBook();
-  }, [bookId, token]);
-
-  // Inicializar el quiz cuando se carga el libro
-  useEffect(() => {
-    if (!book || !token) return;
-
-    const initializeQuiz = async () => {
-      const res = await fetchQuiz();
-      if (res) {
-        setQuizData(res);
-        // Verificar si ya estaba completado
-        if (res.completed && res.score !== undefined) {
-          setQuizCompleted(true);
-          setScore(res.score);
-        }
-      }
-    };
 
     initializeQuiz();
-  }, [book, token]);
+  }, [bookId, token]);
 
-  // Obtener la pregunta actual de forma segura
-  const getCurrentQuestionData = (): QuizQuestion | null => {
-    if (!quizData || !quizData.options || !Array.isArray(quizData.options)) {
-      return null;
-    }
-    
-    if (currentQuestion < 0 || currentQuestion >= quizData.options.length) {
-      return null;
-    }
-    
-    const question = quizData.options[currentQuestion];
-    
-    // Validar estructura de la pregunta
-    if (!question || !question.options || !Array.isArray(question.options)) {
-      return null;
-    }
-    
-    return question;
+  const handleSelectOption = (option: QuizOption) => {
+    if (quizCompleted || showFeedback || isAnswering) return;
+    setSelectedOption(option);
   };
 
-  // Manejar la selección de respuesta
-  const handleAnswerSelect = (answerIndex: number) => {
-    if (showResult || quizCompleted) return;
-    setSelectedAnswer(answerIndex);
-  };
+  const handleConfirmAnswer = async () => {
+    if (!selectedOption || !bookId || !token || !book || isAnswering) return;
 
-  // Confirmar respuesta
-  const handleSubmitAnswer = () => {
-    const currentQuestionData = getCurrentQuestionData();
-    if (selectedAnswer === null || !currentQuestionData) return;
+    setIsAnswering(true);
+    setShowFeedback(true);
 
-    const correct = selectedAnswer === currentQuestionData.correctAnswer;
-    setIsCorrect(correct);
-    setShowResult(true);
-
-    if (correct) {
-      setScore(score + 1);
-    }
-    setAnsweredQuestions(answeredQuestions + 1);
-  };
-
-  // Ir a la siguiente pregunta
-  const handleNextQuestion = async () => {
-    if (!quizData) return;
-
-    // Si es la última pregunta
-    if (currentQuestion >= quizData.options.length - 1) {
-      setQuizCompleted(true);
-      // Enviar resultados al backend
-      await sendQuizResults(score);
-      return;
+    if (selectedOption.status) {
+      setCurrentScore(prev => prev + 10);
     }
 
-    // Pasar a la siguiente pregunta
-    setCurrentQuestion(currentQuestion + 1);
-    setSelectedAnswer(null);
-    setShowResult(false);
-    setIsCorrect(false);
-  };
+    await new Promise(resolve => setTimeout(resolve, 2000));
 
-  // Reiniciar quiz
-  const handleRestartQuiz = async () => {
-    setCurrentQuestion(0);
-    setSelectedAnswer(null);
-    setShowResult(false);
-    setIsCorrect(false);
-    setScore(0);
-    setAnsweredQuestions(0);
-    setQuizCompleted(false);
-    
-    // Recargar el quiz
-    if (book && token) {
-      const res = await fetchQuiz();
-      if (res) {
-        setQuizData(res);
+    try {
+      const response: QuizResponse = await submitQuiz(
+        bookId, 
+        {
+          title: book.title,
+          scenery: currentQuestion,
+          page: page,
+          option: {
+            text: selectedOption.textOption,
+            status: selectedOption.status
+          }
+        },
+        token
+      );
+
+      if (response.completed || response.score !== undefined) {
+        setFinalScore(response.score || 0);
+        setQuizCompleted(true);
+      } else {
+        if (response.options && response.options.length > 0) {
+          setCurrentQuestion(response.scenery);
+          setOptions(response.options);
+          setPage(response.page);
+          setSelectedOption(null);
+          setShowFeedback(false);
+          setIsAnswering(false);
+        } else {
+          setQuizCompleted(true);
+          setFinalScore(currentScore);
+        }
       }
+      
+    } catch (err: any) {
+      console.error("Error confirmando respuesta:", err);
+      setError("Error al enviar la respuesta");
+      setShowFeedback(false);
+      setIsAnswering(false);
     }
   };
 
-  // Estados de error
-  if (error) {
+  const handleRestartQuiz = () => {
+    window.location.reload();
+  };
+
+  const handleGoBack = () => {
+    setLocation("/games/quiz");
+  };
+
+  if (loading) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#0B0C1B] text-white">
+      <div className="flex flex-col min-h-screen bg-fund">
         <Navbar />
         <div className="flex-1 flex items-center justify-center">
           <div className="text-center">
-            <p className="text-red-500 text-xl mb-4">⚠️ {error}</p>
-            <button
-              onClick={() => window.location.reload()}
-              className="bg-orange-500 text-black px-6 py-2 rounded hover:bg-orange-600"
-            >
-              Reintentar
-            </button>
+            <div className="relative w-20 h-20 mx-auto mb-6">
+              <div className="absolute inset-0 border-4 border-orange-200 rounded-full"></div>
+              <div className="absolute inset-0 border-4 border-orange-500 rounded-full border-t-transparent animate-spin"></div>
+            </div>
+            <p className="text-gray-600 text-lg font-medium">Cargando quiz...</p>
           </div>
         </div>
         <Footer />
@@ -254,240 +167,211 @@ export function Quiz() {
     );
   }
 
-  // Estado de carga
-  if (!book || loading) {
+  if (error || !book) {
     return (
-      <div className="flex flex-col min-h-screen bg-[#0B0C1B] text-white">
+      <div className="flex flex-col min-h-screen bg-fund">
         <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-orange-500 mx-auto mb-4"></div>
-            <p className="text-gray-400">Cargando quiz...</p>
+        <div className="flex-1 flex items-center justify-center p-4">
+          <div className="text-center max-w-md">
+            <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
+              <span className="text-5xl">📚</span>
+            </div>
+            <h2 className="text-2xl font-bold text-gray-800 mb-3">
+              {book && book.genre !== "Narrativo" ? "Género No Compatible" : "Oops!"}
+            </h2>
+            <p className="text-gray-600 mb-8 leading-relaxed">{error}</p>
+            <div className="flex gap-3 justify-center">
+              <button 
+                onClick={handleGoBack}
+                className="bg-orange-500 text-white px-6 py-3 rounded-xl font-semibold hover:bg-orange-600 transition-all transform hover:scale-105 shadow-lg"
+              >
+                Volver a Libros
+              </button>
+              <button 
+                onClick={() => window.location.reload()}
+                className="bg-white text-orange-500 border-2 border-orange-500 px-6 py-3 rounded-xl font-semibold hover:bg-orange-50 transition-all"
+              >
+                Reintentar
+              </button>
+            </div>
           </div>
         </div>
         <Footer />
       </div>
     );
   }
-
-  // Si no hay datos del quiz
-  if (!quizData || !quizData.options || quizData.options.length === 0) {
-    return (
-      <div className="flex flex-col min-h-screen bg-[#0B0C1B] text-white">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-gray-400 text-xl mb-4">No hay preguntas disponibles para este libro</p>
-            <button
-              onClick={() => window.history.back()}
-              className="bg-orange-500 text-black px-6 py-2 rounded hover:bg-orange-600"
-            >
-              Volver
-            </button>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  // Obtener pregunta actual de forma segura
-  const currentQuestionData = getCurrentQuestionData();
-  
-  // Si no hay pregunta actual válida
-  if (!currentQuestionData) {
-    return (
-      <div className="flex flex-col min-h-screen bg-[#0B0C1B] text-white">
-        <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
-            <p className="text-red-500 text-xl mb-4">Error: Estructura de pregunta inválida</p>
-            <button
-              onClick={handleRestartQuiz}
-              className="bg-orange-500 text-black px-6 py-2 rounded hover:bg-orange-600"
-            >
-              Reintentar Quiz
-            </button>
-          </div>
-        </div>
-        <Footer />
-      </div>
-    );
-  }
-
-  const totalQuestions = quizData.options.length;
-  const progressPercentage = ((currentQuestion + 1) / totalQuestions) * 100;
 
   return (
-    <div className="flex flex-col min-h-screen bg-[#0B0C1B] text-white">
+    <div className="flex flex-col min-h-screen bg-gradient-to-br from-orange-50 via-fund to-orange-50">
       <Navbar />
-      <div style={{ cursor: `url("/game.png"), auto` }}>
-        <div className="w-full mt-20">
-          <GameHeader points={score * 10} />
-        </div>
+      
+      {/* Header con puntos */}
+      <GameHeader points={currentScore} bookTitle={book.title} />
 
-        {/* Contenedor del quiz */}
-        <div className="max-w-3xl mb-20 font-mono mx-auto mt-8 border border-orange-500 rounded p-6 relative">
+      {/* Contenido principal */}
+      <div className="flex-1 px-4 pb-8 pt-6">
+        <div className="max-w-4xl mx-auto">
           {!quizCompleted ? (
-            <>
-              {/* Header del quiz */}
-              <div className="bg-orange-500 text-black font-bold px-4 py-1 rounded flex justify-between items-center mb-4">
-                <span>🧠 {book.title} - Quiz</span>
-                <span>
-                  Pregunta {currentQuestion + 1}/{totalQuestions}
-                </span>
-              </div>
-
-              {/* Barra de progreso */}
-              <div className="w-full bg-gray-700 rounded-full h-2 mb-6">
-                <div
-                  className="bg-orange-500 h-2 rounded-full transition-all duration-300"
-                  style={{ width: `${progressPercentage}%` }}
-                ></div>
-              </div>
-
-              {/* Contexto del libro */}
-              {quizData.ecenary && (
-                <div className="border border-orange-500 rounded p-4 mb-6 bg-[#1a1b2e]">
-                  <p className="text-sm text-gray-300 italic">{quizData.ecenary}</p>
-                </div>
-              )}
-
+            <div className="overflow-hidden">
+              
               {/* Pregunta */}
-              <div className="border border-orange-500 rounded p-6 mb-6 bg-[#1a1b2e]">
-                <h3 className="text-xl font-bold mb-4">{currentQuestionData.question}</h3>
-              </div>
+              <div className="p-8">
+                <div className="bg-gradient-to-br from-orange-50 to-orange-100 rounded-2xl p-8 mb-8 border-2 border-primary">
+                  <h3 className="text-2xs text-gray-800 leading-relaxed">
+                    {currentQuestion}
+                  </h3>
+                </div>
 
-              {/* Opciones de respuesta */}
-              <div className="grid gap-3 mb-6">
-                {currentQuestionData.options.map((option, idx) => {
-                  const isSelected = selectedAnswer === idx;
-                  const isCorrectAnswer = idx === currentQuestionData.correctAnswer;
-                  
-                  let buttonClass = "border border-orange-500 rounded px-4 py-3 text-left hover:bg-orange-500 hover:text-black transition-colors";
-                  
-                  if (showResult) {
-                    if (isCorrectAnswer) {
-                      buttonClass = "border-2 border-green-500 bg-green-500/20 rounded px-4 py-3 text-left";
-                    } else if (isSelected && !isCorrect) {
-                      buttonClass = "border-2 border-red-500 bg-red-500/20 rounded px-4 py-3 text-left";
-                    } else {
-                      buttonClass = "border border-gray-500 rounded px-4 py-3 text-left opacity-50";
+                {/* Opciones en grid 2x2 estilo Preguntados */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4 mb-6">
+                  {options.map((option, idx) => {
+                    const isSelected = selectedOption?.textOption === option.textOption;
+                    const showResult = showFeedback && isSelected;
+                    
+                    return (
+                      <button
+                        key={idx}
+                        onClick={() => handleSelectOption(option)}
+                        disabled={showFeedback || isAnswering}
+                        className={`
+                          relative group min-h-[100px] rounded-2xl p-6 text-left
+                          transition-all duration-300 transform border-2
+                          ${showFeedback 
+                            ? 'cursor-not-allowed' 
+                            : 'hover:scale-105 hover:shadow-2xl cursor-pointer'
+                          }
+                          ${showResult && option.status
+                            ? 'bg-green-500 border-green-500 text-white'
+                            : showResult && !option.status
+                            ? 'bg-red-500 border-red-500 text-white'
+                            : isSelected
+                            ? 'bg-orange-500 border-orange-500 text-white scale-105 shadow-2xl'
+                            : 'border-orange-500 bg-transparent text-gray-800 hover:bg-orange-500 hover:text-white'
+                          }
+                        `}
+                      >
+                        <div className="flex items-center justify-between">
+                          <div className="flex items-center gap-3 flex-1">
+                            <span className="font-semibold leading-snug">
+                              {option.textOption}
+                            </span>
+                          </div>
+                          {showResult && (
+                            <div className="ml-3 flex-shrink-0">
+                              <div className="w-12 h-12 bg-white rounded-full flex items-center justify-center">
+                                <span className="text-2xl text-gray-800">
+                                  {option.status ? '✓' : '✗'}
+                                </span>
+                              </div>
+                            </div>
+                          )}
+                        </div>
+                      </button>
+                    );
+                  })}
+                </div>
+
+                {/* Feedback animado */}
+                {showFeedback && selectedOption && (
+                  <div className={`
+                    p-4 rounded-2xl mb-4 text-center transform transition-all
+                    ${selectedOption.status 
+                      ? 'bg-gradient-to-r from-green-100 to-green-200 border-2 border-primary' 
+                      : 'bg-gradient-to-r from-red-100 to-red-200 border-2 border-primary'
                     }
-                  } else if (isSelected) {
-                    buttonClass = "border-2 border-orange-500 bg-orange-500/30 rounded px-4 py-3 text-left";
-                  }
-
-                  return (
-                    <button
-                      key={idx}
-                      onClick={() => handleAnswerSelect(idx)}
-                      disabled={showResult}
-                      className={buttonClass}
-                    >
-                      <span className="font-bold mr-2">[{String.fromCharCode(65 + idx)}]</span>
-                      {option}
-                      {showResult && isCorrectAnswer && <span className="ml-2">✓</span>}
-                      {showResult && isSelected && !isCorrect && <span className="ml-2">✗</span>}
-                    </button>
-                  );
-                })}
-              </div>
-
-              {/* Resultado de la respuesta */}
-              {showResult && (
-                <div
-                  className={`border-2 rounded p-4 mb-6 ${
-                    isCorrect
-                      ? "border-green-500 bg-green-500/10"
-                      : "border-red-500 bg-red-500/10"
-                  }`}
-                >
-                  <p className="text-center font-bold text-lg">
-                    {isCorrect ? "🎉 ¡Correcto!" : "❌ Incorrecto"}
-                  </p>
-                  {!isCorrect && (
-                    <p className="text-center text-sm mt-2">
-                      La respuesta correcta era:{" "}
-                      <span className="font-bold">
-                        {currentQuestionData.options[currentQuestionData.correctAnswer]}
+                  `}>
+                    <div className="flex items-center justify-center gap-3">
+                      <span className="text-2xl animate-bounce">
+                        {selectedOption.status}
                       </span>
-                    </p>
-                  )}
-                </div>
-              )}
+                      <div className={`flex items-center gap-2 text-2xl font-bold ${
+                        selectedOption.status ? 'text-green-600' : 'text-primary'
+                      }`}>
+                        <span>
+                          {selectedOption.status ? '¡Correcto!' : '¡Casi! Sigue intentando'}
+                        </span>
+                        <img 
+                          src={selectedOption.status ? "/hostImage/FELIZ.png" : "/hostImage/TRISTE.png"} 
+                          alt={selectedOption.status ? "feliz" : "triste"}
+                          className="w-8 h-8"
+                        />
+                      </div>
+                    </div>
+                  </div>
+                )}
 
-              {/* Botones de acción */}
-              <div className="flex justify-between items-center">
-                <div className="text-sm text-gray-400">
-                  Puntuación: {score}/{answeredQuestions}
-                </div>
-                <div className="space-x-3">
-                  {!showResult ? (
+                {/* Botón confirmar */}
+                {!showFeedback && (
+                  <div className="flex justify-center">
                     <button
-                      onClick={handleSubmitAnswer}
-                      disabled={selectedAnswer === null}
-                      className={`bg-orange-500 text-black px-6 py-2 rounded hover:bg-orange-600 transition-colors ${
-                        selectedAnswer === null ? "opacity-50 cursor-not-allowed" : ""
-                      }`}
+                      onClick={handleConfirmAnswer}
+                      disabled={!selectedOption || isAnswering}
+                      className={`
+                        bg-gradient-to-r from-orange-500 to-orange-600 text-white 
+                        px-12 py-4 rounded-2xl font-bold text-lg
+                        transition-all transform shadow-xl
+                        ${!selectedOption || isAnswering
+                          ? "opacity-50 cursor-not-allowed" 
+                          : "hover:scale-105 hover:shadow-2xl hover:from-orange-600 hover:to-orange-700"
+                        }
+                      `}
                     >
-                      Confirmar
+                      {isAnswering ? 'Procesando...' : 'Confirmar Respuesta'}
                     </button>
-                  ) : (
-                    <button
-                      onClick={handleNextQuestion}
-                      className="bg-orange-500 text-black px-6 py-2 rounded hover:bg-orange-600 transition-colors"
-                    >
-                      {currentQuestion >= totalQuestions - 1 ? "Ver resultados" : "Siguiente"}
-                    </button>
-                  )}
-                </div>
+                  </div>
+                )}
               </div>
-            </>
+            </div>
           ) : (
-            /* Pantalla de resultados finales */
-            <div className="text-center">
-              <div className="bg-orange-500 text-black font-bold px-4 py-1 rounded mb-6">
-                🏆 Quiz Completado
+            /* Resultado final */
+            <div className="bg-white rounded-3xl mt-6 overflow-hidden border-1 border-primary">
+              <div className="bg-primary p-8 text-center">
+                <h2 className="text-4xl font-bold text-white">¡Quiz Completado!</h2>
               </div>
 
-              <div className="border border-orange-500 rounded p-8 mb-6 bg-[#1a1b2e]">
-                <h2 className="text-3xl font-bold mb-4">¡Quiz Finalizado!</h2>
-                <div className="text-6xl font-bold text-orange-500 mb-4">
-                  {score}/{totalQuestions}
+              <div className="p-4 text-center">
+                <div className="mb-8">
+                  <p className="text-gray-600 text-lg mb-4">Tu puntuación final:</p>
+                  <div className="inline-block p-2">
+                    <div className="text-2xl text-primary font-bold">{finalScore}</div>
+                  </div>
                 </div>
-                <p className="text-xl mb-2">
-                  {score === totalQuestions
-                    ? "¡Perfecto! 🌟"
-                    : score >= totalQuestions * 0.7
-                    ? "¡Muy bien! 👏"
-                    : score >= totalQuestions * 0.5
-                    ? "¡Buen intento! 👍"
-                    : "Sigue practicando 📚"}
-                </p>
-                <p className="text-gray-400">
-                  Porcentaje: {Math.round((score / totalQuestions) * 100)}%
-                </p>
-              </div>
 
-              <div className="space-x-4">
-                <button
-                  onClick={handleRestartQuiz}
-                  className="bg-orange-500 text-black px-6 py-2 rounded hover:bg-orange-600 transition-colors"
-                >
-                  🔄 Reintentar
-                </button>
-                <button
-                  onClick={() => window.history.back()}
-                  className="border border-orange-500 text-white px-6 py-2 rounded hover:bg-orange-500 hover:text-black transition-colors"
-                >
-                  Volver
-                </button>
+                <p className="text-2xl gap-8 flex flex-col font-semibold text-gray-700 mb-12">
+                  {finalScore >= 80 ? (
+                    <>
+                      ¡Excelente trabajo!
+                      <StarAnimation />
+                    </>
+                  ) : finalScore >= 60 ? (
+                    "¡Muy bien hecho!"
+                  ) : finalScore >= 40 ? (
+                    "¡Buen esfuerzo!"
+                  ) : (
+                    "¡Sigue practicando!"
+                  )}
+                </p>
+
+                <div className="flex gap-4 justify-center">
+                  <button
+                    onClick={handleRestartQuiz}
+                    className="bg-primary cursor-pointer text-white px-8 py-4 rounded-2xl font-bold hover:from-orange-600 hover:to-orange-700 transition-all transform hover:scale-105 shadow-xl flex items-center gap-2"
+                  >
+                    <span><RefreshCcw /></span> Reintentar Quiz
+                  </button>
+                  <button
+                    onClick={handleGoBack}
+                    className="bg-white cursor-pointer text-primary border-1 border-primary px-8 py-4 rounded-2xl font-bold hover:bg-orange-50 transition-all flex items-center gap-2"
+                  >
+                    Volver a Libros
+                  </button>
+                </div>
               </div>
             </div>
           )}
         </div>
       </div>
+
       <Footer />
     </div>
   );
