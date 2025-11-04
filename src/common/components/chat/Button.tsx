@@ -2,7 +2,7 @@
 import { X, Send } from 'lucide-react'
 import { useState, useRef, useEffect } from 'react'
 import { chat } from '../../../db/services/chat'
-
+import { useAuth } from '../../../context/AuthContext'
 // Tipo para los mensajes
 type Message = {
   id: string
@@ -12,13 +12,15 @@ type Message = {
 }
 
 export default function ButtonIA() {
+  
+  const {user} = useAuth()
   const [isOpen, setIsOpen] = useState(false)
   const [messages, setMessages] = useState<Message[]>([])
   const [input, setInput] = useState('')
   const [isLoading, setIsLoading] = useState(false)
   const [sessionId] = useState(() => `session_${Date.now()}_${Math.random().toString(36).substr(2, 9)}`)
   const messagesEndRef = useRef<HTMLDivElement | null>(null)
-
+ 
   // Auto scroll al último mensaje
   useEffect(() => {
     messagesEndRef.current?.scrollIntoView({ behavior: 'smooth' })
@@ -82,7 +84,7 @@ export default function ButtonIA() {
       setIsLoading(false)
     }
   }
-
+if (!user) return null;
   return (
     <>
       {!isOpen && (

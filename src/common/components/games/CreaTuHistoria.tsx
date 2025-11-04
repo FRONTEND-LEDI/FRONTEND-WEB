@@ -7,7 +7,7 @@ import { getBookById } from "../../../db/services/books";
 import { useAuth } from "../../../context/AuthContext";
 import { RefreshCcw, Lightbulb, TriangleAlert } from 'lucide-react';
 import Footer from "../Footer";
-import StarAnimation from "./winnerAnimation";
+
 
 interface GameOption {
   textOption: string;

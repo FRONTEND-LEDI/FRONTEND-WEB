@@ -104,25 +104,25 @@ export default function HomeHero({  illustrationUrl }: Props) {
           <Link to="/Catalogo" className="bg-orange-400 hover:bg-orange-500 text-white px-5 py-3 rounded-xl flex items-center gap-2 
             transition-all cursor-pointer duration-300 transform hover:scale-105 hover:shadow-lg font-medium text-sm md:text-base
             active:scale-95">
-            <span className="text-lg">📚</span> Explorar catálogo
+            Explorar catálogo
           </Link>
           <Link to="/Perfil" className="bg-orange-600 hover:bg-green-600 text-white px-5 py-3 rounded-xl flex items-center gap-2 
             transition-all cursor-pointer duration-300 transform hover:scale-105 hover:shadow-lg font-medium text-sm md:text-base
             active:scale-95">
-            <span className="text-lg">📖</span> Seguir leyendo
+             Seguir leyendo
           </Link>
           <Link
           to="/Bibliogames" className="bg-yellow-400 hover:bg-yellow-600 text-white px-5 py-3 rounded-xl flex items-center gap-2 
             transition-all cursor-pointer duration-300 transform hover:scale-105 hover:shadow-lg font-medium text-sm md:text-base
             active:scale-95">
-            <span className="text-lg">🎮</span> BiblioGames
+            BiblioGames
           </Link>
           <Link
           to="/Chat"
           className="bg-orange-700 hover:bg-purple-600 text-white px-5 py-3 rounded-xl flex items-center gap-2 
             transition-all cursor-pointer duration-300 transform hover:scale-105 hover:shadow-lg font-medium text-sm md:text-base
             active:scale-95">
-            <span className="text-lg">⭐</span> Recomendados
+            Recomendados
           </Link>
         </div>
       </div>
