@@ -42,6 +42,11 @@ const AppRouter = () => {
       <Route path="/probando">
         <LoadingGate message="Cargando…" />
       </Route>
+      <Route path="/probando2">
+        <div className="flex items-center justify-center h-screen bg-transparent">
+          <span className="loading loading-spinner loading-xl bg-secondary"></span>
+        </div>
+      </Route>
       {/* -------------------- FIN - RUTAS PÚPLICAS ----------------------------- */}
 
       {/* -------------------------- Modulo: HOME ------------------------------------- */}

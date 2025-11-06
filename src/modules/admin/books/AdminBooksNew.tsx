@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { searchAuthors } from "../../../db/services/adminAuthors";
 import type { Author } from "../../../types/author";
 import { getAuthorAvatarUrl } from "../../../types/author";
+import { LITERARY_GENRES } from "../../../common/data/genres";
 
 const INITIAL = {
   title: "",
@@ -26,7 +27,7 @@ const INITIAL = {
   format: "ebook",
   totalPages: undefined as number | undefined,
   duration: undefined as number | undefined,
-  fileExtension: "pdf",
+  fileExtension: "PDF",
 };
 
 const LEVEL_OPTIONS = [
@@ -40,8 +41,6 @@ const LANGUAGE_OPTIONS = [
   { value: "es", label: "Español" },
   { value: "en", label: "Inglés" },
 ];
-
-const GENRE_OPTIONS = ["Narrativo", "Poesía"];
 
 const FORMAT_OPTIONS = [
   { value: "ebook", label: "E-book" },
@@ -161,7 +160,7 @@ export default function AdminBooksNew() {
                     onChange={(e) => set("genre", e.target.value)}
                   >
                     <option value="">Seleccionar género</option>
-                    {GENRE_OPTIONS.map((genre) => (
+                    {LITERARY_GENRES.map((genre) => (
                       <option key={genre} value={genre}>
                         {genre}
                       </option>

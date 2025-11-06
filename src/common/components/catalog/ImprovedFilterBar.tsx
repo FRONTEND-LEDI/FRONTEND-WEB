@@ -29,12 +29,9 @@ const ImprovedFiltersBar: React.FC<Props> = ({
   const [isSearching, setIsSearching] = useState(false);
 
   const aiPlaceholders = [
-    "Explora la literatura formoseña con IA...",
-    "Encuentra poemas inspirados en el río Paraguay...",
     "Descubrí cuentos de escritores formoseños...",
+    "Encuentra poemas, cuentos, audiolibros...",
     "Libros sobre la historia y cultura de Formosa...",
-    "Novelas ambientadas en el paisaje del monte...",
-    "Biografías de autores y artistas formoseños...",
     "Cuentos infantiles de escritores locales...",
   ];
 
@@ -227,10 +224,10 @@ const ImprovedFiltersBar: React.FC<Props> = ({
               label="Subgénero"
               options={subgenreOptions}
               selected={filters.subgenres}
-              onChange={(formats) =>
+              onChange={(subgenres) =>
                 handleFilterChange({
                   ...filters,
-                  formats: formats as FormatType[],
+                  subgenres: subgenres as string[],
                 })
               }
               placeholder="Todos los subgéneros"

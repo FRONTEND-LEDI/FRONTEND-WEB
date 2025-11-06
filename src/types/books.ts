@@ -19,6 +19,7 @@ export interface Book {
   level?: string;
   format?: "ebook" | "audiobook" | "videobook";
   fileExtension: string;
+  language?: string;
 }
 
 export type AdminCreateBookInput = {
@@ -27,7 +28,7 @@ export type AdminCreateBookInput = {
   summary: string;
   subgenre: string[];
   language: string;
-  available: boolean;
+  available?: boolean;
   yearBook: string;
   synopsis: string;
   theme: string[];
