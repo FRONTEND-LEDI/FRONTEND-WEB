@@ -1,44 +1,63 @@
 "use client";
 import { useState, useEffect, useMemo, useCallback } from "react";
-import FilterForum from '../../common/components/forumComponents/filter';
-import Popular from '../../common/components/forumComponents/mostPopular';
-import SearchingBar from '../../common/components/forumComponents/searchBar';
-import AddPost from '../../common/components/forumComponents/addPost';
-import Navbar from '../../common/components/navbar';
-import { TypeAnimation } from 'react-type-animation';
-import { socket } from "./../../db/services/socket";
+import FilterForum from "../../common/components/forumComponents/filter";
+import Popular from "../../common/components/forumComponents/mostPopular";
+import SearchingBar from "../../common/components/forumComponents/searchBar";
+import AddPost from "../../common/components/forumComponents/addPost";
+import Navbar from "../../common/components/navbar";
+import { TypeAnimation } from "react-type-animation";
+import { initSocket, getSocket } from "./../../db/services/socket"; // ✅ getSocket agregado
 import type { Coment, Foro } from "../../types/forum";
 import { useAuth } from "../../context/AuthContext";
 import ForumOverview from "../../common/components/forumComponents/recentPost";
 
 export default function ForumPage() {
-  const { user } = useAuth();
+  const { user, token } = useAuth();
   const [comentarios, setComentarios] = useState<Coment[]>([]);
   const [foros, setForos] = useState<Foro[]>([]);
   const [foroSeleccionado, setForoSeleccionado] = useState<Foro | null>(null);
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
-   
-  // 🔍 Debugging de eventos del socket
+
+  // 🔌 Inicializar socket cuando hay token
   useEffect(() => {
+    if (token) {
+      const s = initSocket(token);
+      setSocketConnected(s.connected);
+
+      // Limpieza
+      return () => {
+        s.disconnect();
+      };
+    }
+  }, [token]);
+
+  // Obtenemos la instancia activa del socket
+  const socket = getSocket();
+
+  // 🔍 Debug de eventos del socket
+  useEffect(() => {
+    if (!socket) return;
     const handleAnyEvent = (eventName: string, ...args: any[]) => {
-      console.log(`📨 [SOCKET EVENT] "${eventName}":`, args);
+      console.log(` [SOCKET EVENT] "${eventName}":`, args);
     };
     socket.onAny(handleAnyEvent);
     return () => socket.offAny(handleAnyEvent);
-  }, []);
+  }, [socket]);
 
-  // 🔌 Conexión del socket
+  // 🔌 Conexión
   useEffect(() => {
+    if (!socket) return;
+
     const handleConnect = () => {
-      console.log("Socket ID:", socket.id);
+      console.log("✅ Socket ID:", socket.id);
       setSocketConnected(true);
       socket.emit("get-all-foros");
     };
     const handleDisconnect = (reason: string) => setSocketConnected(false);
     const handleConnectError = (error: Error) => {
-      console.error("Error de conexión:", error.message);
+      console.error("❌ Error de conexión:", error.message);
       setSocketConnected(false);
     };
 
@@ -54,13 +73,15 @@ export default function ForumPage() {
       socket.off("disconnect", handleDisconnect);
       socket.off("connect_error", handleConnectError);
     };
-  }, []);
+  }, [socket]);
 
   // 📚 Obtener todos los foros
   useEffect(() => {
+    if (!socket) return;
+
     const handleAllForos = (data: any) => {
       if (Array.isArray(data)) setForos(data as Foro[]);
-      else console.error("[FOROS] Los datos recibidos no son un array:", data);
+      else console.error("[FOROS] Datos no válidos:", data);
     };
     socket.on("all-foros", handleAllForos);
     socket.on("error", console.error);
@@ -68,20 +89,20 @@ export default function ForumPage() {
       socket.off("all-foros", handleAllForos);
       socket.off("error", console.error);
     };
-  }, []);
+  }, [socket]);
 
   // 📝 Escuchar comentarios de un foro
   useEffect(() => {
+    if (!socket) return;
+
     const handleComentsInForo = (data: Coment[]) => {
       const safeData = Array.isArray(data) ? data : [];
-      setForoSeleccionado(prev => {
-        if (!prev) return prev;
-        return { ...prev, posts: [...safeData].reverse() };
-      });
+      setForoSeleccionado((prev) =>
+        prev ? { ...prev, posts: [...safeData].reverse() } : prev
+      );
 
-      // Actualizar comentarios globales
-      setComentarios(prev => {
-        const nuevos = safeData.filter(c => !prev.find(p => p._id === c._id));
+      setComentarios((prev) => {
+        const nuevos = safeData.filter((c) => !prev.find((p) => p._id === c._id));
         return [...prev, ...nuevos];
       });
 
@@ -90,34 +111,33 @@ export default function ForumPage() {
 
     socket.on("coments-in-the-foro", handleComentsInForo);
     return () => socket.off("coments-in-the-foro", handleComentsInForo);
-  }, []);
+  }, [socket]);
 
   // ✨ Escuchar comentarios nuevos en tiempo real
   useEffect(() => {
+    if (!socket) return;
+
     const handleComentCreated = (newComment: Coment) => {
-      // Solo agregar al foro seleccionado si corresponde
       if (foroSeleccionado && newComment.idForo === foroSeleccionado._id) {
-        setForoSeleccionado(prev => {
+        setForoSeleccionado((prev) => {
           if (!prev) return prev;
-          const exists = prev.posts?.find(p => p._id === newComment._id);
+          const exists = prev.posts?.find((p) => p._id === newComment._id);
           if (exists) return prev;
           return { ...prev, posts: [newComment, ...(prev.posts || [])] };
         });
       }
-      // Actualizar comentarios globales
-      setComentarios(prev => {
-        if (!prev.find(c => c._id === newComment._id)) return [...prev, newComment];
-        return prev;
-      });
+      setComentarios((prev) =>
+        prev.find((c) => c._id === newComment._id) ? prev : [...prev, newComment]
+      );
     };
 
     socket.on("coment-created", handleComentCreated);
     return () => socket.off("coment-created", handleComentCreated);
-  }, [foroSeleccionado?._id]);
+  }, [foroSeleccionado?._id, socket]);
 
-  // 🔍 Cargar datos del foro seleccionado
+  // 🔍 Cargar comentarios del foro seleccionado
   useEffect(() => {
-    if (!foroSeleccionado?._id) return;
+    if (!socket || !foroSeleccionado?._id) return;
     setLoading(true);
     socket.emit("all-public-foro", foroSeleccionado._id);
 
@@ -126,15 +146,15 @@ export default function ForumPage() {
       setLoading(false);
     }, 5000);
     return () => clearTimeout(timeout);
-  }, [foroSeleccionado?._id]);
+  }, [foroSeleccionado?._id, socket]);
 
   // 📤 Agregar post
   const agregarPost = useCallback(
     (contenido: string) => {
       if (!foroSeleccionado || !user) return console.error("Falta foro o usuario");
-      if (!socket.connected) return socket.connect();
-
-      socket.emit("new-public", {
+      const s = getSocket();
+      if (!s?.connected) return s?.connect();
+      s.emit("new-public", {
         content: contenido,
         idForo: foroSeleccionado._id,
         idUser: user.id,
@@ -143,14 +163,15 @@ export default function ForumPage() {
     [foroSeleccionado, user]
   );
 
-  // 🔍 Filtrar posts por búsqueda
+  // 🔍 Filtrar posts
   const postsFiltrados = useMemo(() => {
     if (!foroSeleccionado?.posts) return [];
-    return foroSeleccionado.posts.filter(post =>
+    return foroSeleccionado.posts.filter((post) =>
       post.content.toLowerCase().includes(searchTerm.toLowerCase())
     );
   }, [foroSeleccionado?.posts, searchTerm]);
 
+  // 💬 Render
   return (
     <div className="flex items-center justify-center bg-fund">
       <Navbar />
@@ -163,24 +184,24 @@ export default function ForumPage() {
             >
               <TypeAnimation
                 sequence={[
-                  'Bienvenido al Club de Lectura!',
+                  "Bienvenido al Club de Lectura!",
                   2000,
-                  '',
+                  "",
                   1000,
-                  'Comparte tus ideas y únete a discusiones!',
+                  "Comparte tus ideas y únete a discusiones!",
                   3000,
-                  '',
+                  "",
                   500,
                 ]}
                 wrapper="span"
-                speed={{ type: 'keyStrokeDelayInMs', value: 80 }}
+                speed={{ type: "keyStrokeDelayInMs", value: 80 }}
                 cursor
                 style={{
-                  fontSize: '2em',
-                  display: 'inline-block',
-                  textShadow: '4px 4px 8px black',
-                  fontWeight: 'bold',
-                  color: 'white',
+                  fontSize: "2em",
+                  display: "inline-block",
+                  textShadow: "4px 4px 8px black",
+                  fontWeight: "bold",
+                  color: "white",
                 }}
                 repeat={Infinity}
               />
@@ -210,12 +231,7 @@ export default function ForumPage() {
               <p className="text-gray-600 text-md">Discusiones sobre la colección literaria</p>
             </div>
 
-            <SearchingBar
-              searchTerm={searchTerm}
-              setSearchTerm={setSearchTerm}
-              foroSeleccionado={foroSeleccionado}
-            />
-
+            <SearchingBar searchTerm={searchTerm} setSearchTerm={setSearchTerm} foroSeleccionado={foroSeleccionado} />
             <AddPost foroSeleccionado={foroSeleccionado} agregarPost={agregarPost} />
 
             <div className="divider">Recientes</div>

@@ -1,13 +1,12 @@
 import Navbar from "../navbar";
 import { GameHeader } from "./gameHeader";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { useParams } from "wouter";
 import { createYourHistory } from "../../../db/services/games";
 import { getBookById } from "../../../db/services/books";
 import { useAuth } from "../../../context/AuthContext";
 import { RefreshCcw, Lightbulb, TriangleAlert } from 'lucide-react';
 import Footer from "../Footer";
-
 
 interface GameOption {
   textOption: string;
@@ -38,35 +37,65 @@ export function CreatuHistoria() {
   const [finalScore, setFinalScore] = useState<number>(0);
   const [isTyping, setIsTyping] = useState<boolean>(false);
   const [showOptions, setShowOptions] = useState<boolean>(false);
+  const [showTextComplete, setShowTextComplete] = useState<boolean>(false);
+  const [animatingOptions, setAnimatingOptions] = useState<boolean>(false);
+  const [visibleOptions, setVisibleOptions] = useState<string[]>([]);
+  
+  const typingIntervalRef = useRef<NodeJS.Timeout | null>(null);
+
+  const clearTypingInterval = () => {
+    if(typingIntervalRef.current){
+      clearInterval(typingIntervalRef.current);
+      typingIntervalRef.current = null;
+    }
+  }
 
   // Efecto de escritura tipo máquina de escribir
   useEffect(() => {
     if (!scene || gameCompleted) {
       setDisplayedText(scene);
-      setShowOptions(true);
+      setShowTextComplete(true);
+      setTimeout(() => {
+        setShowOptions(true);
+        setIsTyping(false);
+      }, 300);
+      return;
+    }
+    
+    if (displayedText === scene && !isTyping){
       return;
     }
 
     setIsTyping(true);
+    setShowTextComplete(false);
     setShowOptions(false);
     setDisplayedText("");
     
     let currentIndex = 0;
-    const typingSpeed = 30; // ms por carácter
+    const typingSpeed = 30;
+    
+    clearTypingInterval();
 
-    const interval = setInterval(() => {
+    typingIntervalRef.current = setInterval(() => {
       if (currentIndex < scene.length) {
         setDisplayedText(scene.substring(0, currentIndex + 1));
         currentIndex++;
       } else {
         setIsTyping(false);
-        setShowOptions(true);
-        clearInterval(interval);
+        setShowTextComplete(true);
+        setTimeout(() => {
+          setAnimatingOptions(true);
+          setVisibleOptions(options);
+          setShowOptions(true);
+        }, 500);
+        clearTypingInterval();
       }
     }, typingSpeed);
 
-    return () => clearInterval(interval);
-  }, [scene, gameCompleted]);
+    return () => {
+      clearTypingInterval();
+    };
+  }, [scene, gameCompleted, options]);
 
   const fetchScene = async (gamble?: { option?: string }): Promise<GameResponse | null> => {
     if (!book || !token) return null;
@@ -160,11 +189,33 @@ export function CreatuHistoria() {
 
   const skipTyping = () => {
     if (isTyping) {
+      clearTypingInterval();
       setDisplayedText(scene);
       setIsTyping(false);
-      setShowOptions(true);
+      setShowTextComplete(true);
+      setTimeout(() => {
+        setAnimatingOptions(true);
+        setVisibleOptions(options);
+        setShowOptions(true);
+      }, 300);
     }
   };
+
+  useEffect(() => {
+    if (showOptions && options.length > 0 && !animatingOptions) {
+      setVisibleOptions([]);
+      setTimeout(() => {
+        setAnimatingOptions(true);
+        setVisibleOptions(options);
+      }, 100);
+    }
+  }, [options, showOptions, animatingOptions]);
+
+  useEffect(() => {
+    return () => {
+      clearTypingInterval();
+    };
+  }, []);
 
   if (error) {
     return (
@@ -211,12 +262,9 @@ export function CreatuHistoria() {
     <div className="flex flex-col min-h-screen bg-gradient-to-br from-orange-50 via-fund to-orange-50">
       <Navbar />
       
-      {/* Header con información del libro */}
-     <GameHeader points={finalScore} bookTitle={book.title} />
+      <GameHeader points={finalScore} bookTitle={book.title} />
 
-      {/* Contenedor principal estilo Visual Novel */}
       <div className="flex-1 px-4 pb-8 pt-6">
-         
         <div className="max-w-5xl mx-auto">
           <div className="bg-white rounded-3xl shadow-2xl overflow-hidden">
             {/* Área de texto estilo visual novel */}
@@ -253,13 +301,11 @@ export function CreatuHistoria() {
                     {gameCompleted && (
                       <div className="mt-8 text-center">
                         <div className="inline-block bg-gradient-to-r from-orange-400 to-orange-600 rounded-2xl p-6 shadow-xl">
-
                           <p className="text-3xl font-bold text-white mb-2">
                            FIN DE LA HISTORIA
                           </p>
                           {finalScore > 0 && (
                             <p className="text-xl text-orange-100">
-                             
                               Puntaje final: <span className="font-bold text-white">{finalScore}</span> puntos
                             </p>
                           )}
@@ -270,38 +316,58 @@ export function CreatuHistoria() {
                 )}
               </div>
 
+              {/* Indicador "Preparando opciones" */}
+              {showTextComplete && !animatingOptions && (
+                <div className="flex justify-center mt-6">
+                  <div className="bg-orange-100 border border-orange-200 rounded-full px-4 py-2 text-orange-600 text-sm font-medium animate-pulse">
+                    ⏳ Preparando opciones...
+                  </div>
+                </div>
+              )}
+
               {/* Indicador de clic para saltar texto */}
               {isTyping && (
-                <div className="absolute bottom-8 right-8 text-gray-400 text-sm animate-pulse flex items-center gap-2">
-                  <span>Haz clic para continuar</span>
-                  <span className="text-lg">▼</span>
+                <div className="absolute bottom-8 right-8 flex items-center gap-4">
+                  <div className="text-gray-400 text-sm animate-pulse flex items-center gap-2 bg-white/80 backdrop-blur-sm rounded-full px-3 py-1 shadow-sm">
+                    <span>Haz clic para continuar</span>
+                    <span className="text-lg">▼</span>
+                  </div>
                 </div>
               )}
             </div>
 
-            {/* Panel de opciones */}
+            {/* Panel de opciones con animaciones */}
             {!gameCompleted && showOptions && !loading && (
-              <div className="bg-gradient-to-r from-orange-400 to-orange-600 p-6">
+              <div className="bg-gradient-to-r from-orange-400 to-orange-600 p-6 overflow-hidden">
                 <div className="max-w-3xl mx-auto">
-                  <p className="text-white text-center font-semibold mb-4 text-lg">
+                  <p className={`text-white text-center font-semibold mb-4 text-lg transition-all duration-500 transform ${
+                    animatingOptions ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
+                  }`}>
                     ¿Qué decides hacer?
                   </p>
                   
                   <div className="grid gap-3">
-                    {options.length > 0 ? (
-                      options.map((op, idx) => (
+                    {visibleOptions.length > 0 ? (
+                      visibleOptions.map((op, idx) => (
                         <button
                           key={idx}
                           onClick={() => handleOptionClick(op)}
                           disabled={loading || isTyping}
                           className={`
                             group relative bg-white rounded-xl px-6 py-4 text-left
-                            font-medium text-gray-800 transition-all
+                            font-medium text-gray-800 transition-all duration-500 transform
                             ${loading || isTyping 
                               ? "opacity-50 cursor-not-allowed" 
                               : "hover:bg-orange-50 hover:shadow-lg hover:scale-102 cursor-pointer"
                             }
+                            ${animatingOptions 
+                              ? 'translate-y-0 opacity-100' 
+                              : 'translate-y-6 opacity-0'
+                            }
                           `}
+                          style={{
+                            transitionDelay: animatingOptions ? `${idx * 100}ms` : '0ms'
+                          }}
                         >
                           <div className="flex items-center gap-3">
                             <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold shadow-md group-hover:scale-110 transition-transform">
@@ -310,14 +376,18 @@ export function CreatuHistoria() {
                             <span className="capitalize flex-1 leading-relaxed">
                               {op}
                             </span>
-                            <div className="text-orange-500 opacity-0 group-hover:opacity-100 transition-opacity">
+                            <div className={`text-orange-500 transition-all duration-300 ${
+                              animatingOptions ? 'opacity-100' : 'opacity-0'
+                            } group-hover:opacity-100`}>
                               →
                             </div>
                           </div>
                         </button>
                       ))
                     ) : (
-                      <p className="text-center text-orange-100 py-4">
+                      <p className={`text-center text-orange-100 py-4 transition-all duration-500 ${
+                        animatingOptions ? 'opacity-100' : 'opacity-0'
+                      }`}>
                         No hay opciones disponibles
                       </p>
                     )}

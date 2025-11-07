@@ -27,11 +27,10 @@ export function BookSelector() {
         
         let data: Book[];
         
-        // Si es quiz, traer solo libros narrativos
-        if (gameType === "quiz" && "historia") {
+    
+        if (gameType === "quiz" || gameType === "historia") {
           data = await getNarrativeBooks(token);
         } else {
-          // Para "historia" traer todos los libros
           data = await getAllBooks(token);
         }
 

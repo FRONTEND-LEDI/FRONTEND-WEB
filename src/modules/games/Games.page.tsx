@@ -9,7 +9,7 @@ import { StarHalfIcon } from "lucide-react";
 export function BiblioGames() {
   const featuredGames = [
     { 
-      src: "", 
+      src: "/public/historiaCrea.jpeg", 
       alt: "Crea tu propia historia", 
       link: "/games/select-book/historia", 
       gameType: "historia",
@@ -20,7 +20,7 @@ export function BiblioGames() {
       points: "+100 pts"
     },
     { 
-      src: "", 
+      src: "/public/preguntados.jpeg", 
       alt: "Preguntados Biblioteca", 
       link: "/games/select-book/quiz",
       gameType: "preguntados",
@@ -158,8 +158,8 @@ export function BiblioGames() {
                           CLICK PARA JUGAR →
                         </span>
                         <div className="flex items-center gap-2">
-                          <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                          <span className="text-green-400 text-xs">ONLINE</span>
+                          <div className="w-2 h-2 bg-green-800 rounded-full animate-pulse"></div>
+                          <span className="text-green-800 text-sm">ONLINE</span>
                         </div>
                       </div>
                     </div>
