@@ -1,5 +1,5 @@
-export type AuthorItem = { _id: string; name: string } | string;
-export type NormalizedAuthor = { id?: string; name: string };
+export type AuthorItem = { _id: string; fullName: string } | string;
+export type NormalizedAuthor = { id?: string; fullName: string };
 
 export interface Book {
   _id: string;
@@ -19,6 +19,7 @@ export interface Book {
   level?: string;
   format?: "ebook" | "audiobook" | "videobook";
   fileExtension: string;
+  language?: string;
 }
 
 export type AdminCreateBookInput = {
@@ -27,7 +28,7 @@ export type AdminCreateBookInput = {
   summary: string;
   subgenre: string[];
   language: string;
-  available: boolean;
+  available?: boolean;
   yearBook: string;
   synopsis: string;
   theme: string[];
@@ -50,7 +51,7 @@ export const FALLBACK_COVER =
 
 export function authorNames(authors: AuthorItem[] = []): string {
   return authors
-    .map((a) => (typeof a === "string" ? a : a?.name ?? "").trim())
+    .map((a) => (typeof a === "string" ? a : a?.fullName ?? "").trim())
     .filter(Boolean)
     .join(", ");
 }

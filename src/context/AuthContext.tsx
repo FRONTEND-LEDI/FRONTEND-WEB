@@ -18,7 +18,6 @@ type User = {
     format?: string[];
   };
 };
-
 type AuthContextType = {
   user: User | null;
   token: string | null;
@@ -39,7 +38,6 @@ const AuthContext = createContext<AuthContextType>({
 
 // Normalizador para que el front tenga un shape estable y cómodo
 function normalizeUser(u: FullUser): User {
-  // birthDate puede venir como {$date: "..."}
   const birth = typeof u.birthDate === "string" ? u.birthDate : undefined;
 
   const avatarUrl =

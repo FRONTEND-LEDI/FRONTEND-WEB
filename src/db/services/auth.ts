@@ -1,10 +1,11 @@
 import { type FullUser } from "../../types/user";
 
-const API_URL = "http://localhost:3402";
+import { API_BASE_URL } from "../config";
+
 // Función para registrar un nuevo usuario
 export const registerUser = async (data: any) => {
   try {
-    const response = await fetch(`${API_URL}/register`, {
+    const response = await fetch(`${API_BASE_URL}/register`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -28,7 +29,7 @@ export const registerUser = async (data: any) => {
 // Función para logearse
 export const loginUser = async (data: any) => {
   try {
-    const response = await fetch(`${API_URL}/login`, {
+    const response = await fetch(`${API_BASE_URL}/login`, {
       method: "POST",
       headers: {
         "Content-Type": "application/json",
@@ -53,7 +54,7 @@ export const loginUser = async (data: any) => {
 
 export const getUserId = async (token: string) => {
   try {
-    const response = await fetch(`${API_URL}/getUser`, {
+    const response = await fetch(`${API_BASE_URL}/getUser`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -77,7 +78,7 @@ export const getUserId = async (token: string) => {
 
 export const getOneUser = async (token: string): Promise<FullUser> => {
   try {
-    const response = await fetch(`${API_URL}/oneUser`, {
+    const response = await fetch(`${API_BASE_URL}/oneUser`, {
       method: "GET",
       headers: {
         Authorization: `Bearer ${token}`,
@@ -101,7 +102,7 @@ export const getOneUser = async (token: string): Promise<FullUser> => {
 
 export const logoutUser = async () => {
   try {
-    const response = await fetch(`${API_URL}/logout`, {
+    const response = await fetch(`${API_BASE_URL}/logout`, {
       method: "POST",
       credentials: "include",
     });

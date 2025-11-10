@@ -10,13 +10,14 @@ import { getAuthorAvatarUrl } from "../../../types/author";
 import { Link } from "wouter";
 import toast from "react-hot-toast";
 import LoadingGate from "../../../common/components/LoadingGate";
-import { User, Search, Edit, Trash2, Plus } from "lucide-react";
+import { User, Search, Edit, Trash2, Plus, Eye } from "lucide-react";
 import { FaUserPen } from "react-icons/fa6";
 
 export default function AdminAuthorsList() {
   const { token } = useAuth();
   const qc = useQueryClient();
   const [q, setQ] = useState("");
+  const [selectedAuthor, setSelectedAuthor] = useState<Author | null>(null);
 
   const { data, isLoading, isError, error } = useQuery({
     queryKey: ["admin-authors"],
@@ -29,6 +30,7 @@ export default function AdminAuthorsList() {
     onSuccess: () => {
       toast.success("Autor eliminado");
       qc.invalidateQueries({ queryKey: ["admin-authors"] });
+      if (selectedAuthor?._id) setSelectedAuthor(null);
     },
     onError: (e: any) => toast.error(e?.message ?? "Error al eliminar"),
   });
@@ -39,11 +41,14 @@ export default function AdminAuthorsList() {
 
   const authorsAll = (data ?? []) as Author[];
   const authors = authorsAll.filter((a) =>
-    q.trim() ? a.name.toLowerCase().includes(q.trim().toLowerCase()) : true
+    q.trim() ? a.fullName.toLowerCase().includes(q.trim().toLowerCase()) : true
   );
+
+  const closeModal = () => setSelectedAuthor(null);
 
   return (
     <div className="space-y-6">
+      {/* Header */}
       <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
         <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4">
           <div className="flex items-center gap-4">
@@ -69,6 +74,7 @@ export default function AdminAuthorsList() {
         </div>
       </div>
 
+      {/* Buscador */}
       <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
         <div className="flex gap-4">
           <div className="relative flex-1 max-w-md">
@@ -89,6 +95,7 @@ export default function AdminAuthorsList() {
         </div>
       </div>
 
+      {/* Tabla */}
       <div className="bg-white rounded-xl shadow-sm border border-orange-100 overflow-hidden">
         <div className="overflow-x-auto">
           <table className="w-full">
@@ -101,7 +108,10 @@ export default function AdminAuthorsList() {
                   Nombre
                 </th>
                 <th className="text-left py-4 px-6 font-semibold text-gray-700">
-                  Biografía
+                  Profesión
+                </th>
+                <th className="text-left py-4 px-6 font-semibold text-gray-700">
+                  Géneros
                 </th>
                 <th className="text-right py-4 px-6 font-semibold text-gray-700">
                   Acciones
@@ -119,8 +129,8 @@ export default function AdminAuthorsList() {
                     <td className="py-4 px-6">
                       {url ? (
                         <img
-                          src={url || "/placeholder.svg"}
-                          alt={a.name}
+                          src={url}
+                          alt={a.fullName}
                           className="w-12 h-12 rounded-full object-cover border-2 border-orange-100"
                         />
                       ) : (
@@ -130,36 +140,60 @@ export default function AdminAuthorsList() {
                       )}
                     </td>
                     <td className="py-4 px-6">
-                      <div className="font-medium text-gray-900">{a.name}</div>
+                      <div className="font-medium text-gray-900">
+                        {a.fullName}
+                      </div>
+                    </td>
+                    <td className="py-4 px-6 text-gray-600">
+                      {a.profession || "—"}{" "}
                     </td>
                     <td className="py-4 px-6">
-                      <div
-                        className="max-w-md text-gray-600 text-sm leading-relaxed"
-                        title={a.biography}
-                      >
-                        {a.biography.length > 100
-                          ? `${a.biography.substring(0, 100)}...`
-                          : a.biography}
+                      <div className="flex flex-wrap gap-1 max-w-xs">
+                        {Array.isArray(a.writingGenre) &&
+                        a.writingGenre.length > 0 ? (
+                          a.writingGenre.map((g, i) => (
+                            <span
+                              key={i}
+                              className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800"
+                            >
+                              {g}
+                            </span>
+                          ))
+                        ) : (
+                          <span className="text-gray-400 text-sm">—</span>
+                        )}
                       </div>
                     </td>
                     <td className="py-4 px-6">
                       <div className="flex items-center justify-end gap-2">
+                        <button
+                          onClick={() => setSelectedAuthor(a)}
+                          className="p-2 text-gray-500 hover:text-blue-600 hover:bg-blue-50 rounded-full transition-colors"
+                          title="Ver detalles"
+                        >
+                          <Eye className="w-4 h-4" />
+                        </button>
                         <Link
                           href={`/admin/authors/${a._id}/edit`}
-                          className="flex items-center gap-1 px-3 py-1.5 text-sm text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-lg transition-colors"
+                          className="p-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-full transition-colors"
+                          title="Editar"
                         >
-                          <Edit className="w-3 h-3" />
-                          Editar
+                          <Edit className="w-4 h-4" />
                         </Link>
                         <button
-                          className="flex items-center gap-1 px-3 py-1.5 text-sm text-red-600 hover:text-red-700 hover:bg-red-50 rounded-lg transition-colors"
+                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-full transition-colors"
+                          title="Eliminar"
                           onClick={() => {
-                            if (!confirm("¿Eliminar este autor?")) return;
+                            if (
+                              !confirm(
+                                "¿Eliminar este autor? Esta acción no se puede deshacer."
+                              )
+                            )
+                              return;
                             delMut.mutate(a._id);
                           }}
                         >
-                          <Trash2 className="w-3 h-3" />
-                          Eliminar
+                          <Trash2 className="w-4 h-4" />
                         </button>
                       </div>
                     </td>
@@ -168,7 +202,7 @@ export default function AdminAuthorsList() {
               })}
               {authors.length === 0 && (
                 <tr>
-                  <td colSpan={4} className="text-center py-12">
+                  <td colSpan={5} className="text-center py-12">
                     <div className="flex flex-col items-center gap-3">
                       <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
                         <Search className="w-6 h-6 text-gray-400" />
@@ -189,6 +223,151 @@ export default function AdminAuthorsList() {
           </table>
         </div>
       </div>
+
+      {/* Modal de detalles */}
+      {selectedAuthor && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/60 p-4">
+          <div className="bg-white rounded-xl shadow-xl w-full max-w-2xl max-h-[90vh] overflow-y-auto">
+            <div className="p-6">
+              <div className="flex justify-between items-start mb-4">
+                <h3 className="text-xl font-bold text-gray-900">
+                  Detalles del autor
+                </h3>
+                <button
+                  onClick={closeModal}
+                  className="text-gray-500 hover:text-gray-700"
+                  aria-label="Cerrar"
+                >
+                  <X className="w-5 h-5" />
+                </button>
+              </div>
+
+              <div className="flex flex-col md:flex-row gap-6">
+                {/* Avatar */}
+                <div className="flex-shrink-0">
+                  {selectedAuthor.avatar ? (
+                    <img
+                      src={
+                        getAuthorAvatarUrl(selectedAuthor.avatar) ||
+                        "/placeholder.svg"
+                      }
+                      alt={selectedAuthor.fullName}
+                      className="w-24 h-24 rounded-full object-cover border-2 border-orange-200"
+                    />
+                  ) : (
+                    <div className="w-24 h-24 rounded-full bg-gradient-to-r from-orange-100 to-amber-100 flex items-center justify-center border-2 border-orange-200">
+                      <User className="w-8 h-8 text-orange-600" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Datos */}
+                <div className="flex-1 space-y-3">
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">
+                      Nombre completo
+                    </span>
+                    <p className="text-gray-900">{selectedAuthor.fullName}</p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">
+                      Profesión
+                    </span>
+                    <p className="text-gray-900">
+                      {selectedAuthor.profession || "—"}{" "}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">
+                      Lugar de nacimiento
+                    </span>
+                    <p className="text-gray-900">
+                      {selectedAuthor.birthplace || "—"}{" "}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">
+                      Nacionalidad
+                    </span>
+                    <p className="text-gray-900">
+                      {selectedAuthor.nationality || "—"}{" "}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">
+                      Fecha de nacimiento
+                    </span>
+                    <p className="text-gray-900">
+                      {selectedAuthor.birthdate
+                        ? new Date(selectedAuthor.birthdate).toLocaleDateString(
+                            "es-AR"
+                          )
+                        : "—"}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">
+                      Géneros literarios
+                    </span>
+                    <div className="flex flex-wrap gap-1 mt-1">
+                      {Array.isArray(selectedAuthor.writingGenre) &&
+                      selectedAuthor.writingGenre.length > 0 ? (
+                        selectedAuthor.writingGenre.map((g, i) => (
+                          <span
+                            key={i}
+                            className="inline-flex items-center px-2 py-0.5 rounded-full text-xs font-medium bg-orange-100 text-orange-800"
+                          >
+                            {g}
+                          </span>
+                        ))
+                      ) : (
+                        <span className="text-gray-400">—</span>
+                      )}
+                    </div>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">
+                      Biografía
+                    </span>
+                    <p className="text-gray-900 mt-1 whitespace-pre-line">
+                      {selectedAuthor.biography || "Sin biografía"}
+                    </p>
+                  </div>
+                </div>
+              </div>
+
+              <div className="mt-6 flex justify-end">
+                <button
+                  onClick={closeModal}
+                  className="px-4 py-2 text-gray-700 hover:bg-gray-100 rounded-lg transition-colors"
+                >
+                  Cerrar
+                </button>
+              </div>
+            </div>
+          </div>
+        </div>
+      )}
     </div>
+  );
+}
+
+// Icono de cerrar para el modal
+function X({ className }: { className?: string }) {
+  return (
+    <svg
+      xmlns="http://www.w3.org/2000/svg"
+      className={className}
+      fill="none"
+      viewBox="0 0 24 24"
+      stroke="currentColor"
+    >
+      <path
+        strokeLinecap="round"
+        strokeLinejoin="round"
+        strokeWidth={2}
+        d="M6 18L18 6M6 6l12 12"
+      />
+    </svg>
   );
 }

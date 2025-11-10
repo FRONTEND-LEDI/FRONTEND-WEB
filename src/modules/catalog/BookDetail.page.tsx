@@ -68,14 +68,25 @@ const BookDetailPage: React.FC = () => {
     ? new Date(book.yearBook).getFullYear()
     : null;
 
+  // Función para formatear segundos a minutos y segundos legibles
+  const formatSeconds = (totalSeconds: number): string => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes} minuto${minutes !== 1 ? "s" : ""} y ${seconds} segundo${
+      seconds !== 1 ? "s" : ""
+    }`;
+  };
+
   const pagesLabel =
     typeof book.totalPages === "number"
-      ? `${book.totalPages} páginas`
-      : `${book.duration} segundos`;
+      ? `${book.totalPages} página${book.totalPages !== 1 ? "s" : ""}`
+      : book.duration != null
+      ? formatSeconds(book.duration)
+      : "Duración desconocida";
 
   const description = book.synopsis || book.summary || "—";
   const authorObjs = Array.isArray(book.author)
-    ? (book.author as { _id: string; name: string }[])
+    ? (book.author as { _id: string; fullName: string }[])
     : [];
 
   const maxThemes = 3;
@@ -179,10 +190,10 @@ const BookDetailPage: React.FC = () => {
                 ? authorObjs.map((a, idx) => (
                     <span key={a._id}>
                       <Link
-                        href={`/autor/${a._id}`}
+                        href={`/authors/${a._id}`}
                         className="text-amber-600 hover:underline"
                       >
-                        {a.name}
+                        {a.fullName}
                       </Link>
                       {idx < authorObjs.length - 1 ? ", " : ""}
                     </span>
@@ -197,7 +208,7 @@ const BookDetailPage: React.FC = () => {
               </span>
               <span className="bg-white/60 px-3 py-1 rounded-full border">
                 <strong>Antología:</strong>{" "}
-                {anthologyYear ? `Antología ${anthologyYear}` : "—"}
+                {anthologyYear ? ` ${anthologyYear}` : "—"}
               </span>
               <span className="bg-white/60 px-3 py-1 rounded-full border">
                 <strong>Nivel:</strong> {book.level || "—"}

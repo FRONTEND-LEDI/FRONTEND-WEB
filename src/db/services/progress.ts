@@ -1,6 +1,6 @@
 import type { BookProgress, ProgressStatus } from "../../types/progress";
 
-const URL = "http://localhost:3402";
+import { API_BASE_URL } from "../config";
 
 const authHeaders = (token: string | null): HeadersInit => {
   const h: HeadersInit = {
@@ -15,7 +15,7 @@ const authHeaders = (token: string | null): HeadersInit => {
 export async function getAllProgress(
   token: string | null
 ): Promise<BookProgress[]> {
-  const res = await fetch(`${URL}/Progress`, {
+  const res = await fetch(`${API_BASE_URL}/Progress`, {
     headers: authHeaders(token),
     credentials: "include",
   });
@@ -46,7 +46,7 @@ export async function createProgress(
   },
   token: string | null
 ): Promise<BookProgress> {
-  const res = await fetch(`${URL}/SaveProgress`, {
+  const res = await fetch(`${API_BASE_URL}/SaveProgress`, {
     method: "POST",
     headers: authHeaders(token),
     credentials: "include",
@@ -69,7 +69,7 @@ export async function updateProgressPosition(
   },
   token: string | null
 ): Promise<BookProgress> {
-  const res = await fetch(`${URL}/progress`, {
+  const res = await fetch(`${API_BASE_URL}/progress`, {
     method: "PUT",
     headers: authHeaders(token),
     credentials: "include",

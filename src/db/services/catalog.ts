@@ -1,7 +1,7 @@
 import type { Book } from "../../types/books";
 import type { FilterState } from "../../types/filters";
 
-const URL = "http://localhost:3402";
+import { API_BASE_URL } from "../config";
 
 const authHeaders = (token: string | null): HeadersInit => {
   const h: HeadersInit = {
@@ -12,41 +12,57 @@ const authHeaders = (token: string | null): HeadersInit => {
   return h;
 };
 
-export async function getAllYears(token: string | null): Promise<(number | string)[]> {
-  const res = await fetch(`${URL}/booksYears`, { headers: authHeaders(token), credentials: "include" });
+export async function getAllYears(
+  token: string | null
+): Promise<(number | string)[]> {
+  const res = await fetch(`${API_BASE_URL}/booksYears`, {
+    headers: authHeaders(token),
+    credentials: "include",
+  });
   if (!res.ok) throw new Error("Error al obtener años");
   return res.json();
 }
 
 export async function getAllGenres(token: string | null): Promise<string[]> {
-  const res = await fetch(`${URL}/booksGenres`, { headers: authHeaders(token), credentials: "include" })
-  if (!res.ok) throw new Error("Error al obtener géneros")
-  return res.json()
+  const res = await fetch(`${API_BASE_URL}/booksGenres`, {
+    headers: authHeaders(token),
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Error al obtener géneros");
+  return res.json();
 }
 
 export async function getAllSubgenres(token: string | null): Promise<string[]> {
-  const res = await fetch(`${URL}/booksSubgenres`, { headers: authHeaders(token), credentials: "include" });
+  const res = await fetch(`${API_BASE_URL}/booksSubgenres`, {
+    headers: authHeaders(token),
+    credentials: "include",
+  });
   if (!res.ok) throw new Error("Error al obtener subgéneros");
   return res.json();
 }
 
 export async function getAllFormats(token: string | null): Promise<string[]> {
-  const res = await fetch(`${URL}/booksFormats`, { headers: authHeaders(token), credentials: "include" });
+  const res = await fetch(`${API_BASE_URL}/booksFormats`, {
+    headers: authHeaders(token),
+    credentials: "include",
+  });
   if (!res.ok) throw new Error("Error al obtener formatos");
   return res.json();
 }
 
-export async function getBooksByFiltering(filters: FilterState, token: string | null): Promise<Book[]> {
-
+export async function getBooksByFiltering(
+  filters: FilterState,
+  token: string | null
+): Promise<Book[]> {
   const payload = {
-    theme: [],                         
+    theme: [],
     subgenre: filters.subgenres ?? [],
-    yearBook: filters.years ?? [],  
+    yearBook: filters.years ?? [],
     genre: filters.genres ?? [],
     format: filters.formats ?? [],
   };
 
-  const res = await fetch(`${URL}/booksByFiltering`, {
+  const res = await fetch(`${API_BASE_URL}/booksByFiltering`, {
     method: "POST",
     headers: authHeaders(token),
     credentials: "include",

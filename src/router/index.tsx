@@ -11,6 +11,8 @@ import Profile from "../modules/profile/Profile.page";
 import ForumPage from "../modules/forum/Forum.page";
 import { BiblioGames } from "../modules/games/Games.page";
 import LoadingGate from "../common/components/LoadingGate";
+import { Author } from "../modules/author/Author.page";
+import { AuthorDetail } from "../modules/author/Author.Detail.page";
 import NotFound from "../common/components/notFound/NotFound";
 
 // Admin
@@ -24,46 +26,45 @@ import AdminAuthorsList from "../modules/admin/authors/AdminAuthorsList";
 import AdminAuthorsNew from "../modules/admin/authors/AdminAuthorsNew";
 import AdminAuthorsEdit from "../modules/admin/authors/AdminAuthorsEdit";
 import AdminNotFound from "../common/components/notFound/AdminNotFound";
+import { BookSelector } from "../common/components/games/BookSelector";
+import { CreatuHistoria } from "../common/components/games/CreaTuHistoria";
+import AdminAvatarsList from "../modules/admin/avatars/AdminAvatarsList";
+import AdminAvatarsNew from "../modules/admin/avatars/AdminAvatarsNew";
+import AdminAvatarsEdit from "../modules/admin/avatars/AdminAvatarsEdit";
 
 const AppRouter = () => {
   return (
     <Switch>
-      {/* Públicas / protegidas de usuario */}
+      {/* -------------------- RUTAS PÚPLICAS ----------------------------- */}
+
       <Route path="/" component={LandingPage} />
       <Route path="/login" component={LoginPage} />
       <Route path="/register" component={RegisterPage} />
       <Route path="/test" component={Test} />
 
-      <Route path="/profile">
-        <ProtectedRoute>
-          <Profile />
-        </ProtectedRoute>
-      </Route>
-
       <Route path="/probando">
         <LoadingGate message="Cargando…" />
       </Route>
+      <Route path="/probando2">
+        <div className="flex items-center justify-center h-screen bg-transparent">
+          <span className="loading loading-spinner loading-xl bg-secondary"></span>
+        </div>
+      </Route>
+      {/* -------------------- FIN - RUTAS PÚPLICAS ----------------------------- */}
+
+      {/* -------------------------- Modulo: HOME ------------------------------------- */}
 
       <Route path="/home">
         <ProtectedRoute>
           <HomePage />
         </ProtectedRoute>
       </Route>
+      {/* -------------------------- FIN Modulo: HOME ------------------------------------- */}
 
+      {/* -------------------------- Modulo: LIBROS ------------------------------------- */}
       <Route path="/catalogo">
         <ProtectedRoute>
           <CatalogPage />
-        </ProtectedRoute>
-      </Route>
-
-      <Route path="/ClubdeLectura">
-        <ProtectedRoute>
-          <ForumPage />
-        </ProtectedRoute>
-      </Route>
-      <Route path="/BiblioGames">
-        <ProtectedRoute>
-          <BiblioGames />
         </ProtectedRoute>
       </Route>
 
@@ -73,7 +74,50 @@ const AppRouter = () => {
         </ProtectedRoute>
       </Route>
 
-      {/* ===== ADMIN ===== */}
+      {/* -------------------------- FIN Modulo: LIBROS ------------------------------------- */}
+
+      <Route path="/ClubdeLectura">
+        <ProtectedRoute>
+          <ForumPage />
+        </ProtectedRoute>
+      </Route>
+
+      {/* -------------------------- Modulo: AUTORES ------------------------------------- */}
+      <Route path="/Autores">
+        <ProtectedRoute>
+          <Author />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/authors/:id">
+        <ProtectedRoute>
+          <AuthorDetail />
+        </ProtectedRoute>
+      </Route>
+      {/* -------------------------- fin Modulo: AUTORES ------------------------------------- */}
+
+      {/* ----------------------------- Modulo: PERFIL ------------------------------------- */}
+      <Route path="/profile">
+        <ProtectedRoute>
+          <Profile />
+        </ProtectedRoute>
+      </Route>
+      {/* -------------------------- fin Modulo: PERFIL ------------------------------------- */}
+
+      {/* -------------------------- Modulo: BiBLIO GAMES ------------------------------------- */}
+      <Route path="/BiblioGames">
+        <ProtectedRoute>
+          <BiblioGames />
+        </ProtectedRoute>
+      </Route>
+
+      <Route path="/games/select-book/:gameType" component={BookSelector} />
+      <Route path="/games/historia/:bookId" component={CreatuHistoria} />
+      {/* <Route path="/games/preguntados/:bookId" component={Preguntados} /> */}
+
+      {/* --------------------------FIN Modulo: BiBLIO GAMES ------------------------------------- */}
+
+      {/* ======================= MODULO ADMIN ============================ */}
       {/* root exacto */}
       <Route path="/admin">
         <AdminRoute>
@@ -83,7 +127,7 @@ const AppRouter = () => {
         </AdminRoute>
       </Route>
 
-      {/* subrutas */}
+      {/*subrutas */}
       <Route path="/admin/*">
         <AdminRoute>
           <AdminLayout>
@@ -98,12 +142,19 @@ const AppRouter = () => {
                 component={AdminAuthorsEdit}
               />
               <Route>
-                <AdminNotFound />
+                <Route path="/admin/avatars" component={AdminAvatarsList} />
+                <Route path="/admin/avatars/new" component={AdminAvatarsNew} />
+                <Route
+                  path="/admin/avatars/:id/edit"
+                  component={AdminAvatarsEdit}
+                />
               </Route>
+              <AdminNotFound />
             </Switch>
           </AdminLayout>
         </AdminRoute>
       </Route>
+      {/* ======================= FIN MODULO ADMIN ============================ */}
 
       {/* ===== 404 SIEMPRE AL FINAL ===== */}
       <Route>

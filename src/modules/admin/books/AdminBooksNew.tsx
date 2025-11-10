@@ -10,6 +10,7 @@ import { useQuery } from "@tanstack/react-query";
 import { searchAuthors } from "../../../db/services/adminAuthors";
 import type { Author } from "../../../types/author";
 import { getAuthorAvatarUrl } from "../../../types/author";
+import { LITERARY_GENRES } from "../../../common/data/genres";
 
 const INITIAL = {
   title: "",
@@ -26,22 +27,20 @@ const INITIAL = {
   format: "ebook",
   totalPages: undefined as number | undefined,
   duration: undefined as number | undefined,
-  fileExtension: "pdf",
+  fileExtension: "PDF",
 };
 
 const LEVEL_OPTIONS = [
-  { value: "adulto mayor", label: "Adulto Mayor" },
-  { value: "joven adulto", label: "Joven Adulto" },
-  { value: "secundario", label: "Secundario" },
-  { value: "inicial", label: "Inicial" },
+  { value: "Adulto Mayor", label: "Adulto Mayor" },
+  { value: "Joven Adulto", label: "Joven Adulto" },
+  { value: "Secundario", label: "Secundario" },
+  { value: "Inicial", label: "Inicial" },
 ];
 
 const LANGUAGE_OPTIONS = [
   { value: "es", label: "Español" },
   { value: "en", label: "Inglés" },
 ];
-
-const GENRE_OPTIONS = ["Narrativo", "Poesía"];
 
 const FORMAT_OPTIONS = [
   { value: "ebook", label: "E-book" },
@@ -161,7 +160,7 @@ export default function AdminBooksNew() {
                     onChange={(e) => set("genre", e.target.value)}
                   >
                     <option value="">Seleccionar género</option>
-                    {GENRE_OPTIONS.map((genre) => (
+                    {LITERARY_GENRES.map((genre) => (
                       <option key={genre} value={genre}>
                         {genre}
                       </option>
@@ -247,7 +246,7 @@ export default function AdminBooksNew() {
                               className="w-5 h-5 rounded-full object-cover"
                             />
                           ) : null}
-                          {a?.name ?? id}
+                          {a?.fullName ?? id}
                           <button
                             type="button"
                             className="ml-1 text-orange-600 hover:text-orange-800"
@@ -540,7 +539,7 @@ function AuthorPicker({
   const [q, setQ] = useState("");
 
   const filtered = authors.filter((a) =>
-    q.trim() ? a.name.toLowerCase().includes(q.trim().toLowerCase()) : true
+    q.trim() ? a.fullName.toLowerCase().includes(q.trim().toLowerCase()) : true
   );
 
   return (
@@ -572,7 +571,7 @@ function AuthorPicker({
               {url ? (
                 <img
                   src={url}
-                  alt={a.name}
+                  alt={a.fullName}
                   className="w-8 h-8 rounded-full object-cover border"
                 />
               ) : (
@@ -580,7 +579,7 @@ function AuthorPicker({
               )}
               <div className="min-w-0">
                 <div className="text-sm font-medium text-gray-900 truncate">
-                  {a.name}
+                  {a.fullName}
                 </div>
                 <div className="text-xs text-gray-500 truncate">
                   {a.biography}
