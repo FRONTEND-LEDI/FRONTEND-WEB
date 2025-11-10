@@ -4,7 +4,7 @@ import { UsersRound } from "lucide-react";
 type FilterProps = {
   setForoSeleccionado: (foro: Foro | null) => void;
   foros: Foro[];
-  comentarios: Coment[]; // Todos los comentarios globales
+  comentarios: Coment[]; 
 };
 
 // Función recursiva para contar respuestas
