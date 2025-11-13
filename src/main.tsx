@@ -1,4 +1,5 @@
 import { StrictMode } from "react";
+import { tourSteps, tourStyles } from "./common/tourSteps";
 import { createRoot } from "react-dom/client";
 import "./index.css";
 import App from "./App.tsx";

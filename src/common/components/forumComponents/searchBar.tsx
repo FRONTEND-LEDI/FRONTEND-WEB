@@ -1,4 +1,5 @@
-import type { Foro } from "./types";
+import type { Foro } from '../../../types/forum';
+
 
 type SearchProps = {
   searchTerm: string;

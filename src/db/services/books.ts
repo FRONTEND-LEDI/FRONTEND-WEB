@@ -47,3 +47,21 @@ export async function getBookById(
   if (!res.ok) throw new Error("No se pudo obtener el libro");
   return res.json() as Promise<Book>;
 }
+ //Obtener solo narrativos, para la gamificacion quiz
+
+export async function getNarrativeBooks(token: string | null): Promise<Book[]> {
+  const res = await fetch(`${API_BASE_URL}/booksByFiltering`, {
+    method: "POST",
+    headers: authHeaders(token),
+    credentials: "include",
+    body: JSON.stringify({
+      theme: [],
+      subgenre: [],
+      yearBook: [],
+      genre: ["Narrativo"], // Filtramos solo por género Narrativo
+      format: [],
+    }),
+  });
+  if (!res.ok) throw new Error("Error al obtener libros narrativos");
+  return res.json() as Promise<Book[]>;
+}

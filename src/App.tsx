@@ -2,11 +2,6 @@
 import AppRouter from "./router";
 import { Toaster } from "react-hot-toast";
 
-
-// import { lazy } from 'react';
-
-// const MarkdownPreview = lazy(() => import('/src/modules/landing/LandingPage.tsx'));
-
 function App() {
 
 

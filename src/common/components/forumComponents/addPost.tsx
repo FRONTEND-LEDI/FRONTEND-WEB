@@ -1,5 +1,5 @@
 import { useState } from "react";
-import type { Foro } from "./types";
+import type { Foro } from "../../../types/forum";
 
 type AddPostProps = {
   foroSeleccionado: Foro | null;
@@ -8,15 +8,34 @@ type AddPostProps = {
 
 export default function AddPost({ foroSeleccionado, agregarPost }: AddPostProps) {
   const [nuevoPost, setNuevoPost] = useState("");
+  const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
-    if (!nuevoPost.trim()) return;
-    agregarPost(nuevoPost);
-    setNuevoPost("");
+    
+    if (!nuevoPost.trim()) {
+      alert("El contenido del post no puede estar vacío");
+      return;
+    }
 
-    const modal = document.getElementById("post_modal") as HTMLDialogElement | null;
-    if (modal) modal.close();
+    setIsSubmitting(true);
+    
+    try {
+      agregarPost(nuevoPost);
+      setNuevoPost("");
+      
+      const modal = document.getElementById("post_modal") as HTMLDialogElement | null;
+      if (modal) {
+        setTimeout(() => {
+          modal.close();
+          setIsSubmitting(false);
+        }, 500);
+      }
+    } catch (error) {
+      console.error("Error al crear post:", error);
+      alert("Error al crear el post. Por favor intenta de nuevo.");
+      setIsSubmitting(false);
+    }
   };
 
   if (!foroSeleccionado) return null;
@@ -26,40 +45,53 @@ export default function AddPost({ foroSeleccionado, agregarPost }: AddPostProps)
     if (modal) modal.showModal();
   };
 
+  const closeModal = () => {
+    const modal = document.getElementById("post_modal") as HTMLDialogElement | null;
+    if (modal) modal.close();
+    setNuevoPost("");
+  };
+
   return (
     <>
-      <button className="btn" style={{ borderRadius: "18px", cursor: "pointer" }} onClick={openModal}>
+      <button 
+        className="btn" 
+        style={{ borderRadius: "18px", cursor: "pointer" }} 
+        onClick={openModal}
+      >
         Crear Post
       </button>
 
       <dialog id="post_modal" className="modal modal-bottom sm:modal-middle">
-        <form onSubmit={handleSubmit} className="modal-box flex flex-col gap-4">
+        <div className="modal-box flex flex-col gap-4">
           <h3 className="font-bold text-lg">Nuevo post en {foroSeleccionado.title}</h3>
           
           <textarea
-            className="textarea w-full"
+            className="textarea textarea-bordered w-full min-h-[120px]"
             placeholder="Escribe tu post..."
             value={nuevoPost}
             onChange={(e) => setNuevoPost(e.target.value)}
-            required
+            disabled={isSubmitting}
           />
 
           <div className="modal-action flex gap-2">
-            <button type="submit" className="btn btn-primary">
-              Crear
+            <button 
+              type="button"
+              className="btn btn-primary"
+              onClick={handleSubmit}
+              disabled={isSubmitting || !nuevoPost.trim()}
+            >
+              {isSubmitting ? "Creando..." : "Crear"}
             </button>
             <button
               type="button"
               className="btn"
-              onClick={() => {
-                const modal = document.getElementById("post_modal") as HTMLDialogElement | null;
-                if (modal) modal.close();
-              }}
+              onClick={closeModal}
+              disabled={isSubmitting}
             >
               Cancelar
             </button>
           </div>
-        </form>
+        </div>
       </dialog>
     </>
   );
