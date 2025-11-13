@@ -115,9 +115,9 @@ export default function AdminBooksList() {
                 <th className="text-left py-4 px-6 font-semibold text-gray-700">
                   Año
                 </th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-700">
+                {/* <th className="text-left py-4 px-6 font-semibold text-gray-700">
                   Estado
-                </th>
+                </th> */}
                 <th className="text-right py-4 px-6 font-semibold text-gray-700">
                   Acciones
                 </th>
@@ -138,7 +138,7 @@ export default function AdminBooksList() {
                     </span>
                   </td>
                   <td className="py-4 px-6 text-gray-600">{b.yearBook}</td>
-                  <td className="py-4 px-6">
+                  {/* <td className="py-4 px-6">
                     <span
                       className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
                         b.available
@@ -148,7 +148,7 @@ export default function AdminBooksList() {
                     >
                       {b.available ? "Disponible" : "No disponible"}
                     </span>
-                  </td>
+                  </td> */}
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-end gap-2">
                       <Link

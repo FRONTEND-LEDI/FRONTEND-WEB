@@ -68,10 +68,21 @@ const BookDetailPage: React.FC = () => {
     ? new Date(book.yearBook).getFullYear()
     : null;
 
+  // Función para formatear segundos a minutos y segundos legibles
+  const formatSeconds = (totalSeconds: number): string => {
+    const minutes = Math.floor(totalSeconds / 60);
+    const seconds = totalSeconds % 60;
+    return `${minutes} minuto${minutes !== 1 ? "s" : ""} y ${seconds} segundo${
+      seconds !== 1 ? "s" : ""
+    }`;
+  };
+
   const pagesLabel =
     typeof book.totalPages === "number"
-      ? `${book.totalPages} páginas`
-      : `${book.duration} segundos`;
+      ? `${book.totalPages} página${book.totalPages !== 1 ? "s" : ""}`
+      : book.duration != null
+      ? formatSeconds(book.duration)
+      : "Duración desconocida";
 
   const description = book.synopsis || book.summary || "—";
   const authorObjs = Array.isArray(book.author)

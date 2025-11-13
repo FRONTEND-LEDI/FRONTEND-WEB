@@ -5,12 +5,10 @@ import { useAuth } from "../../context/AuthContext";
 import {
   BookOpen,
   Users,
-  BarChart3,
-  Plus,
+  User,
   Home,
   LogOut,
   Settings,
-  Library,
   Menu,
   X,
 } from "lucide-react";
@@ -57,7 +55,7 @@ export default function AdminLayout({
             </div>
             <button
               onClick={() => setSidebarOpen(false)}
-              className="md:hidden text-white hover:bg-white/20 p-1 rounded"
+              className="md:hidden text-white hover:bg-white/20 p-1 rounded cursor-pointer"
               aria-label="Cerrar menú"
               aria-expanded={sidebarOpen}
             >
@@ -69,76 +67,36 @@ export default function AdminLayout({
         {/* Contenido scrolleable del sidebar (secciones) */}
         <nav className="p-4 flex-1 overflow-y-auto">
           <div className="space-y-2">
+            {/*/ Sección Libros */}
             <Link
-              href="/admin"
+              href="/admin/books"
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 transition-colors group"
             >
-              <BarChart3 className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
+              <BookOpen className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
               <span className="font-medium text-gray-700 group-hover:text-gray-900">
-                Dashboard
+                Libros
               </span>
             </Link>
-
-            {/* Sección Libros */}
-            <div className="pt-4">
-              <div className="flex items-center gap-2 px-4 py-2 mb-2">
-                <BookOpen className="w-4 h-4 text-orange-500" />
-                <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                  Libros
-                </span>
-              </div>
-              <div className="space-y-1 ml-2">
-                <Link
-                  href="/admin/books"
-                  className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors group"
-                >
-                  <Library className="w-4 h-4 text-orange-500 group-hover:text-orange-600" />
-                  <span className="text-gray-700 group-hover:text-gray-900">
-                    Listado
-                  </span>
-                </Link>
-                <Link
-                  href="/admin/books/new"
-                  className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors group"
-                >
-                  <Plus className="w-4 h-4 text-orange-500 group-hover:text-orange-600" />
-                  <span className="text-gray-700 group-hover:text-gray-900">
-                    Crear libro
-                  </span>
-                </Link>
-              </div>
-            </div>
-
-            {/* Sección Autores */}
-            <div className="pt-4">
-              <div className="flex items-center gap-2 px-4 py-2 mb-2">
-                <Users className="w-4 h-4 text-orange-500" />
-                <span className="text-sm font-semibold text-gray-600 uppercase tracking-wide">
-                  Autores
-                </span>
-              </div>
-              <div className="space-y-1 ml-2">
-                <Link
-                  href="/admin/authors"
-                  className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors group"
-                >
-                  <Users className="w-4 h-4 text-orange-500 group-hover:text-orange-600" />
-                  <span className="text-gray-700 group-hover:text-gray-900">
-                    Listado
-                  </span>
-                </Link>
-                <Link
-                  href="/admin/authors/new"
-                  className="flex items-center gap-3 px-4 py-2 rounded-lg hover:bg-orange-50 transition-colors group"
-                >
-                  <Plus className="w-4 h-4 text-orange-500 group-hover:text-orange-600" />
-                  <span className="text-gray-700 group-hover:text-gray-900">
-                    Crear autor
-                  </span>
-                </Link>
-              </div>
-            </div>
-
+            {/* Sección Autores*/}
+            <Link
+              href="/admin/authors"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 transition-colors group"
+            >
+              <Users className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
+              <span className="font-medium text-gray-700 group-hover:text-gray-900">
+                Autores
+              </span>
+            </Link>
+            {/*/ Sección Avatares (nueva)*/}
+            <Link
+              href="/admin/avatars"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 transition-colors group"
+            >
+              <User className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
+              <span className="font-medium text-gray-700 group-hover:text-gray-900">
+                Avatares
+              </span>
+            </Link>
             {/* Futuras secciones entran aquí y seguirán siendo scrolleables */}
           </div>
         </nav>
