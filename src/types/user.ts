@@ -8,17 +8,14 @@ export interface FullUser {
   password?: string;
   nivel?: string;
   rol?: string;
-  avatar?:
-    | null
-    | {
-        _id?: string;
-        gender?: "female" | "male" | "other" | string;
-        __v?: number;
-        avatars?: {
-          url_secura?: string; // URL Cloudinary
-          id_image?: string; 
-        };
-      };
+  avatar?: null | {
+    _id?: string;
+    gender?: "female" | "male" | "other" | string;
+    __v?: number;
+    avatars?: {
+      url_secura?: string;
+    };
+  };
   preference?: {
     category?: string[];
     format?: string[];

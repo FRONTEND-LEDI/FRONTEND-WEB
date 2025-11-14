@@ -19,7 +19,7 @@ function buildBookFormData(payload: AdminCreateBookInput): FormData {
   fd.append("title", payload.title);
   fd.append("summary", payload.summary);
   fd.append("language", payload.language);
-  fd.append("available", String(payload.available));
+  fd.append("available", "true");
   fd.append("yearBook", payload.yearBook);
   fd.append("synopsis", payload.synopsis);
   fd.append("genre", payload.genre);
@@ -65,7 +65,7 @@ export async function adminCreateBook(
 
   const res = await fetch(`${API_BASE_URL}/books`, {
     method: "POST",
-    headers: authHeaders(token), // NO pongas Content-Type: lo maneja el browser en multipart
+    headers: authHeaders(token),
     body: buildBookFormData(payload),
     credentials: "include",
   });
@@ -90,31 +90,78 @@ export async function adminDeleteBook(id: string, token: string | null) {
   return data;
 }
 
-// Dejo preparado para cuando esté el endpoint de edición (PUT /book/:id):
+// ! edicion de libro
+function buildUpdateBookFormData(
+  form: Partial<AdminCreateBookInput>
+): FormData {
+  const fd = new FormData();
+
+  // Archivos
+  if (form.imgFile) fd.append("img", form.imgFile);
+  if (form.bookFile) fd.append("file", form.bookFile);
+
+  // Campos simples
+  const simpleFields = [
+    "title",
+    "summary",
+    "language",
+    "yearBook",
+    "synopsis",
+    "genre",
+    "level",
+    "format",
+    "fileExtension",
+  ] as const;
+
+  for (const field of simpleFields) {
+    if (field in form && typeof form[field] !== "undefined") {
+      let value = form[field];
+      if (field === "fileExtension" && typeof value === "string") {
+        value = value.trim().toUpperCase(); // Normalizar a mayúsculas
+      }
+      fd.append(field, String(value));
+    }
+  }
+
+  // Arrays: enviar cada elemento como un append separado
+  if (Array.isArray(form.author)) {
+    for (const id of form.author) {
+      fd.append("author", id);
+    }
+  }
+  if (Array.isArray(form.subgenre)) {
+    for (const s of form.subgenre) {
+      fd.append("subgenre", s);
+    }
+  }
+  if (Array.isArray(form.theme)) {
+    for (const t of form.theme) {
+      fd.append("theme", t);
+    }
+  }
+
+  // Campos numéricos condicionales
+  if (typeof form.totalPages === "number") {
+    fd.append("totalPages", String(form.totalPages));
+  }
+  if (typeof form.duration === "number") {
+    fd.append("duration", String(form.duration));
+  }
+
+  fd.append("available", "true");
+
+  return fd;
+}
+
 export async function adminUpdateBook(
   id: string,
   form: Partial<AdminCreateBookInput>,
   token: string | null
 ) {
-  const fd = new FormData();
-  // solo adjuntar lo que venga
-  if (form.bookFile) fd.append("file", form.bookFile);
-  if (form.imgFile) fd.append("img", form.imgFile);
-  for (const [k, v] of Object.entries(form)) {
-    if (k === "bookFile" || k === "imgFile") continue;
-    if (Array.isArray(v)) fd.append(k, JSON.stringify(v));
-    else if (
-      typeof v === "boolean" ||
-      typeof v === "number" ||
-      typeof v === "string"
-    )
-      fd.append(k, String(v));
-  }
-
   const res = await fetch(`${API_BASE_URL}/book/${id}`, {
-    method: "PUT", // cuando esté listo en el back
+    method: "PATCH",
     headers: authHeaders(token),
-    body: fd,
+    body: buildUpdateBookFormData(form),
     credentials: "include",
   });
   const data = await res.json().catch(() => ({}));

@@ -1,15 +1,14 @@
 import { useEffect, useState } from "react";
-import { Link, useLocation } from 'wouter';
+import { Link, useLocation } from "wouter";
 // ! ai. separo la función de registro para mantener el código limpio y no meterme con los archivos de sele
 import { getAvatars } from "../../db/services/avatar";
-import { useCompleteRegistration } from "../../common/utils/registerHelper"; 
-import { getSubgenres } from '../../db/services/subgenres';
+import { useCompleteRegistration } from "../../common/utils/registerHelper";
+import { getSubgenres } from "../../db/services/subgenres";
 import { getFormat } from "../../db/services/bookformats";
-
 
 export default function Test() {
   const completeRegistration = useCompleteRegistration();
-  const [, navigate ] = useLocation();
+  const [, navigate] = useLocation();
 
   // ! ai. redirigir si no completó el formulario antes
   useEffect(() => {
@@ -21,7 +20,6 @@ export default function Test() {
 
   // ! ai. fin de redirección
 
-
   type DialogProps = {
     dialog: string;
   };
@@ -32,13 +30,16 @@ export default function Test() {
 
   const dialog: DialogProps[] = [
     { dialog: "Hola, soy tu bibliotecario virtual personal!" },
-    { dialog: "Si gustás te realizaré unas series de preguntas que me ayudarán a darte una mejor experiencia." },
+    {
+      dialog:
+        "Si gustás te realizaré unas series de preguntas que me ayudarán a darte una mejor experiencia.",
+    },
     { dialog: "Elegí al menos 3 opciones de tu género favorito" },
     { dialog: "Elegí al menos 3 opciones de tu formato de libro favorito" },
-    { dialog: "¡Elegí tu avatar!" }
+    { dialog: "¡Elegí tu avatar!" },
   ];
 
-  // ! ai. los avatares traidos de base de datos 
+  // ! ai. los avatares traidos de base de datos
   const [avatars, setAvatars] = useState<any[]>([]);
 
   useEffect(() => {
@@ -46,15 +47,15 @@ export default function Test() {
   }, []);
   // ! fin de los avatares
 
-  const [subgenres, setSubgenres] = useState<any[]> ([]);
-useEffect (()=> {
-getSubgenres().then(setSubgenres);
-}, []);
+  const [subgenres, setSubgenres] = useState<any[]>([]);
+  useEffect(() => {
+    getSubgenres().then(setSubgenres);
+  }, []);
 
-  const [formats, setFormats] = useState<any[]> ([]);
-useEffect (()=> {
-getFormat().then(setFormats);
-}, []);
+  const [formats, setFormats] = useState<any[]>([]);
+  useEffect(() => {
+    getFormat().then(setFormats);
+  }, []);
 
   const handleNext = () => {
     if (progressSteps < dialog.length - 1) {
@@ -64,11 +65,11 @@ getFormat().then(setFormats);
 
   const [progressSteps, setProgressSteps] = useState(0);
 
-  const handleBack = ()=>{
+  const handleBack = () => {
     if (progressSteps > 0) {
-    setProgressSteps(progressSteps - 1);
-  }
-  }
+      setProgressSteps(progressSteps - 1);
+    }
+  };
 
   return (
     <div className="flex flex-col items-center justify-center min-h-screen  bg-fund py-10 px-4">
@@ -85,7 +86,14 @@ getFormat().then(setFormats);
         </ul>
         <Link
           href="/home"
-          onClick={() => completeRegistration(selectedGenres, selectedFormats, selectedAvatar, navigate)}
+          onClick={() =>
+            completeRegistration(
+              selectedGenres,
+              selectedFormats,
+              selectedAvatar,
+              navigate
+            )
+          }
           className="absolute right-0 text-sm underline text-gray-700 cursor-pointer"
         >
           Omitir
@@ -108,66 +116,63 @@ getFormat().then(setFormats);
 
       {/* Opciones */}
       <div className="w-full max-w-5xl flex justify-center">
-    {progressSteps >= 2 && (
-  <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-6">
-   
-    {/* Géneros */}
-    {progressSteps === 2 &&
-  subgenres.map((nombre) => {
-    const isSelected = selectedGenres.includes(nombre);
-    return (
-      <div
-        key={nombre}
-        onClick={() =>
-          setSelectedGenres((prev) =>
-            isSelected
-              ? prev.filter((g) => g !== nombre)
-              : [...prev, nombre]
-          )
-        }
-        className={`text-center   bg-secondary shadow-lg px-4 justify-center items-center flex  cursor-pointer hover:scale-105 transition rounded-4xl py-1 ${
-          isSelected ? "ring-4 ring-primary" : ""
-        }`}
-      >
-        {/* <img
+        {progressSteps >= 2 && (
+          <div className="grid grid-cols-2 sm:grid-cols-3 lg:grid-cols-3 gap-6">
+            {/* Géneros */}
+            {progressSteps === 2 &&
+              subgenres.map((nombre) => {
+                const isSelected = selectedGenres.includes(nombre);
+                return (
+                  <div
+                    key={nombre}
+                    onClick={() =>
+                      setSelectedGenres((prev) =>
+                        isSelected
+                          ? prev.filter((g) => g !== nombre)
+                          : [...prev, nombre]
+                      )
+                    }
+                    className={`text-center   bg-secondary shadow-lg px-4 justify-center items-center flex  cursor-pointer hover:scale-105 transition rounded-4xl py-1 ${
+                      isSelected ? "ring-4 ring-primary" : ""
+                    }`}
+                  >
+                    {/* <img
           src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
           alt={nombre}
           className="rounded-lg h-10 w-15 object-cover mx-auto"
         /> */}
-        <p className="mt-2 font-medium text-primary">{nombre}</p>
-      </div>
-    );
-  })}
+                    <p className="mt-2 font-medium text-primary">{nombre}</p>
+                  </div>
+                );
+              })}
             {/* Formatos */}
             {progressSteps === 3 &&
-            formats.map((nombre) => {
-    const isSelected = selectedFormats.includes(nombre);
+              formats.map((nombre) => {
+                const isSelected = selectedFormats.includes(nombre);
 
-    return (
-      <div
-        key={nombre}
-        onClick={() =>
-          setSelectedFormats((prev) =>
-            isSelected
-              ? prev.filter((g) => g !== nombre)
-              : [...prev, nombre]
-          )
-        }
-        className={`text-center   bg-secondary shadow-lg px-4 justify-center items-center flex  cursor-pointer hover:scale-105 transition rounded-4xl py-1 ${
-          isSelected ? "ring-4 ring-primary" : ""
-        }`}
-      >
-        {/* <img
+                return (
+                  <div
+                    key={nombre}
+                    onClick={() =>
+                      setSelectedFormats((prev) =>
+                        isSelected
+                          ? prev.filter((g) => g !== nombre)
+                          : [...prev, nombre]
+                      )
+                    }
+                    className={`text-center   bg-secondary shadow-lg px-4 justify-center items-center flex  cursor-pointer hover:scale-105 transition rounded-4xl py-1 ${
+                      isSelected ? "ring-4 ring-primary" : ""
+                    }`}
+                  >
+                    {/* <img
           src="https://cdn-icons-png.flaticon.com/512/847/847969.png"
           alt={nombre}
           className="rounded-lg h-20 w-full object-cover mx-auto"
         /> */}
-        <p className="mt-2 font-medium text-primary">{nombre}</p>
-      </div>
-    );
-  })}
-
-         
+                    <p className="mt-2 font-medium text-primary">{nombre}</p>
+                  </div>
+                );
+              })}
 
             {/* Avatares */}
             {progressSteps === 4 &&
@@ -204,17 +209,23 @@ getFormat().then(setFormats);
         <button
           onClick={() => {
             if (progressSteps === dialog.length - 1) {
-              completeRegistration(selectedGenres, selectedFormats, selectedAvatar, navigate);
+              completeRegistration(
+                selectedGenres,
+                selectedFormats,
+                selectedAvatar,
+                navigate
+              );
             } else {
               handleNext();
             }
           }}
           className="bg-primary text-white font-bold py-2 px-6 rounded cursor-pointer hover:bg-primary/90"
         >
-          {progressSteps === dialog.length - 1 ? "Finalizar Registro" : "Continuar"}
+          {progressSteps === dialog.length - 1
+            ? "Finalizar Registro"
+            : "Continuar"}
         </button>
       </div>
     </div>
-
   );
 }
