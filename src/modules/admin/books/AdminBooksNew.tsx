@@ -28,6 +28,7 @@ const INITIAL = {
   totalPages: undefined as number | undefined,
   duration: undefined as number | undefined,
   fileExtension: "PDF",
+  anthology: false,
 };
 
 const LEVEL_OPTIONS = [
@@ -98,6 +99,7 @@ export default function AdminBooksNew() {
         theme: parseList(themeText),
         imgFile,
         bookFile,
+        anthology: form.anthology,
       };
 
       await adminCreateBook(payload, token);
@@ -147,6 +149,21 @@ export default function AdminBooksNew() {
                   value={form.title}
                   onChange={(e) => set("title", e.target.value)}
                 />
+                <div className="flex items-center gap-3 mt-2">
+                  <input
+                    type="checkbox"
+                    checked={!!form.anthology}
+                    onChange={(e) => set("anthology", e.target.checked)}
+                    className="w-4 h-4 text-orange-600 rounded focus:ring-orange-500"
+                    id="anthology-new"
+                  />
+                  <label
+                    htmlFor="anthology-new"
+                    className="text-sm text-gray-700"
+                  >
+                    Es una Antologías completa
+                  </label>
+                </div>
               </div>
 
               <div className="space-y-2">
