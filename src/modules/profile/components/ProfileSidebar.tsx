@@ -35,7 +35,6 @@ const getLevelLabel = (level?: number): string => {
   return level ? labels[level] || "Avanzado" : "Avanzado";
 };
 
-// Colores del marco según nivel
 const getLevelFrameColor = (level?: number) => {
   const colors: Record<number, string> = {
     1: "from-gray-400 to-gray-600",
@@ -46,6 +45,25 @@ const getLevelFrameColor = (level?: number) => {
     6: "from-pink-400 via-red-500 to-yellow-500",
   };
   return colors[level || 1] || colors[1];
+};
+
+// Función para formatear la fecha evitando problemas de zona horaria
+const formatBirthDate = (dateString?: string): string => {
+  if (!dateString) return "";
+
+  // Extrae la parte de la fecha (YYYY-MM-DD) antes de cualquier T o Z
+  const dateMatch = dateString.match(/(\d{4})-(\d{2})-(\d{2})/);
+  if (!dateMatch) return "";
+
+  const [, year, month, day] = dateMatch;
+  // Crea un Date desde los componentes para evitar desplazamientos de zona horaria
+  const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
+
+  return date.toLocaleDateString("es-ES", {
+    year: "numeric",
+    month: "long",
+    day: "numeric",
+  });
 };
 
 export default function ProfileSidebar({ user, onEdit, onDelete }: Props) {
@@ -59,14 +77,7 @@ export default function ProfileSidebar({ user, onEdit, onDelete }: Props) {
   const levelLabel = getLevelLabel(currentLevel);
   const frameColor = getLevelFrameColor(currentLevel);
   const frameUrl = user?.level?.img?.url_secura;
-
-  const joinDate = user?.birthDate
-    ? new Date(user.birthDate).toLocaleDateString("es-ES", {
-        year: "numeric",
-        month: "long",
-        day: "numeric",
-      })
-    : "";
+  const joinDate = formatBirthDate(user?.birthDate);
 
   return (
     <>

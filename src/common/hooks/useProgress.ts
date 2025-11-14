@@ -74,7 +74,7 @@ export function useUpdatePosition(
   unit?: "page" | "second",
   fixedTotal?: number
 ) {
-  const { token } = useAuth();
+  const { token, refreshUser } = useAuth();
   const lastSentRef = useRef<number>(0);
   const finishedOnceRef = useRef(false);
   const qc = useQueryClient();
@@ -101,9 +101,26 @@ export function useUpdatePosition(
         token
       ),
     // para refrescar cuando cambia
-    onSuccess: (_data) => {
+    onSuccess: async (_data: any) => {
       qc.invalidateQueries({ queryKey: ["continueReading"] });
       qc.invalidateQueries({ queryKey: ["progressAll"] });
+
+      // Si el backend marcó el progreso como finished (o percent >= 100),
+      // refrescamos el usuario en el contexto para que los puntos / nivel
+      // se actualicen en la UI (navbar, perfil, etc.).
+      try {
+        if (
+          typeof refreshUser === "function" &&
+          (_data?.status === "finished" || Number(_data?.percent) >= 100)
+        ) {
+          await refreshUser();
+        }
+      } catch (err) {
+        console.error(
+          "Error al refrescar usuario después de progreso terminado:",
+          err
+        );
+      }
     },
   });
 
