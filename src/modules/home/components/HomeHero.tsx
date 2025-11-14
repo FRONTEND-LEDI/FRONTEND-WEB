@@ -157,20 +157,18 @@ export default function HomeHero({ illustrationUrl }: Props) {
             <div className="h-0.5 sm:h-1 w-2 sm:w-3 bg-primary/30 rounded-full" />
           </div>
         </div>
-
-        {/* Ilustración - responsive */}
-        {illustrationUrl && (
-          <img
-            src={illustrationUrl || "/placeholder.svg"}
-            alt="Mascota de la biblioteca"
-            className="pointer-events-none 
-              w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96
-              object-contain opacity-90 drop-shadow-lg 
-              mx-auto lg:mx-0
-              lg:absolute lg:right-4 xl:right-10 lg:bottom-0 lg:top-0 lg:my-auto"
-          />
-        )}
-      </div>
+{illustrationUrl && (
+  <img
+    src={illustrationUrl || "/placeholder.svg"}
+    alt="Mascota de la biblioteca"
+    className="hidden md:block pointer-events-none 
+      w-48 h-48 sm:w-56 sm:h-56 md:w-64 md:h-64 lg:w-80 lg:h-80 xl:w-96 xl:h-96
+      object-contain opacity-90 drop-shadow-lg 
+      mx-auto lg:mx-0
+      lg:absolute lg:right-4 xl:right-10 lg:bottom-0 lg:top-0 lg:my-auto"
+  />
+)}
+</div>
 
       {/* CSS para animación flotante */}
       <style jsx>{`

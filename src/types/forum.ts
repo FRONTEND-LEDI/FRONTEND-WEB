@@ -1,18 +1,24 @@
-import type { FullUser } from "./user";
-
-export type Coment = {
-  _id: string;
-  idUser: string | FullUser;
-  idForo: string | {_id:string; title:string};
-  createdAt: string;
-  content: string;
-  __v?:number;
-  answers?:Coment[]
-};
 
 export type Foro = {
   _id: string;
   title: string;
   description: string;
-  posts?: Coment[];  
+};
+export type CommentUser = {
+  _id: string;
+  userName: string;
+  avatar?: string;
+};
+
+export type Comment = {
+  _id: string;
+  idComent?: string;
+  idForo: string;
+  idUser: CommentUser;
+  content: string;
+  createdAt?: string;
+};
+export type ForoExtendido = Foro & {
+  posts: Comment[];        // comentarios normales (posts principales)
+  comentarios: Comment[]; // comentarios secundarios / threaded si tenés
 };

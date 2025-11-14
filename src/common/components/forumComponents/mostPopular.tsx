@@ -1,10 +1,11 @@
 "use client";
+
 import { useState } from "react";
-import type { Coment } from "../../../types/forum";
+import type { Comment } from "../../../types/forum";
 import { MessageCircle } from "lucide-react";
 
 interface PopularProps {
-  posts: Coment[];
+  posts: Comment[];
   agregarComentario: (postId: string, contenido: string) => void;
 }
 
@@ -12,120 +13,128 @@ export default function Popular({ posts, agregarComentario }: PopularProps) {
   const [comentarios, setComentarios] = useState<{ [key: string]: string }>({});
   const [openInput, setOpenInput] = useState<{ [key: string]: boolean }>({});
 
+  // Obtener iniciales sin avatar
   const getInitials = (user: any): string => {
-    if (typeof user === "object" && user?.userName) {
-      return user.userName
-        .split(" ")
-        .map((word: string) => word.charAt(0).toUpperCase())
-        .join("")
-        .substring(0, 2);
-    }
-    if (typeof user === "string") return user.charAt(0).toUpperCase();
-    return "??";
+    if (!user) return "??";
+
+    return user.userName
+      ?.split(" ")
+      .map((w: string) => w[0].toUpperCase())
+      .join("")
+      .slice(0, 2);
   };
 
-  const getUserName = (user: any): string => {
-    if (typeof user === "object" && user?.userName) return user.userName;
-    if (typeof user === "object" && user?.email) return user.email.split("@")[0];
-    if (typeof user === "string") return user;
-    return "Usuario desconocido";
-  };
+  // Ordenar por fecha: más nuevo primero
+  const sortedPosts = [...posts].sort((a, b) => {
+    return new Date(b.createdAt || "").getTime() - new Date(a.createdAt || "").getTime();
+  });
 
-  const getUserEmail = (user: any): string | null => {
-    if (typeof user === "object" && user?.email) return user.email;
-    return null;
-  };
+  // Filtrar solo comentarios sin idComent (comentarios principales)
+  const principales = sortedPosts.filter((c) => !c.idComent);
 
-  const handleChange = (postId: string, value: string) => {
+  // Obtener respuestas para cada comentario
+  const getRespuestas = (commentId: string) =>
+    sortedPosts.filter((c) => c.idComent === commentId);
+
+  const handleChange = (postId: string, value: string) =>
     setComentarios((prev) => ({ ...prev, [postId]: value }));
-  };
 
   const handleSubmit = (postId: string) => {
-    const contenido = comentarios[postId];
-    if (contenido && contenido.trim() !== "") {
-      agregarComentario(postId, contenido);
+    const texto = comentarios[postId];
+
+    if (texto?.trim()) {
+      agregarComentario(postId, texto);
       setComentarios((prev) => ({ ...prev, [postId]: "" }));
       setOpenInput((prev) => ({ ...prev, [postId]: false }));
     }
   };
 
-  const toggleInput = (postId: string) => {
-    setOpenInput((prev) => ({ ...prev, [postId]: !prev[postId] }));
-  };
-
   return (
     <div className="space-y-6">
-      {posts.length === 0 ? (
-        <p className="text-center text-gray-500 py-8">
-          No hay publicaciones aún
-        </p>
+      {principales.length === 0 ? (
+        <p className="text-center text-gray-500 py-6">No hay publicaciones aún</p>
       ) : (
-        posts.map((post) => {
+        principales.map((post) => {
           const initials = getInitials(post.idUser);
-          const userName = getUserName(post.idUser);
-          const userEmail = getUserEmail(post.idUser);
+          const respuestas = getRespuestas(post._id);
 
           return (
-            <div
-              key={post._id}
-              className="bg-white rounded-lg shadow-md p-4 hover:shadow-lg transition"
-            >
-              {/* Header del post */}
+            <div key={post._id} className="bg-white rounded-lg shadow-md p-4 shadow-gray-300">
+              
+              {/* HEADER */}
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-primary flex items-center justify-center text-white font-bold">
+                <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">
                   {initials}
                 </div>
-                <div className="flex-1 flex-col">
-                  <div className="flex flex-row justify-between">
-                    <p className="font-bold text-gray-800">{userName}</p>
+
+                <div className="flex flex-col w-full">
+                  <div className="flex justify-between">
+                    <p className="font-bold">{post.idUser?.userName}</p>
+
                     <p className="text-xs text-gray-500">
-                      {new Date(post.createdAt).toLocaleString("es-ES", {
-                        year: "numeric",
-                        month: "numeric",
-                        day: "numeric",
-                        hour: "2-digit",
-                        minute: "2-digit",
-                      })}
+                      {post.createdAt
+                        ? new Date(post.createdAt).toLocaleString("es-ES")
+                        : "Sin fecha"}
                     </p>
                   </div>
-                  {userEmail && (
-                    <p className="text-xs text-gray-400">{userEmail}</p>
-                  )}
                 </div>
               </div>
 
-              {/* Contenido del post */}
-              <p className="text-gray-700 mb-3 leading-relaxed whitespace-pre-wrap">
-                {post.content}
-              </p>
+            
+              <p className="text-gray-700 mb-3 whitespace-pre-wrap">{post.content}</p>
 
-              {/* Botón de comentario */}
+            
               <div className="flex items-center gap-2">
-                <MessageCircle
-                  className="cursor-pointer text-primary text-xs  hover:text-primary transition"
-                  onClick={() => toggleInput(post._id)}
-                />12 Respuestas
-              </div>
+  <MessageCircle
+    onClick={() =>
+      setOpenInput((prev) => ({ ...prev, [post._id]: !prev[post._id] }))
+    }
+    className="cursor-pointer text-primary"
+  />
+  <span>{respuestas.length} Respuestas</span>
+</div>
 
-              {/* Input minimalista para agregar comentario */}
-              {openInput[post._id] && (
-                <div className="mt-2 flex gap-2">
-                  <input
-                    type="text"
-                    className="flex-1 p-2 rounded-md focus:outline-none focus:ring-2 focus:ring-primary"
-                    placeholder="Escribe un comentario..."
-                    value={comentarios[post._id] || ""}
-                    onChange={(e) => handleChange(post._id, e.target.value)}
-                    onKeyDown={(e) => e.key === "Enter" && handleSubmit(post._id)}
-                  />
-                  <button
-                    onClick={() => handleSubmit(post._id)}
-                    className="bg-primary cursor-pointer text-white px-3 py-1 rounded-md hover:bg-primary-dark transition"
-                  >
-                    Enviar
-                  </button>
-                </div>
-              )}
+{/* BLOQUE QUE SE DESPLIEGA */}
+{openInput[post._id] && (
+  <div className="mt-2 ml-10 space-y-2">
+    {/* INPUT PARA NUEVA RESPUESTA */}
+    <div className="flex gap-2">
+      <input
+        type="text"
+        className="flex-1 p-2 rounded-md border-2 border-primary hover-border-primary"
+        placeholder="Responder..."
+        
+        value={comentarios[post._id] ?? ""}
+        onChange={(e) => handleChange(post._id, e.target.value)}
+        onKeyDown={(e) => e.key === "Enter" && handleSubmit(post._id)}
+      />
+      <button
+        onClick={() => handleSubmit(post._id)}
+        className="bg-primary text-white px-3 py-1 rounded-md"
+      >
+        Enviar
+      </button>
+    </div>
+
+    {/* RESPUESTAS */}
+    {respuestas.length > 0 && (
+      <div className="mt-2 space-y-3 border-l  border-primary pl-8">
+        {respuestas.map((resp) => (
+          <div key={resp._id} className="bg-gray-200 p-3 rounded-md">
+            <p className="font-bold text-sm">{resp.idUser?.userName}</p>
+            <p className="text-gray-700 whitespace-pre-wrap">{resp.content}</p>
+          </div>
+        ))}
+      </div>
+    )}
+  </div>
+)}
+
+
+             
+           
+             
+            
             </div>
           );
         })
@@ -133,3 +142,4 @@ export default function Popular({ posts, agregarComentario }: PopularProps) {
     </div>
   );
 }
+

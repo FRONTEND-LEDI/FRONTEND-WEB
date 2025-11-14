@@ -4,9 +4,19 @@ import { useAuth } from "../../context/AuthContext";
 export default function Navbar() {
   const { user, logout } = useAuth();
 
-  const resetTour = () => {
-    localStorage.removeItem("seenTour");
-    window.location.reload(); // refresca la página para que vuelva a aparecer el modal
+ 
+
+  // Función para obtener el color del marco según el nivel
+  const getLevelFrameColor = (level?: number) => {
+    const colors: Record<number, string> = {
+      1: "from-gray-400 to-gray-600",
+      2: "from-green-400 to-green-600",
+      3: "from-blue-400 to-blue-600",
+      4: "from-purple-400 to-purple-600",
+      5: "from-yellow-400 to-yellow-600",
+      6: "from-pink-400 via-red-500 to-yellow-500",
+    };
+    return colors[level || 1] || colors[1];
   };
 
   // Función para obtener el color del marco según el nivel
@@ -35,27 +45,13 @@ export default function Navbar() {
           <div className="flex font-semibold text-white gap-12 items-center">
             {/* Links en pantalla grande */}
             <div className="hidden lg:flex gap-12 items-center">
-              <Link id="Inicio" href="/home">
-                Inicio
-              </Link>
-              <Link id="Catalogo" href="/catalogo">
-                Catálogo
-              </Link>
-              <Link id="ClubDeLectura" href="/clubdelectura">
-                Club de Lectura
-              </Link>
-              <Link id="Bibliogames" href="/bibliogames">
-                BiblioGames
-              </Link>
-              <Link id="Autores" href="/autores">
-                Autores
-              </Link>
-              <button
-                onClick={resetTour}
-                className="text-xs text-white bg-red-500 px-2 py-1 rounded ml-4"
-              >
-                Reset Tour
-              </button>
+              <Link id="Inicio" href="/home">Inicio</Link>
+              <Link id="Catalogo" href="/catalogo">Catálogo</Link>
+              <Link id="ClubDeLectura" href="/clubdelectura">Club de Lectura</Link>
+              <Link id="Bibliogames" href="/bibliogames">BiblioGames</Link>
+              <Link id="Autores" href="/autores">Autores</Link>
+             
+             
             </div>
 
             {/* Menú perfil */}

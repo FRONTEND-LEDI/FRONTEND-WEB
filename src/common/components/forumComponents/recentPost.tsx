@@ -1,28 +1,31 @@
 import { Clock, Flame } from "lucide-react";
-import type { Foro, Coment } from "../../../types/forum";
+import type { ForoExtendido, Comment } from "../../../types/forum";
 
 type ForumOverviewProps = {
-  foros: Foro[];
+  foros: ForoExtendido[];
 };
 
 export default function ForumOverview({ foros }: ForumOverviewProps) {
   // 🔹 Convertir todos los posts de todos los foros en una sola lista
-  const todosLosPosts: (Coment & { foroTitle: string })[] = foros.flatMap((foro) =>
-    (foro.posts ?? []).map((post) => ({
-      ...post,
-      foroTitle: foro.title,
-    }))
+  const todosLosPosts: (Comment & { foroTitle: string })[] = foros.flatMap(
+    (foro) =>
+      (foro.posts ?? []).map((post) => ({
+        ...post,
+        foroTitle: foro.title,
+      }))
   );
 
   // 🔹 Ordenar por fecha (más recientes primero)
   const recientes = [...todosLosPosts].sort(
-    (a, b) => new Date(b.createAt).getTime() - new Date(a.createAt).getTime()
+    (a, b) =>
+      new Date(b.createdAt ?? "").getTime() -
+      new Date(a.createdAt ?? "").getTime()
   );
 
-  // 🔹 Agrupar por foro para los temas populares (más comentados)
+  // 🔹 Foros más populares (más posts)
   const populares = [...foros]
     .sort((a, b) => (b.posts?.length ?? 0) - (a.posts?.length ?? 0))
-    .slice(0, 3); // mostrar los 3 con más comentarios
+    .slice(0, 3);
 
   return (
     <div className="flex flex-col md:flex-row gap-8 w-full mt-10">
@@ -48,8 +51,11 @@ export default function ForumOverview({ foros }: ForumOverviewProps) {
                   <span className="bg-orange-100 text-orange-600 px-2 py-0.5 rounded-full text-xs font-semibold">
                     {post.foroTitle}
                   </span>
-                  <span>Por usuario {post.idUser}</span>
-                  <span>{formatearTiempo(post.createAt)}</span>
+
+                  {/* 👇 CORRECCIÓN: mostrar NOMBRE del usuario */}
+                  <span>Por {post.idUser?.userName ?? "Usuario"}</span>
+
+                  <span>{formatearTiempo(post.createdAt ?? "")}</span>
                 </div>
               </div>
             ))}
@@ -80,7 +86,9 @@ export default function ForumOverview({ foros }: ForumOverviewProps) {
               </div>
               <p className="text-sm text-gray-500 mt-1">
                 {foro.posts?.length ?? 0}{" "}
-                {(foro.posts?.length ?? 0) === 1 ? "comentario" : "comentarios"}
+                {(foro.posts?.length ?? 0) === 1
+                  ? "comentario"
+                  : "comentarios"}
               </p>
             </div>
           ))}
@@ -91,6 +99,8 @@ export default function ForumOverview({ foros }: ForumOverviewProps) {
 }
 
 function formatearTiempo(fechaISO: string): string {
+  if (!fechaISO) return "Fecha desconocida";
+
   const fecha = new Date(fechaISO);
   const diferencia = (Date.now() - fecha.getTime()) / 1000;
 
@@ -100,3 +110,4 @@ function formatearTiempo(fechaISO: string): string {
   if (diferencia < 172800) return "Hace 1 día";
   return `Hace ${Math.floor(diferencia / 86400)} días`;
 }
+
