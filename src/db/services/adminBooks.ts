@@ -26,6 +26,10 @@ function buildBookFormData(payload: AdminCreateBookInput): FormData {
   fd.append("level", payload.level);
   fd.append("format", payload.format);
   fd.append("fileExtension", payload.fileExtension);
+  // anthology (boolean)
+  if (typeof payload.anthology === "boolean") {
+    fd.append("anthology", String(payload.anthology));
+  }
 
   //  ENVIAR CADA ELEMENTO POR SEPARADO
   for (const id of payload.author) {
@@ -121,6 +125,11 @@ function buildUpdateBookFormData(
       }
       fd.append(field, String(value));
     }
+  }
+
+  // anthology puede venir como booleano
+  if ("anthology" in form && typeof form.anthology !== "undefined") {
+    fd.append("anthology", String(form.anthology));
   }
 
   // Arrays: enviar cada elemento como un append separado
