@@ -20,6 +20,7 @@ export interface Book {
   format?: "ebook" | "audiobook" | "videobook";
   fileExtension: string;
   language?: string;
+  anthology?: boolean;
 }
 
 export type AdminCreateBookInput = {
@@ -40,6 +41,7 @@ export type AdminCreateBookInput = {
   fileExtension: string;
   imgFile: File; // campo "img"
   bookFile: File; // campo "file"
+  anthology?: boolean;
 };
 
 export interface BookWithProgress extends Book {

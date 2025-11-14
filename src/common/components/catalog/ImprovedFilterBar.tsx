@@ -74,10 +74,17 @@ const ImprovedFiltersBar: React.FC<Props> = ({
     filters.years.length > 0 ||
     filters.genres.length > 0 ||
     filters.subgenres.length > 0 ||
-    filters.formats.length > 0;
+    filters.formats.length > 0 ||
+    filters.anthology === true;
 
   const clearAllFilters = () => {
-    onChange({ years: [], genres: [], subgenres: [], formats: [] });
+    onChange({
+      years: [],
+      genres: [],
+      subgenres: [],
+      formats: [],
+      anthology: false,
+    });
     setQuery("");
   };
 
@@ -88,7 +95,8 @@ const ImprovedFiltersBar: React.FC<Props> = ({
       newFilters.years.length > 0 ||
       newFilters.genres.length > 0 ||
       newFilters.subgenres.length > 0 ||
-      newFilters.formats.length > 0
+      newFilters.formats.length > 0 ||
+      newFilters.anthology === true
     ) {
       setQuery("");
     }
@@ -180,7 +188,8 @@ const ImprovedFiltersBar: React.FC<Props> = ({
                 {filters.years.length +
                   filters.genres.length +
                   filters.subgenres.length +
-                  filters.formats.length}
+                  filters.formats.length +
+                  (filters.anthology ? 1 : 0)}
               </span>
             )}
           </button>
@@ -242,6 +251,26 @@ const ImprovedFiltersBar: React.FC<Props> = ({
               }
               placeholder="Todos los formatos"
             />
+          </div>
+
+          {/* Antologías Toggle */}
+          <div className="mt-6 pt-4 border-t border-gray-200">
+            <label className="flex items-center gap-3 cursor-pointer group">
+              <input
+                type="checkbox"
+                checked={filters.anthology === true}
+                onChange={(e) =>
+                  handleFilterChange({
+                    ...filters,
+                    anthology: e.target.checked,
+                  })
+                }
+                className="w-4 h-4 text-orange-500 bg-white border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
+              />
+              <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors">
+                Ver Antologías completa
+              </span>
+            </label>
           </div>
         </div>
       )}
