@@ -6,7 +6,7 @@ export default function SectionCard({
   children: React.ReactNode;
 }) {
   return (
-    <div className="bg-card rounded-2xl p-0 shadow-sm border border-orange-100 overflow-hidden">
+    <div className="bg-white rounded-2xl p-0 shadow-lg border border-orange-100 overflow-hidden">
       {children}
     </div>
   );
