@@ -16,8 +16,9 @@ export default function TabNav({
   onChange: (k: TabKey) => void;
   tabs: Tab[];
 }) {
+  // Reemplaza la función return con:
   return (
-    <div className="flex gap-1 bg-muted/50 px-2 pt-2">
+    <div className="flex gap-1 bg-gradient-to-r from-orange-50 to-amber-50 px-4 pt-3 border-b border-orange-100">
       {tabs.map((t) => {
         const isActive = t.key === active;
         return (
@@ -26,18 +27,21 @@ export default function TabNav({
             disabled={t.disabled}
             onClick={() => onChange(t.key)}
             className={[
-              "px-4 py-2 rounded-t-xl text-sm border-b-2",
+              "relative px-5 py-3 rounded-t-xl text-sm font-medium transition-all duration-200",
               isActive
-                ? "bg-card text-gray-900 border-primary"
-                : "text-gray-600 border-transparent hover:bg-white",
-              t.disabled ? "opacity-60 cursor-not-allowed" : "cursor-pointer",
+                ? "bg-white text-gray-900 shadow-sm"
+                : "text-gray-600 hover:bg-white/50 hover:text-gray-900",
+              t.disabled ? "opacity-50 cursor-not-allowed" : "cursor-pointer",
             ].join(" ")}
           >
             <span>{t.label}</span>
             {typeof t.badgeCount === "number" && (
-              <span className="ml-2 text-xs rounded-full bg-emerald-100 text-emerald-700 px-2 py-0.5">
+              <span className="ml-2 text-xs rounded-full bg-gradient-to-r from-amber-500 to-orange-500 text-white px-2 py-0.5 font-semibold">
                 {t.badgeCount}
               </span>
+            )}
+            {isActive && (
+              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500 to-orange-500" />
             )}
           </button>
         );
