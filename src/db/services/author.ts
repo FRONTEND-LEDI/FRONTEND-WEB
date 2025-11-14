@@ -41,27 +41,28 @@ export const getAuthorsbyId = async (id: string) => {
     return [];
   }
 };
-export const getBookbyAuthorId = async (id: string) => {
+export const getBookbyAuthorId = async (id: string, token?: string) => {
   try {
-    // Tu token (puedes guardarlo en una variable o constante)
-    const token= "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJpZCI6IjY4ZTAwYmFmN2E0Zjk3OWY0NzA5ZDMxNCIsInJvbCI6IkFkbWluIiwiaWF0IjoxNzYyNTM3MjcyLCJleHAiOjE3NjI2MjM2NzJ9.85WUCnQQk4MCXe8qrF3vEGVIpbdXsv2CExkaEsCVduk"
-    const response = await fetch(`http://localhost:3402/book/autor/${id}`, {  
+    if (!token) throw new Error("Token de autenticación requerido");
+
+    const response = await fetch(`http://localhost:3402/book/autor/${id}`, {
       method: "GET",
       headers: {
         "Content-Type": "application/json",
-        "Authorization": `Bearer ${token}`, // ← Agregar esta línea
+        "Authorization": `Bearer ${token}`,
       },
-    }); 
+    });
 
     const result = await response.json();
 
     if (!response.ok) {
-      throw new Error(result.error || "No se pudo obtener el Libro del autor");
+      throw new Error(result.error || "No se pudo obtener el libro del autor");
     }
 
     return result;
   } catch (error) {
-    console.error(error);
+    console.error("Error en getBookbyAuthorId:", error);
     return [];
   }
 };
+

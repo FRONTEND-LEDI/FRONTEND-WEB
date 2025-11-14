@@ -219,9 +219,9 @@ export function CreatuHistoria() {
 
   if (error) {
     return (
-      <div className="flex flex-col min-h-screen bg-fund">
+      <div className="flex flex-col  bg-fund">
         <Navbar />
-        <div className="flex-1 flex items-center justify-center p-4">
+        <div className="flex-1 min-h-screen  items-center justify-center p-4">
           <div className="text-center max-w-md">
             <div className="w-24 h-24 bg-red-100 rounded-full flex items-center justify-center mx-auto mb-6">
               <span className="text-5xl">  <TriangleAlert /></span>
@@ -244,8 +244,8 @@ export function CreatuHistoria() {
     return (
       <div className="flex flex-col min-h-screen bg-fund">
         <Navbar />
-        <div className="flex-1 flex items-center justify-center">
-          <div className="text-center">
+        <div className="flex-1 w-full max-w-6xl mx-auto px-6 sm:px-8 pt-32 pb-16">
+          <div className="text-center flex-1">
             <div className="relative w-20 h-20 mx-auto mb-6">
               <div className="absolute inset-0 border-4 border-orange-200 rounded-full"></div>
               <div className="absolute inset-0 border-4 border-orange-500 rounded-full border-t-transparent animate-spin"></div>
@@ -300,15 +300,16 @@ export function CreatuHistoria() {
                     
                     {gameCompleted && (
                       <div className="mt-8 text-center">
-                        <div className="inline-block bg-gradient-to-r from-orange-400 to-orange-600 rounded-2xl p-6 shadow-xl">
-                          <p className="text-3xl font-bold text-white mb-2">
-                           FIN DE LA HISTORIA
-                          </p>
-                          {finalScore > 0 && (
+                        <div className="inline-block bg-primary rounded-2xl p-6 shadow-xl">
+                           {finalScore > 0 && (
                             <p className="text-xl text-orange-100">
                               Puntaje final: <span className="font-bold text-white">{finalScore}</span> puntos
                             </p>
                           )}
+                          <p className="text-3xl font-bold text-white mb-2">
+                           FIN DE LA HISTORIA
+                          </p>
+                         
                         </div>
                       </div>
                     )}
@@ -320,7 +321,7 @@ export function CreatuHistoria() {
               {showTextComplete && !animatingOptions && (
                 <div className="flex justify-center mt-6">
                   <div className="bg-orange-100 border border-orange-200 rounded-full px-4 py-2 text-orange-600 text-sm font-medium animate-pulse">
-                    ⏳ Preparando opciones...
+                     Preparando opciones...
                   </div>
                 </div>
               )}
@@ -338,9 +339,9 @@ export function CreatuHistoria() {
 
             {/* Panel de opciones con animaciones */}
             {!gameCompleted && showOptions && !loading && (
-              <div className="bg-gradient-to-r from-orange-400 to-orange-600 p-6 overflow-hidden">
+              <div className=" p-6 overflow-hidden">
                 <div className="max-w-3xl mx-auto">
-                  <p className={`text-white text-center font-semibold mb-4 text-lg transition-all duration-500 transform ${
+                  <p className={`text-primary text-center font-semibold mb-4 text-lg transition-all duration-500 transform ${
                     animatingOptions ? 'translate-y-0 opacity-100' : 'translate-y-4 opacity-0'
                   }`}>
                     ¿Qué decides hacer?
@@ -369,11 +370,9 @@ export function CreatuHistoria() {
                             transitionDelay: animatingOptions ? `${idx * 100}ms` : '0ms'
                           }}
                         >
-                          <div className="flex items-center gap-3">
-                            <div className="w-8 h-8 flex-shrink-0 rounded-lg bg-gradient-to-br from-orange-400 to-orange-600 flex items-center justify-center text-white font-bold shadow-md group-hover:scale-110 transition-transform">
-                              {idx + 1}
-                            </div>
-                            <span className="capitalize flex-1 leading-relaxed">
+                          <div className="flex items-center rounded-2xl border-2 border-primary p-4 gap-3">
+                           
+                            <span className="capitalize   flex-1 leading-relaxed">
                               {op}
                             </span>
                             <div className={`text-orange-500 transition-all duration-300 ${
@@ -398,13 +397,13 @@ export function CreatuHistoria() {
 
             {/* Botón reiniciar cuando termina */}
             {gameCompleted && (
-              <div className="bg-gradient-to-r from-orange-400 to-orange-600 p-8">
+              <div className=" p-8">
                 <div className="flex gap-4 justify-center">
                   <button
                     onClick={() => window.location.reload()}
-                    className="bg-white text-orange-600 px-8 py-4 rounded-xl font-bold text-lg hover:bg-orange-50 transition-all transform hover:scale-105 shadow-xl flex items-center gap-2"
+                    className="bg-white border-primary border-1 text-primary px-8 py-4 rounded-xl font-bold text-md hover:bg-orange-50 transition-all transform hover:scale-105 shadow-xl flex items-center gap-2"
                   >
-                    <span> <RefreshCcw className="text-primary" /></span> Jugar de nuevo
+                     Jugar de nuevo
                   </button>
                 </div>
               </div>
@@ -415,7 +414,7 @@ export function CreatuHistoria() {
           {!gameCompleted && !loading && (
             <div className="mt-6 flex items-center justify-center gap-6 text-sm text-gray-500">
               <div className="flex items-center gap-2">
-                <div className="w-3 h-3 bg-orange-500 rounded-full animate-pulse"></div>
+                <div className="w-3 h-3 bg-primary rounded-full animate-pulse"></div>
                 <span>Historia en progreso</span>
               </div>
               {isTyping && (

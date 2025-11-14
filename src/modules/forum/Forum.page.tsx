@@ -10,7 +10,8 @@ import { initSocket, getSocket } from "./../../db/services/socket";
 import type { Comment, Foro, ForoExtendido } from "../../types/forum";
 import { useAuth } from "../../context/AuthContext";
 import ForumOverview from "../../common/components/forumComponents/recentPost";
-
+import Skeleton from '@mui/material/Skeleton';
+ import Box from '@mui/material/Box';
 export default function ForumPage() {
   const { user, token } = useAuth();
 
@@ -250,13 +251,26 @@ export default function ForumPage() {
             <div className="divider">Recientes</div>
 
             {loading ? (
-              <p className="text-center text-gray-500">Cargando posts...</p>
+             
+             
+
+
+
+   <Box sx={{ width: 1200, height: 1500, display: "flex",
+  flexDirection: "column",
+  gap: 2 }}>
+      <Skeleton variant="rectangular"  width="100%" height="150px"  />
+      <Skeleton variant="rectangular" animation="wave" width="100%" height="150px" />
+      <Skeleton variant="rectangular" animation={false} width="100%" height="150px" />
+    </Box>
+
+
             ) : postsFiltrados.length === 0 ? (
               <p className="text-center text-gray-500">No hay posts aún</p>
             ) : (
               <Popular
                 posts={postsFiltrados}
-                agregarComentario={() => {}} // si lo usas luego, lo activamos
+                agregarComentario={() => {}} 
               />
             )}
           </>

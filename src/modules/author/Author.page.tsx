@@ -5,15 +5,6 @@ import { Link } from "wouter";
 import { Letras } from "./Author.concurso";
 import Footer from "../../common/components/Footer";
 import type { Author } from "../../types/author";
-// export interface Author {
-//   _id: string;
-//   fullName: string;
-//   biography: string;
-//   avatar: {
-//     id_image: string;
-//     url_secura: string;
-//   };
-// }
 
 export function Author() {
   const [authors, setAuthors] = useState<Author[]>([]);
@@ -37,15 +28,19 @@ export function Author() {
       <Navbar />
       
       <main className="flex-1 bg-fund">
-        {/* Header */}
-        <div className="pt-24 pb-12 px-6 text-center bg-primary">
-          <h1 className="text-4xl md:text-5xl font-bold text-white mb-4">
-            Antología de Autores Formoseños
-          </h1>
-          <p className="text-white text-lg max-w-2xl mx-auto">
-            Descubrí las voces que dan vida a la literatura formoseña y forma parte de las próximas ediciones
-          </p>
-        </div>
+      
+<div className="pt-28 pb-12 px-6 text-center ">
+  {/* Contenido central */}
+  <h1 className="text-4xl md:text-5xl font-semibold text-primary mb-4">
+    Antología de Autores Formoseños
+  </h1>
+  <p className="text-gray-600 text-lg md:text-xl max-w-2xl mx-auto mb-6">
+    Descubrí las voces que dan vida a la literatura formoseña y forma parte de las próximas ediciones
+  </p>
+
+ 
+</div>
+
 
         {/* Grid de autores */}
         <div className="px-6 mt-10 pb-16">
@@ -82,17 +77,20 @@ export function Author() {
                       <h2 className="card-title text-lg font-bold text-gray-800 flex-1">
                         {author.fullName}
                       </h2>
-                      <span className="badge badge-primary badge-sm">
-                        Autor
-                      </span>
+                     
                     </div>
 
 
-                  <span className="badge badge-primary badge-sm hidden m">
-                       {author.writingGenre}
-                      </span>
+                 <div className="flex flex-wrap gap-1">
+  {author.writingGenre?.map((genre: string, i: number) => (
+    <span key={i} className="badge badge-primary badge-sm">
+      {genre}
+    </span>
+  ))}
+</div>
+
                     {author.biography && (
-      <p className="text-sm hidden text-gray-600 line-clamp-2 mb-3 capitalize">
+      <p className="text-sm  text-gray-600 line-clamp-2 mb-3 capitalize">
   {author.biography}
 </p>
                     )}
