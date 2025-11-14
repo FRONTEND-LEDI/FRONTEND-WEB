@@ -13,6 +13,16 @@ type User = {
   avatar?: string | null;
   birthDate?: string;
   nivel?: string;
+  level?: null | {
+    _id?: string;
+    level?: number;
+    maxPoint?: number;
+    level_string?: string;
+    img?: {
+      url_secura?: string;
+    };
+  };
+  point?: number;
   preference?: {
     category?: string[];
     format?: string[];
@@ -56,6 +66,8 @@ function normalizeUser(u: FullUser): User {
     avatar: avatarUrl,
     birthDate: birth,
     nivel: u.nivel,
+    level: u.level,
+    point: u.point,
     preference: {
       category: u.preference?.category ?? [],
       format: u.preference?.format ?? [],
