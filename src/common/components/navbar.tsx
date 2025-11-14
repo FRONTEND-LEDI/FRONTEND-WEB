@@ -4,10 +4,7 @@ import { useAuth } from "../../context/AuthContext";
 export default function Navbar() {
   const { user, logout } = useAuth();
 
-  const resetTour = () => {
-    localStorage.removeItem("seenTour");
-    window.location.reload(); // refresca la página para que vuelva a aparecer el modal
-  };
+ 
 
   return (
     <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
@@ -27,12 +24,7 @@ export default function Navbar() {
               <Link id="ClubDeLectura" href="/clubdelectura">Club de Lectura</Link>
               <Link id="Bibliogames" href="/bibliogames">BiblioGames</Link>
               <Link id="Autores" href="/autores">Autores</Link>
-              <button
-                onClick={resetTour}
-                className="text-xs text-white bg-red-500 px-2 py-1 rounded ml-4"
-              >
-                Reset Tour
-              </button>
+             
             </div>
 
             {/* Menú perfil */}

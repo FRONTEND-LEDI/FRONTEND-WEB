@@ -14,9 +14,10 @@ export default function CommentSection({ commentsCount }: CommentSectionProps) {
         onClick={() => setShowComments(!showComments)}
         className="text-sm text-primary hover:underline font-semibold flex items-center gap-2"
       >
-        <span>{showComments ? '▼' : '▶'}</span>
+        <span>{showComments ? "▼" : "▶"}</span>
         <span>Comentarios ({commentsCount})</span>
       </button>
     </div>
   );
 }
+

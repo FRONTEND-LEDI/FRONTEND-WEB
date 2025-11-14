@@ -60,7 +60,7 @@ export function Author() {
               </p>
             </div>
           ) : (
-            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 max-w-6xl mx-auto">
+            <div className="grid grid-cols-2 sm:grid-cols-2 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-10 max-w-6xl mx-auto">
               {authors.map((author) => (
                 <div
                   key={author._id}
@@ -87,11 +87,12 @@ export function Author() {
                       </span>
                     </div>
 
-                  <span className="badge badge-primary badge-sm">
+
+                  <span className="badge badge-primary badge-sm hidden m">
                        {author.writingGenre}
                       </span>
                     {author.biography && (
-      <p className="text-sm text-gray-600 line-clamp-2 mb-3 capitalize">
+      <p className="text-sm hidden text-gray-600 line-clamp-2 mb-3 capitalize">
   {author.biography}
 </p>
                     )}

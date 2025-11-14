@@ -1,6 +1,6 @@
 import Navbar from "../../common/components/navbar";
 import { Link } from "wouter";
-import Footer from '../../common/components/Footer';
+import Footer from "../../common/components/Footer";
 import { IoGameControllerSharp } from "react-icons/io5";
 import { FaTrophy, FaStar, FaCrown } from "react-icons/fa";
 

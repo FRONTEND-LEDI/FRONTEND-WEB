@@ -1,4 +1,4 @@
-import { Author } from "./Author.page";
+
     import { CircleChevronDown } from 'lucide-react';
 import { useLocation } from "wouter"; // ← Agregar esta importación
 
