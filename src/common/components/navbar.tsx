@@ -19,6 +19,19 @@ export default function Navbar() {
     return colors[level || 1] || colors[1];
   };
 
+  // Función para obtener el color del marco según el nivel
+  const getLevelFrameColor = (level?: number) => {
+    const colors: Record<number, string> = {
+      1: "from-gray-400 to-gray-600",
+      2: "from-green-400 to-green-600",
+      3: "from-blue-400 to-blue-600",
+      4: "from-purple-400 to-purple-600",
+      5: "from-yellow-400 to-yellow-600",
+      6: "from-pink-400 via-red-500 to-yellow-500",
+    };
+    return colors[level || 1] || colors[1];
+  };
+
   return (
     <nav className="fixed top-0 left-0 w-full bg-primary shadow z-50">
       <div className="max-w-full mx-auto px-12 py-4 flex justify-between items-center">

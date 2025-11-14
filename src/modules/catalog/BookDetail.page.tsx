@@ -64,9 +64,7 @@ const BookDetailPage: React.FC = () => {
 
   const cover =
     book.bookCoverImage?.url_secura || "https://via.placeholder.com/400x600";
-  const anthologyYear = book.yearBook
-    ? new Date(book.yearBook).getFullYear()
-    : null;
+  const anthologyYear = book.yearBook ?? null;
 
   // Función para formatear segundos a minutos y segundos legibles
   const formatSeconds = (totalSeconds: number): string => {

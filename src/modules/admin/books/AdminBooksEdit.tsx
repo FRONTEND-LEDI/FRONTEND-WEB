@@ -86,6 +86,7 @@ export default function AdminBooksEdit() {
           fileExtension: book.fileExtension,
           totalPages: book.totalPages,
           duration: book.duration,
+          anthology: book.anthology,
         });
         setSubgenreText((book.subgenre ?? []).join(", "));
         setThemeText((book.theme ?? []).join(", "));
@@ -129,6 +130,7 @@ export default function AdminBooksEdit() {
         theme: parseList(themeText),
         imgFile: imgFile || undefined,
         bookFile: bookFile || undefined,
+        anthology: form.anthology,
         // fileExtension se formateará en mayúsculas en buildUpdateBookFormData
       };
 
