@@ -95,8 +95,13 @@ export async function adminUpdateAuthor(
     // JSON cuando no hay archivo
     headers = { ...headers, "Content-Type": "application/json" };
     body = JSON.stringify({
-      name: data.fullName,
+      fullName: data.fullName,
       biography: data.biography,
+      profession: data.profession,
+      birthdate: data.birthdate,
+      birthplace: data.birthplace,
+      nationality: data.nationality,
+      writingGenre: data.writingGenre,
     });
   }
   const res = await fetch(`${API_BASE_URL}/author/${id}`, {

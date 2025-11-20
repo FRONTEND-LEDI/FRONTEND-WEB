@@ -1,4 +1,5 @@
 export const LITERARY_GENRES = [
+  "Narrativo",
   "Poesía",
   "Cuento",
   "Novela",
