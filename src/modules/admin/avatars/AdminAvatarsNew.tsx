@@ -5,7 +5,7 @@ import { useLocation } from "wouter";
 import toast from "react-hot-toast";
 import { User, Upload, Save, X } from "lucide-react";
 import { GENDER_OPTIONS } from "../../../common/data/gender";
-
+import { useQueryClient } from "@tanstack/react-query";
 export default function AdminAvatarsNew() {
   const { token } = useAuth();
   const [, navigate] = useLocation();
@@ -16,6 +16,7 @@ export default function AdminAvatarsNew() {
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
   const [loading, setLoading] = useState(false);
+  const qc = useQueryClient();
 
   const onFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0] || null;
@@ -32,6 +33,8 @@ export default function AdminAvatarsNew() {
       setLoading(true);
       await adminCreateAvatar({ avatars: avatarFile, gender }, token);
       toast.success("Avatar creado correctamente");
+      // invalidar la query para que se refresque al instante
+      qc.invalidateQueries({ queryKey: ["admin-avatars"] });
       navigate("/admin/avatars");
     } catch (err: any) {
       toast.error(err?.message ?? "Error al crear avatar");

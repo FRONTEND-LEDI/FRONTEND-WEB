@@ -11,6 +11,7 @@ import { Link } from "wouter";
 import toast from "react-hot-toast";
 import LoadingGate from "../../../common/components/LoadingGate";
 import { User, Plus, Edit, Trash2, Search } from "lucide-react";
+import ConfirmDialog from "../../../common/components/alert/AlertCorfirm";
 
 export default function AdminAvatarsList() {
   const { token } = useAuth();
@@ -94,94 +95,92 @@ export default function AdminAvatarsList() {
         </div>
       </div>
 
-      {/* Tabla */}
-      <div className="bg-white rounded-xl shadow-sm border border-orange-100 overflow-hidden">
-        <div className="overflow-x-auto">
-          <table className="w-full">
-            <thead className="bg-gradient-to-r from-orange-50 to-amber-50 border-b border-orange-100">
-              <tr>
-                <th className="text-left py-4 px-6 font-semibold text-gray-700">
-                  Avatar
-                </th>
-                <th className="text-left py-4 px-6 font-semibold text-gray-700">
-                  Género
-                </th>
-                <th className="text-right py-4 px-6 font-semibold text-gray-700">
-                  Acciones
-                </th>
-              </tr>
-            </thead>
-            <tbody className="divide-y divide-gray-100">
-              {filtered.map((a) => {
-                const url = getAvatarUrl(a.avatars);
-                return (
-                  <tr key={a._id} className="hover:bg-orange-25">
-                    <td className="py-4 px-6">
-                      {url ? (
-                        <img
-                          src={url}
-                          alt={a.gender}
-                          className="w-12 h-12 rounded-full object-cover border-2 border-orange-200"
-                        />
-                      ) : (
-                        <div className="w-12 h-12 rounded-full bg-gray-100 flex items-center justify-center border-2 border-gray-200">
-                          <User className="w-5 h-5 text-gray-400" />
-                        </div>
-                      )}
-                    </td>
-                    <td className="py-4 px-6">
-                      <span className="font-medium text-gray-900 capitalize">
+      {/* Grid de Cards */}
+      {filtered.length === 0 ? (
+        <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-12">
+          <div className="flex flex-col items-center gap-3">
+            <div className="w-16 h-16 bg-gray-100 rounded-lg flex items-center justify-center">
+              <Search className="w-8 h-8 text-gray-400" />
+            </div>
+            <div className="text-center">
+              <p className="text-gray-500 font-medium text-lg">
+                No se encontraron avatares
+              </p>
+              <p className="text-gray-400 text-sm mt-1">
+                Intenta con otros términos de búsqueda
+              </p>
+            </div>
+          </div>
+        </div>
+      ) : (
+        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+          {filtered.map((a) => {
+            const url = getAvatarUrl(a.avatars);
+            return (
+              <div
+                key={a._id}
+                className="bg-white rounded-xl shadow-sm border border-orange-100 overflow-hidden hover:shadow-md transition-all group"
+              >
+                {/* Imagen del Avatar */}
+                <div className="aspect-square bg-gradient-to-br from-orange-50 to-amber-50 flex items-center justify-center p-8">
+                  {url ? (
+                    <img
+                      src={url}
+                      alt={a.gender}
+                      className="w-full h-full object-contain rounded-full border-4 border-white shadow-lg group-hover:scale-105 transition-transform"
+                    />
+                  ) : (
+                    <div className="w-32 h-32 rounded-full bg-gradient-to-br from-gray-100 to-gray-200 flex items-center justify-center border-4 border-white shadow-lg">
+                      <User className="w-16 h-16 text-gray-400" />
+                    </div>
+                  )}
+                </div>
+
+                {/* Información */}
+                <div className="p-4">
+                  <div className="flex items-center justify-between mb-3">
+                    <div>
+                      <p className="text-xs text-gray-500 uppercase tracking-wide mb-1">
+                        Género
+                      </p>
+                      <h3 className="font-semibold text-gray-900 text-lg capitalize">
                         {a.gender}
-                      </span>
-                    </td>
-                    <td className="py-4 px-6">
-                      <div className="flex items-center justify-end gap-2">
-                        <Link
-                          href={`/admin/avatars/${a._id}/edit`}
-                          className="p-2 text-orange-600 hover:text-orange-700 hover:bg-orange-50 rounded-full"
-                          title="Editar"
-                        >
-                          <Edit className="w-4 h-4" />
-                        </Link>
+                      </h3>
+                    </div>
+                  </div>
+
+                  {/* Acciones */}
+                  <div className="flex gap-2 pt-3 border-t border-gray-100">
+                    <Link
+                      href={`/admin/avatars/${a._id}/edit`}
+                      className="flex-1 flex items-center justify-center gap-2 px-4 py-2 bg-orange-50 text-orange-600 rounded-lg hover:bg-orange-100 transition-colors"
+                    >
+                      <Edit className="w-4 h-4" />
+                      <span className="text-sm font-medium">Editar</span>
+                    </Link>
+                    <ConfirmDialog
+                      trigger={
                         <button
-                          className="p-2 text-red-600 hover:text-red-700 hover:bg-red-50 rounded-full"
+                          className="flex items-center justify-center gap-2 px-4 py-2 bg-red-50 text-red-600 rounded-lg hover:bg-red-100 transition-colors"
                           title="Eliminar"
-                          onClick={() => {
-                            if (!confirm(`¿Eliminar avatar "${a.gender}"?`))
-                              return;
-                            delMutation.mutate(a._id);
-                          }}
                         >
                           <Trash2 className="w-4 h-4" />
                         </button>
-                      </div>
-                    </td>
-                  </tr>
-                );
-              })}
-              {filtered.length === 0 && (
-                <tr>
-                  <td colSpan={3} className="text-center py-12">
-                    <div className="flex flex-col items-center gap-3">
-                      <div className="w-12 h-12 bg-gray-100 rounded-lg flex items-center justify-center">
-                        <Search className="w-6 h-6 text-gray-400" />
-                      </div>
-                      <div>
-                        <p className="text-gray-500 font-medium">
-                          No se encontraron avatares
-                        </p>
-                        <p className="text-gray-400 text-sm">
-                          Intenta con otros términos de búsqueda
-                        </p>
-                      </div>
-                    </div>
-                  </td>
-                </tr>
-              )}
-            </tbody>
-          </table>
+                      }
+                      title="¿Eliminar avatar?"
+                      description={`¿Estás seguro de que deseas eliminar el avatar "${a.gender}"? Esta acción no se puede deshacer.`}
+                      confirmText="Eliminar"
+                      cancelText="Cancelar"
+                      variant="destructive"
+                      onConfirm={() => delMutation.mutate(a._id)}
+                    />
+                  </div>
+                </div>
+              </div>
+            );
+          })}
         </div>
-      </div>
+      )}
     </div>
   );
 }
