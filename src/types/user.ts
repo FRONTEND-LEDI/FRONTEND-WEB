@@ -7,29 +7,18 @@ export interface FullUser {
   email: string;
   password?: string;
   nivel?: string;
-  level: null | {
-    _id?: string;
-    level?: number;
-    maxPoint?: number;
-    level_string?: string;
-    img?: {
-      url_secura?: string;
-    };
-  };
+  level?: string; 
+  imgLevel?: string; 
   point?: number;
   rol?: string;
-  avatar?: null | {
-    _id?: string;
-    gender?: "female" | "male" | "other" | string;
-    __v?: number;
-    avatars?: {
-      url_secura?: string;
-    };
-  };
+  avatar?: string; 
   preference?: {
     category?: string[];
     format?: string[];
     _id?: string;
   };
+  medals?: any[];
+  createdAt?: string;
+  updatedAt?: string;
   __v?: number;
 }

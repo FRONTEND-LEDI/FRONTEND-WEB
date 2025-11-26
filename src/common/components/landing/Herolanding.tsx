@@ -1,22 +1,10 @@
-import { Link as ScrollLink } from "react-scroll";
+
 import {  Link as RouteLink } from "wouter";
 
-import { useState } from "react";
-
-
-const sections = [
-  { id: "Hero", label: "Inicio" },
-  { id: "Propuesta", label: "Acerca de" },
-  { id: "Nosotros", label: "Nosotros" },
-  { id: "Niveles", label: "Categorias" },
-  { id: "Movil", label: "App Movil" },
-  
-];
-
 export default function Herolanding() {
- const [active, setActive] = useState("hero");
+
   return (
-    <div
+    <div id="Hero"
       className="hero min-h-screen"
       style={{ backgroundImage: `url('./landingImages/bibliotecabg.png')` }}
     >
@@ -59,51 +47,8 @@ export default function Herolanding() {
           
       
           </div>
-        <div className="scroll-container relative flex flex-col items-center gap-14">
-      {/*  Navigation Dots */}
-      
-<div className="flex items-center gap-2">
-           <div className="flex flex-col justify-between h-54">
-        {sections.map((section) => (
-          <ScrollLink
-            key={section.id}
-            to={section.id}
-            smooth={true}
-            duration={600}
-            spy={true}
-            onSetActive={() => setActive(section.id)}
-           className={`text-xs cursor-pointer text-white ${
-          active === section.id ? "text-white font-bold" : "text-gray-400"
-        }`}
-        onClick={() => setActive(section.id)}
-          >
-            {section.label}
-          </ScrollLink>
-        ))}
-      </div>
-        {/* Línea guía */}
-        
-  <div className="relative h-54 w-1 bg-gray-500">
-  <div
-    className="absolute left-0 top-0 w-1 bg-white transition-all duration-300"
-    style={{
-      height: `${
-        (sections.findIndex(s => s.id === active) / (sections.length - 1)) * 60
-      }%`
-    }}
-  ></div>
-</div>
-      </div>
-    {/*  ScrollDown Indicator */}
-            <div className="">
-      <div className="scrolldown">
-        <div className="chevrons">
-          <div className="chevrondown" />
-          <div className="chevrondown" />
-        </div>
-      </div>
-    </div>
-      </div>
+ 
+  
       </div>
       </div>
     </div>

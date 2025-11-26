@@ -49,17 +49,17 @@ export default function ButtonIA() {
 
       // Extraer el texto de la respuesta
       let botText = ''
-      if (Array.isArray(response) && response.length > 0) {
-        botText = response[0]?.output || response[0]?.text || JSON.stringify(response)
-      } else if (typeof response === 'string') {
-        botText = response
-      } else if (response?.output) {
-        botText = response.output
-      } else if (response?.text) {
-        botText = response.text
-      } else {
-        botText = JSON.stringify(response)
-      }
+
+if (typeof response === 'string') {
+  botText = response
+} else if (response?.response) {
+  botText = response.response
+} else if (response?.text) {
+  botText = response.text
+} else {
+  botText = JSON.stringify(response)
+}
+
 
       const botMessage: Message = {
         id: `bot_${Date.now()}`,
