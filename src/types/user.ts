@@ -7,11 +7,11 @@ export interface FullUser {
   email: string;
   password?: string;
   nivel?: string;
-  level?: string; 
-  imgLevel?: string; 
+  level?: string;
+  imgLevel?: string;
   point?: number;
   rol?: string;
-  avatar?: string; 
+  avatar?: string;
   preference?: {
     category?: string[];
     format?: string[];

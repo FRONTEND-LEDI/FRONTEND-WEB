@@ -13,21 +13,14 @@ type User = {
   avatar?: string | null;
   birthDate?: string;
   nivel?: string;
-  level?: null | {
-    _id?: string;
-    level?: number;
-    maxPoint?: number;
-    level_string?: string;
-    img?: {
-      url_secura?: string;
-    };
-  };
+  level?: string;
   imgLevel?: string;
   point?: number;
   preference?: {
     category?: string[];
     format?: string[];
   };
+  medals?: any[];
 };
 type AuthContextType = {
   user: User | null;
@@ -51,20 +44,6 @@ const AuthContext = createContext<AuthContextType>({
 function normalizeUser(u: FullUser): User {
   const birth = typeof u.birthDate === "string" ? u.birthDate : undefined;
 
-  // Maneja ambos casos: string directo o estructura anidada
-  let avatarUrl: string | null = null;
-
-  if (typeof u.avatar === "string") {
-    avatarUrl = u.avatar;
-  } else if (u.avatar && typeof u.avatar === "object") {
-    // Caso antiguo: avatar es un objeto con avatars.url_secura
-    avatarUrl =
-      u.avatar.avatars?.url_secura &&
-      typeof u.avatar.avatars.url_secura === "string"
-        ? u.avatar.avatars.url_secura
-        : null;
-  }
-
   return {
     id: u._id,
     name: u.name,
@@ -72,11 +51,12 @@ function normalizeUser(u: FullUser): User {
     userName: u.userName,
     email: u.email,
     rol: u.rol,
-    avatar: avatarUrl,
+    avatar: u.avatar,
     birthDate: birth,
     nivel: u.nivel,
     level: u.level,
     point: u.point,
+    medals: u.medals,
     preference: {
       category: u.preference?.category ?? [],
       format: u.preference?.format ?? [],
