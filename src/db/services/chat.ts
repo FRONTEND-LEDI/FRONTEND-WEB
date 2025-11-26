@@ -74,10 +74,10 @@ export const chat = async (message: string, sessionId: string): Promise<any> => 
         "x-client": "web",
         "Authorization": `Bearer ${token}`,
       },
-      body: JSON.stringify({
-        session: sessionId,
-        msg: message,
-      }),
+       body: JSON.stringify({ 
+       sessionId: sessionId, 
+       msg: message 
+       })
     });
 
     return await handleFetchResponse(response);

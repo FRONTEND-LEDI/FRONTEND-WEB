@@ -5,6 +5,7 @@ export interface ApiError {
 
 export interface Memory {
   _id?: string;
+  userId:string
   sessionId?: string;
   messages: {
     role: "user" | "assistant";
