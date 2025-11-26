@@ -19,7 +19,7 @@ export default function Herolanding() {
           </h1>
           <p className="text-lg karaoke text-white md:text-xl px-2 py-2 rounded max-w-2xl">
             Una biblioteca virtual que resguarda y difunde las antologías
-            literarias de nuestra provincia.
+            literarias de nuestros empleados publicos formoseños.
           </p>
           <img
             src="./hostImage/avatarLanding.png"

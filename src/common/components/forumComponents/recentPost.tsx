@@ -1,4 +1,4 @@
-import { Clock, Flame } from "lucide-react";
+import { Clock} from "lucide-react";
 import type { ForoExtendido, Comment } from "../../../types/forum";
 
 type ForumOverviewProps = {
@@ -22,11 +22,7 @@ export default function ForumOverview({ foros }: ForumOverviewProps) {
       new Date(a.createdAt ?? "").getTime()
   );
 
-  // 🔹 Foros más populares (más posts)
-  const populares = [...foros]
-    .sort((a, b) => (b.posts?.length ?? 0) - (a.posts?.length ?? 0))
-    .slice(0, 3);
-
+ 
   return (
     <div className="flex flex-col md:flex-row gap-8 w-full mt-10">
       {/* === ACTIVIDAD RECIENTE === */}
@@ -65,35 +61,7 @@ export default function ForumOverview({ foros }: ForumOverviewProps) {
         )}
       </section>
 
-      {/* === TEMAS POPULARES === */}
-      <aside className="md:w-80 flex-shrink-0">
-        <div className="flex items-center gap-2 mb-4">
-          <Flame className="text-primary" />
-          <h2 className="text-xl font-bold text-primary">Temas populares</h2>
-        </div>
 
-        <div className="flex flex-col gap-3">
-          {populares.map((foro) => (
-            <div
-              key={foro._id}
-              className="p-3 border border-gray-200 rounded-xl shadow-sm hover:shadow-md bg-base-100 cursor-pointer transition-all"
-            >
-              <div className="flex justify-between items-center">
-                <h3 className="font-medium text-gray-700 hover:text-primary transition-colors">
-                  {foro.title}
-                </h3>
-                <span className="text-gray-400 text-sm">→</span>
-              </div>
-              <p className="text-sm text-gray-500 mt-1">
-                {foro.posts?.length ?? 0}{" "}
-                {(foro.posts?.length ?? 0) === 1
-                  ? "comentario"
-                  : "comentarios"}
-              </p>
-            </div>
-          ))}
-        </div>
-      </aside>
     </div>
   );
 }

@@ -12,6 +12,7 @@ import { useAuth } from "../../context/AuthContext";
 import ForumOverview from "../../common/components/forumComponents/recentPost";
 import Skeleton from '@mui/material/Skeleton';
  import Box from '@mui/material/Box';
+import AsideNotificaciones from "../../common/components/forumComponents/noticias";
 export default function ForumPage() {
   const { user, token } = useAuth();
 
@@ -216,16 +217,27 @@ export default function ForumPage() {
               </p>
             </div>
 
+<div className="flex gap-6 w-full md:flex-col sm:flex-col lg:flex-row">
 
-            {foros.length > 0 && (
-              <FilterForum
-                setForoSeleccionado={setForoSeleccionado}
-                foros={foros}
-                comentarios={comentarios}
-              />
-            )}
+  {/* COLUMNA IZQUIERDA: FOROS */}
+  <div className="flex-1">
+    {foros.length > 0 && (
+      <FilterForum
+        setForoSeleccionado={setForoSeleccionado}
+        foros={foros}
+        comentarios={comentarios}
+      />
+    )}
+    <ForumOverview foros={foros} />
+  </div>
 
-            <ForumOverview foros={foros} />
+  {/* COLUMNA DERECHA: NOTICIAS */}
+  <aside className=" lg:block  w-[320px] h-fit">
+    <AsideNotificaciones />
+  </aside>
+</div>
+
+          
           </>
         ) : (
           <>

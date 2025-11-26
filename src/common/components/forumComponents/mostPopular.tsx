@@ -3,7 +3,6 @@
 import { useState } from "react";
 import type { Comment } from "../../../types/forum";
 import { MessageCircle } from "lucide-react";
-
 interface PopularProps {
   posts: Comment[];
   agregarComentario: (postId: string, contenido: string) => void;
@@ -63,9 +62,32 @@ export default function Popular({ posts, agregarComentario }: PopularProps) {
               
               {/* HEADER */}
               <div className="flex items-center gap-3 mb-3">
-                <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">
-                  {initials}
-                </div>
+               {/* AVATAR + MARCO */}
+<div className="relative w-12 h-12 flex items-center justify-center">
+
+  {/* Marco por nivel */}
+  {post.idUser?.imgLevel && (
+    <img
+      src={post.idUser.imgLevel}
+      alt="Marco"
+      className="absolute w-14 h-14 object-contain pointer-events-none"
+    />
+  )}
+
+  {/* Avatar o iniciales */}
+  {post.idUser?.avatar ? (
+    <img
+      src={post.idUser.avatar}
+      alt="Avatar"
+      className="w-10 h-10 rounded-full object-cover border-2 border-primary"
+    />
+  ) : (
+    <div className="w-10 h-10 rounded-full bg-primary text-white flex items-center justify-center font-bold">
+      {initials}
+    </div>
+  )}
+</div>
+
 
                 <div className="flex flex-col w-full">
                   <div className="flex justify-between">
