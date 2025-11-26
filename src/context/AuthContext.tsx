@@ -22,6 +22,7 @@ type User = {
       url_secura?: string;
     };
   };
+  imgLevel?: string;
   point?: number;
   preference?: {
     category?: string[];
@@ -50,11 +51,19 @@ const AuthContext = createContext<AuthContextType>({
 function normalizeUser(u: FullUser): User {
   const birth = typeof u.birthDate === "string" ? u.birthDate : undefined;
 
-  const avatarUrl =
-    u.avatar?.avatars?.url_secura &&
-    typeof u.avatar.avatars.url_secura === "string"
-      ? u.avatar.avatars.url_secura
-      : null;
+  // Maneja ambos casos: string directo o estructura anidada
+  let avatarUrl: string | null = null;
+
+  if (typeof u.avatar === "string") {
+    avatarUrl = u.avatar;
+  } else if (u.avatar && typeof u.avatar === "object") {
+    // Caso antiguo: avatar es un objeto con avatars.url_secura
+    avatarUrl =
+      u.avatar.avatars?.url_secura &&
+      typeof u.avatar.avatars.url_secura === "string"
+        ? u.avatar.avatars.url_secura
+        : null;
+  }
 
   return {
     id: u._id,
