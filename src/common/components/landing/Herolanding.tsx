@@ -12,14 +12,14 @@ export default function Herolanding() {
 <div className="relative w-full  h-full">
   <div className="absolute inset-0 bg-black/20 " />
   <div className="relative z-10"></div>
-      <div className="hero-content mt-18 text-neutral-content text-center">
+      <div className="hero-content mt-24 text-neutral-content text-center">
         <div className="max-w-md ml-50 flex justify-center flex-col items-center">
           <h1 className="text-3xl karaoke md:text-5xl font-bold p-6 text-white ">
             Bienvenido
           </h1>
           <p className="text-lg karaoke text-white md:text-xl px-2 py-2 rounded max-w-2xl">
             Una biblioteca virtual que resguarda y difunde las antologías
-            literarias de nuestros empleados publicos formoseños.
+            literarias de los empleados públicos de la provincia de Formosa.
           </p>
           <img
             src="./hostImage/avatarLanding.png"

@@ -22,8 +22,8 @@ export default function Presentacion (){
           locales.
         </p>
         <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8">
-          Aquí vas a encontrar obras literarias de empleados publicos 
-          formoseños/as,  recopiladas del concurso anual de antologías
+          Aquí vas a encontrar obras literarias de empleados públicos 
+          formoseños/as,  recopiladas del concurso anual de antologías.
           <span className="font-semibold text-primary"> "Letras del Viento Norte"</span>.
         </p> 
       </div>

@@ -19,7 +19,7 @@ export default function SearchingBar({ searchTerm, setSearchTerm, foroSelecciona
       />
       <button
         type="submit"
-        className="bg-primary text-white px-4 py-1 rounded-2xl cursor-pointer hover:shadow-black hover:shadow-2xl hover:bg-white hover:text-primary"
+        className="bg-primary text-white px-4 py-1 rounded-2xl cursor-pointer shadow shadow-black/50 hover:shadow-black hover:shadow-2xl hover:bg-white hover:text-primary"
       >
         Buscar
       </button>

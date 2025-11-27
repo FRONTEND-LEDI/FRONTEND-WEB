@@ -54,7 +54,7 @@ export default function AddPost({ foroSeleccionado, agregarPost }: AddPostProps)
   return (
     <>
       <button 
-        className="btn" 
+        className="btn shadow-2xl shadow-black/40" 
         style={{ borderRadius: "18px" }}
         onClick={openModal}
       >

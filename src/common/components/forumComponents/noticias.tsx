@@ -23,7 +23,7 @@ export default function AsideNotificaciones() {
   ];
 
   return (
-    <aside className="w-80 mt-35 bg-white shadow-xl border border-gray-200 rounded-xl p-4 max-h-[80vh] ">
+    <aside className="w-80 mt-35 bg-white shadow-xl border shadow-black/20 border-gray-200 rounded-xl p-4 max-h-[80vh] ">
       {/* Header */}
       <div className="flex items-center justify-between mb-4">
         <h2 className="text-xl font-bold flex items-center gap-2">

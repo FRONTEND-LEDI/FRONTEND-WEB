@@ -30,7 +30,7 @@ export default function MiddleCall() {
               {/* Descripción */}
               <p className="text-white/95 text-lg md:text-xl leading-relaxed">
                 Descubrí una forma completamente nueva de conectar con la literatura formoseña. 
-                Lee, juega y crece junto a una comunidad apasionada por las historias locales.
+                Leé, jugá y crecé junto a una comunidad apasionada por las historias locales.
               </p>
 
               {/* Features rápidos */}
