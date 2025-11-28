@@ -1,0 +1,1 @@
+const queTal = "queTal";

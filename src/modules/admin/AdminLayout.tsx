@@ -11,6 +11,8 @@ import {
   Settings,
   Menu,
   X,
+  LayoutDashboard,
+  ChartNoAxesCombined,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -67,6 +69,27 @@ export default function AdminLayout({
         {/* Contenido scrolleable del sidebar (secciones) */}
         <nav className="p-4 flex-1 overflow-y-auto">
           <div className="space-y-2">
+            {/* Dashboard */}
+            <Link
+              href="/admin"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 transition-colors group"
+            >
+              <LayoutDashboard className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
+              <span className="font-medium text-gray-700 group-hover:text-gray-900">
+                Dashboard
+              </span>
+            </Link>
+            {/* Sección de Métricas */}
+            <Link
+              href="/admin/metrics"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 transition-colors group"
+            >
+              <ChartNoAxesCombined className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
+              <span className="font-medium text-gray-700 group-hover:text-gray-900">
+                Métricas
+              </span>
+            </Link>
+
             {/*/ Sección Libros */}
             <Link
               href="/admin/books"
