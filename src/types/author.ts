@@ -17,6 +17,7 @@ export type Author = {
   nationality: string;
   writingGenre: string[];
   biography: string;
+  itActivo: boolean;
   avatar: {
     id_image: string;
     url_secura: string;

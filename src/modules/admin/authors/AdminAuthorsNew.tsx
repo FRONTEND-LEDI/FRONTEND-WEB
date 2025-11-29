@@ -20,6 +20,7 @@ export default function AdminAuthorsNew() {
   const [writingGenre, setWritingGenre] = useState<string[]>([]);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [itActivo, setItActivo] = useState(true);
   const [loading, setLoading] = useState(false);
 
   const toggleGenre = (genre: string) => {
@@ -59,6 +60,7 @@ export default function AdminAuthorsNew() {
           nationality: nationality.trim(),
           writingGenre,
           avatarFile,
+          itActivo,
         },
         token
       );
@@ -196,6 +198,24 @@ export default function AdminAuthorsNew() {
                   onChange={(e) => setBiography(e.target.value)}
                   placeholder="Escribe la biografía del autor..."
                 />
+              </div>
+
+              {/* Activo */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Es empleado público activo?
+                </label>
+                <div className="flex items-center gap-3">
+                  <label className="inline-flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={itActivo}
+                      onChange={(e) => setItActivo(e.target.checked)}
+                      className="form-checkbox h-5 w-5 text-orange-500"
+                    />
+                    <span className="text-sm text-gray-700">Activo</span>
+                  </label>
+                </div>
               </div>
             </div>
 

@@ -15,6 +15,7 @@ export type CreateAuthorInput = {
   nationality: string;
   writingGenre: string[];
   avatarFile: File;
+  itActivo: boolean;
 };
 
 export type UpdateAuthorInput = {
@@ -26,6 +27,7 @@ export type UpdateAuthorInput = {
   nationality?: string;
   writingGenre?: string[];
   avatarFile?: File;
+  itActivo?: boolean;
 };
 
 function buildAuthorFormData(
@@ -33,7 +35,7 @@ function buildAuthorFormData(
 ): FormData {
   const fd = new FormData();
 
-  const fields: (keyof CreateAuthorInput)[] = [
+  const fields: (keyof (CreateAuthorInput & UpdateAuthorInput))[] = [
     "fullName",
     "biography",
     "profession",
@@ -56,6 +58,10 @@ function buildAuthorFormData(
 
   if ("avatarFile" in data && data.avatarFile) {
     fd.append("avatar", (data as any).avatarFile);
+  }
+
+  if ("itActivo" in data && typeof data.itActivo === "boolean") {
+    fd.append("itActivo", String(data.itActivo));
   }
 
   return fd;
@@ -102,6 +108,7 @@ export async function adminUpdateAuthor(
       birthplace: data.birthplace,
       nationality: data.nationality,
       writingGenre: data.writingGenre,
+      itActivo: data.itActivo,
     });
   }
   const res = await fetch(`${API_BASE_URL}/author/${id}`, {
