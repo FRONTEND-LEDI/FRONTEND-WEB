@@ -1,16 +1,17 @@
-export const LITERARY_GENRES = [
-  "Narrativo",
-  "Poesía",
-  "Cuento",
-  "Novela",
-  "Ensayo",
-  "Teatro",
-  "Crónica",
-  "Biografía",
-  "Infantil",
-  "Juvenil",
-  "Histórico",
+export const LITERARY_GENRES = ["Narrativo", "Poesía", "Cuento"];
+
+export const LITERARY_SUBGENRES = [
+  "Romántico",
   "Fantasía",
-  "Ciencia ficción",
-  "Otro",
+  "Ciencia Ficción",
+  "Terror",
+  "Misterio",
+  "Histórico",
+  "Aventura",
+  "Drama",
+  "Comedia",
+  "Tragedia",
+  "Épico",
+  "Lírico",
+  "Satírico",
 ];
