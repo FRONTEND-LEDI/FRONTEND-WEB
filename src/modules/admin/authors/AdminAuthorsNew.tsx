@@ -39,7 +39,7 @@ export default function AdminAuthorsNew() {
     e.preventDefault();
     try {
       if (!fullName.trim()) return toast.error("Falta el nombre completo");
-      if (!profession.trim()) return toast.error("Falta la profesión");
+      if (!profession.trim()) return toast.error("Falta la ocupación");
       if (!birthplace.trim())
         return toast.error("Falta el lugar de nacimiento");
       if (!birthdate) return toast.error("Falta la fecha de nacimiento");
@@ -111,7 +111,7 @@ export default function AdminAuthorsNew() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Profesión *
+                    Ocupación *
                   </label>
                   <input
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"

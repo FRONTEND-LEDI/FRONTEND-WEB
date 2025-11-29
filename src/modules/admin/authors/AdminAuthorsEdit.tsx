@@ -10,6 +10,7 @@ import { LITERARY_GENRES } from "../../../common/data/genres";
 import { getAuthorAvatarUrl } from "../../../types/author";
 import toast from "react-hot-toast";
 import { User, Upload, Save, X } from "lucide-react";
+import { toDateInputValue } from "../../../common/utils/date";
 
 export default function AdminAuthorsEdit() {
   const [, params] = useRoute("/admin/authors/:id/edit");
@@ -44,13 +45,9 @@ export default function AdminAuthorsEdit() {
         setNationality(a.nationality ?? "");
         setItActivo(typeof a.itActivo === "boolean" ? a.itActivo : true);
 
-        // Formatear fecha para input type="date"
+        // Formatear fecha para input type="date" usando util que evita timezone shift
         if (a.birthdate) {
-          const date = new Date(a.birthdate);
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, "0");
-          const day = String(date.getDate()).padStart(2, "0");
-          setBirthdate(`${year}-${month}-${day}`);
+          setBirthdate(toDateInputValue(a.birthdate));
         }
 
         setWritingGenre(Array.isArray(a.writingGenre) ? a.writingGenre : []);
@@ -86,7 +83,7 @@ export default function AdminAuthorsEdit() {
     e.preventDefault();
     try {
       if (!fullName.trim()) return toast.error("Falta el nombre completo");
-      if (!profession.trim()) return toast.error("Falta la profesión");
+      if (!profession.trim()) return toast.error("Falta la Ocupación");
       if (!birthplace.trim())
         return toast.error("Falta el lugar de nacimiento");
       if (!birthdate) return toast.error("Falta la fecha de nacimiento");
@@ -165,7 +162,7 @@ export default function AdminAuthorsEdit() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Profesión *
+                    Ocupación *
                   </label>
                   <input
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"

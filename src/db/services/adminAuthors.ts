@@ -52,7 +52,8 @@ function buildAuthorFormData(
 
   if ("writingGenre" in data && Array.isArray(data.writingGenre)) {
     for (const genre of data.writingGenre) {
-      fd.append("writingGenre", genre);
+      // use bracketed name so servers/middlewares parse single-item arrays as arrays
+      fd.append("writingGenre[]", genre);
     }
   }
 

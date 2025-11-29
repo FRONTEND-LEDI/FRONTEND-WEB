@@ -10,6 +10,7 @@ import { getAuthorAvatarUrl } from "../../../types/author";
 import { Link } from "wouter";
 import toast from "react-hot-toast";
 import LoadingGate from "../../../common/components/LoadingGate";
+import { formatDateAvoidTimezone } from "../../../common/utils/date";
 import { User, Search, Edit, Trash2, Plus, Eye } from "lucide-react";
 import { FaUserPen } from "react-icons/fa6";
 
@@ -108,7 +109,7 @@ export default function AdminAuthorsList() {
                   Nombre
                 </th>
                 <th className="text-left py-4 px-6 font-semibold text-gray-700">
-                  Profesión
+                  Ocupación
                 </th>
                 <th className="text-left py-4 px-6 font-semibold text-gray-700">
                   Géneros
@@ -271,7 +272,7 @@ export default function AdminAuthorsList() {
                   </div>
                   <div>
                     <span className="text-sm font-medium text-gray-500">
-                      Profesión
+                      Ocupación
                     </span>
                     <p className="text-gray-900">
                       {selectedAuthor.profession || "—"}{" "}
@@ -299,9 +300,7 @@ export default function AdminAuthorsList() {
                     </span>
                     <p className="text-gray-900">
                       {selectedAuthor.birthdate
-                        ? new Date(selectedAuthor.birthdate).toLocaleDateString(
-                            "es-AR"
-                          )
+                        ? formatDateAvoidTimezone(selectedAuthor.birthdate)
                         : "—"}
                     </p>
                   </div>
@@ -331,6 +330,16 @@ export default function AdminAuthorsList() {
                     </span>
                     <p className="text-gray-900 mt-1 whitespace-pre-line">
                       {selectedAuthor.biography || "Sin biografía"}
+                    </p>
+                  </div>
+                  <div>
+                    <span className="text-sm font-medium text-gray-500">
+                      Estado laboral
+                    </span>
+                    <p className="text-gray-900">
+                      {selectedAuthor.itActivo
+                        ? "Empleado público activo"
+                        : "Empleado público pasivo"}
                     </p>
                   </div>
                 </div>
