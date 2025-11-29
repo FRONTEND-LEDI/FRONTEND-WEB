@@ -62,9 +62,12 @@ export default function AdminBooksEdit() {
   const authors = (authorsData ?? []) as Author[];
 
   useEffect(() => {
+    let mounted = true;
+
     (async () => {
       try {
         const book = await getBookById(id, token);
+        if (!mounted) return;
 
         // extraer solo los IDs de los autores
         const authorIds = book.author
@@ -91,12 +94,18 @@ export default function AdminBooksEdit() {
         setSubgenreText((book.subgenre ?? []).join(", "));
         setThemeText((book.theme ?? []).join(", "));
       } catch (e: any) {
+        if (!mounted) return;
         toast.error(e?.message ?? "No se pudo cargar el libro");
         navigate("/admin/books");
       } finally {
+        if (!mounted) return;
         setLoading(false);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [id, token, navigate]);
 
   const set = (k: keyof AdminCreateBookInput, v: any) =>

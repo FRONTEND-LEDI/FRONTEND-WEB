@@ -10,6 +10,7 @@ import { LITERARY_GENRES } from "../../../common/data/genres";
 import { getAuthorAvatarUrl } from "../../../types/author";
 import toast from "react-hot-toast";
 import { User, Upload, Save, X } from "lucide-react";
+import { toDateInputValue } from "../../../common/utils/date";
 
 export default function AdminAuthorsEdit() {
   const [, params] = useRoute("/admin/authors/:id/edit");
@@ -26,37 +27,44 @@ export default function AdminAuthorsEdit() {
   const [writingGenre, setWritingGenre] = useState<string[]>([]);
   const [avatarFile, setAvatarFile] = useState<File | null>(null);
   const [preview, setPreview] = useState<string | null>(null);
+  const [itActivo, setItActivo] = useState(true);
   const [loading, setLoading] = useState(true);
   const [saving, setSaving] = useState(false);
 
   useEffect(() => {
+    let mounted = true;
+
     (async () => {
       try {
         const a = await getAuthorById(id, token);
+        if (!mounted) return;
         setFullName(a.fullName ?? "");
         setBiography(a.biography ?? "");
         setProfession(a.profession ?? "");
         setBirthplace(a.birthplace ?? "");
         setNationality(a.nationality ?? "");
+        setItActivo(typeof a.itActivo === "boolean" ? a.itActivo : true);
 
-        // Formatear fecha para input type="date"
+        // Formatear fecha para input type="date" usando util que evita timezone shift
         if (a.birthdate) {
-          const date = new Date(a.birthdate);
-          const year = date.getFullYear();
-          const month = String(date.getMonth() + 1).padStart(2, "0");
-          const day = String(date.getDate()).padStart(2, "0");
-          setBirthdate(`${year}-${month}-${day}`);
+          setBirthdate(toDateInputValue(a.birthdate));
         }
 
         setWritingGenre(Array.isArray(a.writingGenre) ? a.writingGenre : []);
         setPreview(getAuthorAvatarUrl(a.avatar) ?? null);
       } catch (e: any) {
+        if (!mounted) return;
         toast.error(e?.message ?? "No se pudo cargar el autor");
         navigate("/admin/authors");
       } finally {
+        if (!mounted) return;
         setLoading(false);
       }
     })();
+
+    return () => {
+      mounted = false;
+    };
   }, [id, token, navigate]);
 
   const toggleGenre = (genre: string) => {
@@ -75,7 +83,7 @@ export default function AdminAuthorsEdit() {
     e.preventDefault();
     try {
       if (!fullName.trim()) return toast.error("Falta el nombre completo");
-      if (!profession.trim()) return toast.error("Falta la profesión");
+      if (!profession.trim()) return toast.error("Falta la Ocupación");
       if (!birthplace.trim())
         return toast.error("Falta el lugar de nacimiento");
       if (!birthdate) return toast.error("Falta la fecha de nacimiento");
@@ -96,6 +104,7 @@ export default function AdminAuthorsEdit() {
           nationality: nationality.trim(),
           writingGenre,
           avatarFile: avatarFile || undefined,
+          itActivo,
         },
         token
       );
@@ -153,7 +162,7 @@ export default function AdminAuthorsEdit() {
 
                 <div className="space-y-2">
                   <label className="text-sm font-medium text-gray-700">
-                    Profesión *
+                    Ocupación *
                   </label>
                   <input
                     className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent"
@@ -240,6 +249,24 @@ export default function AdminAuthorsEdit() {
                   onChange={(e) => setBiography(e.target.value)}
                   placeholder="Escribe una biografía del autor..."
                 />
+              </div>
+
+              {/* Activo */}
+              <div className="space-y-2">
+                <label className="text-sm font-medium text-gray-700">
+                  Estado
+                </label>
+                <div className="flex items-center gap-3">
+                  <label className="inline-flex items-center gap-2 cursor-pointer">
+                    <input
+                      type="checkbox"
+                      checked={itActivo}
+                      onChange={(e) => setItActivo(e.target.checked)}
+                      className="form-checkbox h-5 w-5 text-orange-500"
+                    />
+                    <span className="text-sm text-gray-700">Activo</span>
+                  </label>
+                </div>
               </div>
             </div>
 

@@ -32,6 +32,8 @@ const LoginPage = () => {
           localStorage.removeItem("returnTo");
           navigate(returnTo);
         } else {
+          // Limpiar returnTo para próximos logouts
+          localStorage.removeItem("returnTo");
           navigate("/admin");
         }
       } else {
@@ -39,6 +41,8 @@ const LoginPage = () => {
           localStorage.removeItem("returnTo");
           navigate(returnTo);
         } else {
+          // Limpiar returnTo para próximos logouts
+          localStorage.removeItem("returnTo");
           navigate("/home");
         }
       }
@@ -75,10 +79,12 @@ const LoginPage = () => {
       toast.success("¡Bienvenido de nuevo a Tinta Nativa!");
       resetForm();
 
+      // Limpiar returnTo después de usar lo (evita que se reutilice en próximos logouts)
+      localStorage.removeItem("returnTo");
+
       // si venía de una ruta protegida, volver ahí
       const returnTo = localStorage.getItem("returnTo");
       if (returnTo) {
-        localStorage.removeItem("returnTo");
         navigate(returnTo);
       } else {
         navigate("/home");
