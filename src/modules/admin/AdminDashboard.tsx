@@ -1,7 +1,6 @@
-import { BarChart3, TrendingUp, MonitorDot } from "lucide-react";
+import { BarChart3 } from "lucide-react";
 import { GiBookshelf } from "react-icons/gi";
 import { FaUserPen } from "react-icons/fa6";
-import { ImUsers } from "react-icons/im";
 import { FaPeopleRoof } from "react-icons/fa6";
 import { LuBookUp } from "react-icons/lu";
 import { TbUserUp } from "react-icons/tb";
@@ -49,7 +48,7 @@ export default function AdminDashboard() {
       </div>
 
       {/* Stats Cards */}
-      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+      <div className="grid grid-cols-1 md:grid-cols-3 gap-6">
         {/* Libros */}
         <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
           <div className="flex items-center justify-between">
@@ -57,11 +56,6 @@ export default function AdminDashboard() {
               <p className="text-sm font-medium text-gray-600">Total Libros</p>
               <p className="text-2xl font-bold text-gray-900">
                 {booksCountQ.isLoading ? "…" : fmt(booksCountQ.data)}
-              </p>
-              <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-                <TrendingUp className="w-3 h-3" />
-                {/* placeholder de tendencia */}
-                +12% de algo
               </p>
             </div>
             <div className="w-12 h-12 bg-orange-100 rounded-lg flex items-center justify-center">
@@ -79,13 +73,9 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Autores</p>
+              <p className="text-sm font-medium text-gray-600">Autores registrados</p>
               <p className="text-2xl font-bold text-gray-900">
                 {authorsCountQ.isLoading ? "…" : fmt(authorsCountQ.data)}
-              </p>
-              <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-                <TrendingUp className="w-3 h-3" />
-                +5% no sé
               </p>
             </div>
             <div className="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center">
@@ -99,23 +89,6 @@ export default function AdminDashboard() {
           )}
         </div>
 
-        {/* Usuarios (a futuro: conectar endpoint real) */}
-        <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
-          <div className="flex items-center justify-between">
-            <div>
-              <p className="text-sm font-medium text-gray-600">Usuarios</p>
-              <p className="text-2xl font-bold text-gray-900">—</p>
-              <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-                <TrendingUp className="w-3 h-3" />
-                +34% registros
-              </p>
-            </div>
-            <div className="w-12 h-12 bg-blue-100 rounded-lg flex items-center justify-center">
-              <ImUsers className="w-6 h-6 text-blue-600" />
-            </div>
-          </div>
-        </div>
-
         {/* Clubes (placeholder) */}
         <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
           <div className="flex items-center justify-between">
@@ -123,10 +96,7 @@ export default function AdminDashboard() {
               <p className="text-sm font-medium text-gray-600">
                 Clubes de lectura
               </p>
-              <p className="text-2xl font-bold text-gray-900">—</p>
-              <p className="text-xs text-green-600 flex items-center gap-1 mt-1">
-                <MonitorDot className="w-3 h-3" />8 clubes activos ponele
-              </p>
+              <p className="text-2xl font-bold text-gray-900">3</p>
             </div>
             <div className="w-12 h-12 bg-amber-100 rounded-lg flex items-center justify-center">
               <FaPeopleRoof className="w-6 h-6 text-amber-600" />

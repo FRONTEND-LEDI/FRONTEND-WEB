@@ -14,4 +14,6 @@ export const LITERARY_SUBGENRES = [
   "Épico",
   "Lírico",
   "Satírico",
+  "Policial",
+  "Costumbrista",
 ];
