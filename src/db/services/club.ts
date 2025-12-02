@@ -1,28 +1,20 @@
+import type { Foro } from "../../types/forum";
 
+const API_BASE_URL = "http://localhost:3402";
 
-const API_BASE_URL = `http://localhost:3402`;
-type Foro = {
-  _id: string;
-  title: string;
-  description: string;
-};
 export const getForosApi = async (): Promise<Foro[]> => {
   try {
-    const response = await fetch(`${API_BASE_URL}/foros`, {
-      method: "GET",
-      headers: {
-        "Content-Type": "application/json",
-        
-      },
-    });
-    if (!response.ok) {
-      console.error("Error al cargar foros: ", response.status);
-      return [];
+    const res = await fetch(`${API_BASE_URL}/foros`);
+
+    if (!res.ok) {
+      console.error("Error al obtener foros:", res.status, res.statusText);
+      throw new Error("Error en el servidor de foros");
     }
-    const data = await response.json();
-    return Array.isArray(data) ? data : [];
-  } catch (error) {
-    console.error("Error fetching foros:", error);
+
+    const data: Foro[] = await res.json();
+    return data;
+  } catch (err) {
+    console.error("Error en getForosApi:", err);
     return [];
   }
 };

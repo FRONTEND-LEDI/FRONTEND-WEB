@@ -32,9 +32,9 @@ export default function Test() {
     { dialog: "Hola, soy tu bibliotecario virtual personal!" },
     {
       dialog:
-        "Si gustás te realizaré unas series de preguntas que me ayudarán a darte una mejor experiencia.",
+        "Si gustás, te realizaré una serie de preguntas que me ayudarán a conocerte y seleccionar la mejor lectura para vos.",
     },
-    { dialog: "Elegí al menos 3 opciones de tu género favorito" },
+    { dialog: "Elegí al menos 3 opciones de tus temas favorito" },
     { dialog: "Elegí al menos 3 opciones de tu formato de libro favorito" },
     { dialog: "¡Elegí tu avatar!" },
   ];

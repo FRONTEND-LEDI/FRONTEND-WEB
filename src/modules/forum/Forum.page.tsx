@@ -11,7 +11,9 @@ import type { Comment, Foro, ForoExtendido } from "../../types/forum";
 import { useAuth } from "../../context/AuthContext";
 import ForumOverview from "../../common/components/forumComponents/recentPost";
 import Skeleton from '@mui/material/Skeleton';
- import Box from '@mui/material/Box';
+import Box from '@mui/material/Box';
+import {getForosApi} from "../../db/services/club";
+import AsideNotificaciones from "../../common/components/forumComponents/noticias";
 export default function ForumPage() {
   const { user, token } = useAuth();
 
@@ -30,13 +32,14 @@ export default function ForumPage() {
     const socket = initSocket(token);
     setSocketConnected(socket.connected);
 
-    const handleConnect = () => {
-      setSocketConnected(true);
+    const handleConnect = async () => {
+  setSocketConnected(true);
 
-      setTimeout(() => {
-        socket.emit("get-all-foros");
-      }, 100);
-    };
+  // 🔥 Ahora en vez de socket, hacemos fetch
+  const data = await getForosApi();
+  setForos(data);
+};
+
 
     socket.on("connect", handleConnect);
     socket.on("disconnect", () => setSocketConnected(false));
@@ -216,16 +219,28 @@ export default function ForumPage() {
               </p>
             </div>
 
+<div className="flex gap-6 w-full md:flex-col sm:flex-col lg:flex-row">
 
-            {foros.length > 0 && (
-              <FilterForum
-                setForoSeleccionado={setForoSeleccionado}
-                foros={foros}
-                comentarios={comentarios}
-              />
-            )}
+  {/* COLUMNA IZQUIERDA: FOROS */}
+  <div className="flex-1">
+    
+    {foros.length > 0 && (
+      <FilterForum  
+        setForoSeleccionado={setForoSeleccionado}
+        foros={foros}
+        comentarios={comentarios}
+      />
+    )}
+    <ForumOverview  foros={foros} />
+  </div>
 
-            <ForumOverview foros={foros} />
+  {/* COLUMNA DERECHA: NOTICIAS */}
+  <aside className=" h-fit">
+    <AsideNotificaciones />
+  </aside>
+</div>
+
+          
           </>
         ) : (
           <>

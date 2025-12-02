@@ -2,7 +2,7 @@
 
 export default function Presentacion (){
     return(
-        <section id="Nosotros" className=" px-4 ">
+        <section id="Nosotros" className=" px-8 mb-14 ">
   <div className="max-w-6xl mx-auto">
     <div className="grid md:grid-cols-2  items-center">
       <div className="flex justify-center md:justify-start">
@@ -22,8 +22,8 @@ export default function Presentacion (){
           locales.
         </p>
         <p className="text-gray-600 text-base md:text-lg leading-relaxed mb-8">
-          Aquí vas a encontrar obras literarias de autores y autoras
-          formoseños/as, incluyendo las recopilaciones de los concursos
+          Aquí vas a encontrar obras literarias de empleados públicos 
+          formoseños/as,  recopiladas del concurso anual de antologías.
           <span className="font-semibold text-primary"> "Letras del Viento Norte"</span>.
         </p> 
       </div>

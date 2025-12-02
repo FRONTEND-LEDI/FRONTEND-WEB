@@ -66,7 +66,7 @@ export function Author() {
                     <img
                       src={author.avatar.url_secura}
                       alt={`Foto de ${author.fullName}`}
-                      className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-500"
+                      className="w-full object-cover group-hover:scale-110 transition-transform duration-500"
                       loading="lazy"
                     />
                   </figure>
@@ -81,26 +81,34 @@ export function Author() {
                     </div>
 
 
-                 <div className="flex flex-wrap gap-1">
-  {author.writingGenre?.map((genre: string, i: number) => (
-    <span key={i} className="badge badge-primary badge-sm">
-      {genre}
-    </span>
-  ))}
-</div>
+             {author.writingGenre && author.writingGenre.length > 0 && (
+                  <div className="flex flex-wrap gap-2">
+                    {author.writingGenre.map((genre: string, i: number) => (
+                      <span 
+                        key={i} 
+                        className="inline-flex items-center px-3 py-1 rounded-full text-xs font-medium bg-orange-100 text-orange-700 border border-orange-200"
+                      >
+                        {genre}
+                      </span>
+                    ))}
+                  </div>
+                )}
 
-                    {author.biography && (
-      <p className="text-sm  text-gray-600 line-clamp-2 mb-3 capitalize">
-  {author.biography}
-</p>
-                    )}
+                  {author.biography && (
+                  <p className="text-sm text-gray-600 line-clamp-3 leading-relaxed">
+                    {author.biography}
+                  </p>
+                )}
+                    
 
                 
                     <div className="card-actions justify-end mt-auto">
                       <Link 
                         href={`/authors/${author._id}`}
-                        className="btn btn-sm btn-primary text-white"
-                      >
+                        
+                    className="w-full bg-orange-500 hover:bg-orange-600 text-white font-medium py-2.5 px-4 rounded-lg transition-all duration-200 hover:shadow-lg active:scale-95 flex items-center justify-center gap-2 group/btn"
+                  
+                    >
                         Ver Biografía
                       </Link>
                     </div>

@@ -28,18 +28,18 @@ export default function Movil(){
               <ul className="space-y-3 mb-8">
                 <li className="flex items-center gap-3">
                   <span className="text-primary text-xl">✓</span>
-                  <span className="text-gray-700">Accede a todo el contenido</span>
+                  <span className="text-gray-700">Accedé a todo el contenido.</span>
                 </li>
 
                 <li className="flex items-center gap-3">
                   <span className="text-primary text-xl">✓</span>
-                  <span className="text-gray-700">Sincronización automática</span>
+                  <span className="text-gray-700">Sincronización automática.</span>
                 </li>
 
                 <li className="flex items-center gap-3">
                   <span className="text-primary text-xl">✓</span>
                   <span className="text-gray-700">
-                    Pantalla adaptable a tu dispositivo
+                    Pantalla adaptable a tu dispositivo.
                   </span>
                 </li>
               </ul>

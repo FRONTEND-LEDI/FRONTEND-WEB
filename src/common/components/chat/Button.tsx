@@ -111,8 +111,8 @@ if (!user) return null;
 
       {/* Chat Window */}
       {isOpen && (
-        <div className="fixed bottom-6 right-6 bg-white rounded-2xl border-2 border-primary shadow-2xl z-50 w-full max-w-md flex flex-col overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-5"
-          style={{ height: '600px' }}>
+        <div className="fixed bottom-6 right-6 bg-white rounded-2xl border-2 border-primary shadow-2xl z-50  flex flex-col overflow-hidden transition-all duration-300 animate-in slide-in-from-bottom-5"
+          style={{ height: '500px', width: '350px', maxWidth: '90vw' }}>
           
           <div className="flex items-center justify-between px-5 py-4 text-white relative overflow-hidden"
             style={{ background: 'linear-gradient(135deg, #d97706 0%)' }}>

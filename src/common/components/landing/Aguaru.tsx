@@ -19,7 +19,7 @@ export default function Aguaru(){
               {/* Columna Derecha: Contenido */}
               <div className="text-white">
                 <h2 className="text-4xl md:text-5xl font-bold mb-6 leading-tight">
-                  Interactuá con <span className="text-orange-100">Aguaru</span>,
+                  Interactuá con <span className="text-orange-100">Aguarú</span>,
                   nuestro Bibliotecario Virtual
                 </h2>
                 
@@ -38,7 +38,7 @@ export default function Aguaru(){
                     hover:bg-orange-50
                     transition-colors duration-300
                   ">
-                    Conocer a Aguaru
+                    Conocer a Aguarú
                   </Link>
                   
                 </div>

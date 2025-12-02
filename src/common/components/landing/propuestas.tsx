@@ -18,7 +18,7 @@ export default function Propuestas(){
                 Tu próxima biblioteca favorita
               </h2>
               <p className="text-gray-600 text-lg max-w-2xl mx-auto">
-                Todo lo que necesitás para disfrutar de la literatura formoseña
+                Todo lo que necesitás para disfrutar de la literatura formoseña.
               </p>
             </div>
             <ul className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
@@ -34,7 +34,7 @@ export default function Propuestas(){
                       Antologías literarias
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      Accedé a obras locales y recopilaciones de concursos provinciales
+                      Accedé a obras locales y recopilaciones de concursos provinciales.
                     </p>
                   </div>
                 </div>
@@ -51,7 +51,7 @@ export default function Propuestas(){
                       Acceso multiplataforma
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      Leé desde tu compu o tu celular, sin límites
+                      Leé desde tu compu o tu celular, sin límites.
                     </p>
                   </div>
                 </div>
@@ -68,7 +68,7 @@ export default function Propuestas(){
                       Asistente con IA
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      Recomendaciones inteligentes basadas en tus gustos
+                      Recomendaciones inteligentes basadas en tus gustos.
                     </p>
                   </div>
                 </div>
@@ -85,7 +85,7 @@ export default function Propuestas(){
                       Para todas las edades
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      Contenido organizado para cada etapa lectora
+                      Contenido organizado para cada etapa lectora.
                     </p>
                   </div>
                 </div>
@@ -102,7 +102,7 @@ export default function Propuestas(){
                       Logros y recompensas
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      Desbloqueá insignias mientras avanzás en tus lecturas
+                      Desbloqueá insignias mientras avanzás en tus lecturas.
                     </p>
                   </div>
                 </div>
@@ -119,7 +119,7 @@ export default function Propuestas(){
                       Comunidad lectora
                     </h3>
                     <p className="text-gray-600 text-sm leading-relaxed">
-                      Conectá con personas que comparten tus intereses
+                      Conectá con personas que comparten tus intereses.
                     </p>
                   </div>
                 </div>
