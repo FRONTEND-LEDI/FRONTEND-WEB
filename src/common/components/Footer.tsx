@@ -22,6 +22,11 @@ export default function Footer() {
               Descubrí la riqueza de la literatura local y conectá con historias
               que trascienden fronteras.
             </p>
+            <div className="flex h-20">
+              <img src="/footer/ipf.png" alt="" />
+              <img src="/footer/alver.png" alt="" />
+              <img src="/footer/ispaf.png" alt="" />
+            </div>
           </div>
 
           <div>
@@ -57,6 +62,14 @@ export default function Footer() {
                   className="hover:text-white transition-colors"
                 >
                   BiblioGames
+                </a>
+              </li>
+               <li>
+                <a
+                  href="/profile"
+                  className="hover:text-white transition-colors"
+                >
+                  Perfil
                 </a>
               </li>
             </ul>

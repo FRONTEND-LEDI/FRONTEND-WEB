@@ -57,7 +57,15 @@ export default function ForumOverview({ foros }: ForumOverviewProps) {
             ))}
           </div>
         ) : (
-          <p className="text-gray-500 text-center">Sin actividad reciente.</p>
+          
+
+      <div className="flex justify-center py-10">
+        <div className="animate-spin rounded-full h-10 w-10 border-4 border-yellow-400 border-t-transparent"></div>
+      </div>
+
+
+
+
         )}
       </section>
 

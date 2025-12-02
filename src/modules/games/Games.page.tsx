@@ -5,6 +5,7 @@ import { IoGameControllerSharp } from "react-icons/io5";
 import { FaTrophy, FaStar, FaCrown } from "react-icons/fa";
 
 import { StarHalfIcon } from "lucide-react";
+import TopSection from "../../common/components/games/top";
 
 export function BiblioGames() {
   const featuredGames = [
@@ -226,11 +227,11 @@ export function BiblioGames() {
           </section>
 
           {/* CTA Section */}
-          <section className="max-w-4xl mx-auto">
-            <div className="relative border-4 border-yellow-500 rounded-2xl p-8  backdrop-blur-sm text-center overflow-hidden">
+          <section className=" flex gap-12 lg:flex-row  md:flex-row sm:flex-col">
+            <div className="relative  border-4 border-yellow-500 rounded-2xl p-8  backdrop-blur-sm text-center overflow-hidden">
               
               {/* Background Pattern */}
-              <div className="absolute inset-0 opacity-5">
+              <div className="absolute inset-0 max-w-4xl opacity-5">
                 <div className="absolute top-0 left-0 w-32 h-32 bg-yellow-400 rounded-full blur-3xl"></div>
                 <div className="absolute bottom-0 right-0 w-32 h-32 bg-orange-400 rounded-full blur-3xl"></div>
               </div>
@@ -260,6 +261,7 @@ export function BiblioGames() {
                 </div>
               </div>
             </div>
+            <TopSection/>
           </section>
 
         </main>
