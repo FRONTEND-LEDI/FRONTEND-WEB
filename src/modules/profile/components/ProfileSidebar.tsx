@@ -1,5 +1,6 @@
 import { Calendar, X, Award } from "lucide-react";
 import { useState } from "react";
+import { formatDateAvoidTimezone } from "../../../common/utils/date";
 
 type Props = {
   user: {
@@ -47,24 +48,7 @@ const getLevelFrameColor = (level?: number) => {
   return colors[level || 1] || colors[1];
 };
 
-// Función para formatear la fecha evitando problemas de zona horaria
-const formatBirthDate = (dateString?: string): string => {
-  if (!dateString) return "";
-
-  // Extrae la parte de la fecha (YYYY-MM-DD) antes de cualquier T o Z
-  const dateMatch = dateString.match(/(\d{4})-(\d{2})-(\d{2})/);
-  if (!dateMatch) return "";
-
-  const [, year, month, day] = dateMatch;
-  // Crea un Date desde los componentes para evitar desplazamientos de zona horaria
-  const date = new Date(parseInt(year), parseInt(month) - 1, parseInt(day));
-
-  return date.toLocaleDateString("es-ES", {
-    year: "numeric",
-    month: "long",
-    day: "numeric",
-  });
-};
+// Usar util común para formatear la fecha sin efectos de zona horaria
 
 export default function ProfileSidebar({ user, onEdit, onDelete }: Props) {
   const [showAvatarModal, setShowAvatarModal] = useState(false);
@@ -77,7 +61,7 @@ export default function ProfileSidebar({ user, onEdit, onDelete }: Props) {
   const levelLabel = getLevelLabel(currentLevel);
   const frameColor = getLevelFrameColor(currentLevel);
   const frameUrl = user?.level?.img?.url_secura;
-  const joinDate = formatBirthDate(user?.birthDate);
+  const joinDate = formatDateAvoidTimezone(user?.birthDate);
 
   return (
     <>

@@ -10,7 +10,10 @@ import { useQuery } from "@tanstack/react-query";
 import { searchAuthors } from "../../../db/services/adminAuthors";
 import type { Author } from "../../../types/author";
 import { getAuthorAvatarUrl } from "../../../types/author";
-import { LITERARY_GENRES } from "../../../common/data/genres";
+import {
+  LITERARY_GENRES,
+  LITERARY_SUBGENRES,
+} from "../../../common/data/genres";
 
 const INITIAL = {
   title: "",
@@ -57,7 +60,6 @@ export default function AdminBooksNew() {
   const [bookFile, setBookFile] = useState<File | null>(null);
   const [loading, setLoading] = useState(false);
 
-  const [subgenreText, setSubgenreText] = useState("");
   const [themeText, setThemeText] = useState("");
 
   const { data: authorsData } = useQuery({
@@ -95,7 +97,6 @@ export default function AdminBooksNew() {
 
       const payload: AdminCreateBookInput = {
         ...form,
-        subgenre: parseList(subgenreText),
         theme: parseList(themeText),
         imgFile,
         bookFile,
@@ -392,21 +393,69 @@ export default function AdminBooksNew() {
               Categorización
             </h3>
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-4 md:gap-6">
-              <div className="space-y-2">
+              <div className="space-y-2 md:col-span-2">
                 <label className="text-sm font-medium text-gray-700">
                   Subgéneros
                 </label>
-                {/* SUBGÉNEROS */}
-                <input
-                  className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-                  placeholder="Ej: Thriller, Histórico (separados por comas)"
-                  value={subgenreText}
-                  onChange={(e) => setSubgenreText(e.target.value)}
-                  onBlur={() => set("subgenre", parseList(subgenreText))}
-                />
-                <p className="text-xs text-gray-500">
-                  Separa múltiples subgéneros con comas
-                </p>
+                {/* Chips de subgéneros seleccionados */}
+                {Array.isArray(form.subgenre) && form.subgenre.length > 0 ? (
+                  <div className="flex flex-wrap gap-2 mb-2">
+                    {form.subgenre.map((sg) => (
+                      <span
+                        key={sg}
+                        className="inline-flex items-center gap-2 px-3 py-1.5 rounded-full bg-purple-50 border border-purple-200 text-purple-700 text-sm"
+                      >
+                        {sg}
+                        <button
+                          type="button"
+                          className="ml-1 text-purple-600 hover:text-purple-800"
+                          onClick={() =>
+                            set(
+                              "subgenre",
+                              form.subgenre.filter((x) => x !== sg)
+                            )
+                          }
+                          aria-label="Quitar subgénero"
+                        >
+                          ×
+                        </button>
+                      </span>
+                    ))}
+                  </div>
+                ) : (
+                  <p className="text-xs text-gray-500 mb-1">
+                    Seleccioná uno o más subgéneros del listado.
+                  </p>
+                )}
+                {/* Dropdown con opciones */}
+                <div className="border border-gray-200 rounded-lg p-3 max-h-64 overflow-auto">
+                  {LITERARY_SUBGENRES.map((sg) => {
+                    const isSelected =
+                      Array.isArray(form.subgenre) &&
+                      form.subgenre.includes(sg);
+                    return (
+                      <label
+                        key={sg}
+                        className="flex items-center gap-3 py-2 px-1 cursor-pointer hover:bg-purple-50/50 rounded"
+                      >
+                        <input
+                          type="checkbox"
+                          checked={isSelected}
+                          onChange={() => {
+                            const curr = new Set<string>(
+                              (form.subgenre as string[]) || []
+                            );
+                            if (curr.has(sg)) curr.delete(sg);
+                            else curr.add(sg);
+                            set("subgenre", Array.from(curr));
+                          }}
+                          className="w-4 h-4 text-purple-600 rounded focus:ring-purple-500"
+                        />
+                        <span className="text-sm text-gray-700">{sg}</span>
+                      </label>
+                    );
+                  })}
+                </div>
               </div>
 
               <div className="space-y-2">
