@@ -144,7 +144,7 @@ export function BookSelector() {
                   <Link
                     key={book._id}
                     to={`/games/${gameType}/${book._id}`}
-                    className="border-4 border-orange-500 rounded-xl overflow-hidden hover:bg-orange-500/20 transition-all group hover:scale-105 transform duration-300"
+                    className="border-4 border-orange-500 rounded-xl overflow-hidden  transition-all group hover:scale-105 transform duration-300"
                   >
                     {book.bookCoverImage && (
                       <div className="w-full h-48 overflow-hidden bg-gray-800">
@@ -153,7 +153,7 @@ export function BookSelector() {
                                 ? book.bookCoverImage 
                                 : book.bookCoverImage.url_secura || "/default-cover.png"}
                           alt={book.title}
-                          className="w-full h-full object-cover group-hover:scale-110 transition-transform duration-300"
+                          className="w-full h-full object-cover "
                         />
                       </div>
                     )}
@@ -175,7 +175,7 @@ export function BookSelector() {
                         </span>
                       )}
                       
-                      <p className="text-gray-600 mt-3 group-hover:text-white transition-colors">
+                      <p className="text-gray-600 mt-3 group-hover:text-primary font-semibold transition-colors">
                         Seleccionar para jugar
                       </p>
                     </div>

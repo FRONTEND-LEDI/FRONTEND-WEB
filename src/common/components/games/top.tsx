@@ -5,6 +5,8 @@ interface FullUser {
   name: string;
   avatar?: string;
   point: number;
+  imgLevel?: string; // marco de nivel
+  level?: { level: number }; // nivel del usuario
 }
 
 export default function TopSection() {
@@ -36,66 +38,65 @@ export default function TopSection() {
   ];
 
   return (
-    <section className="max-w-sm sm:w-full py-8 px-6 bg-secondary text-white  rounded-lg border-rounded-lg border ">
-      <div className="max-w-xl mx-auto space-y-6">
-
-       
+    <section className="max-w-sm sm:w-full py-8 px-6 bg-secondary text-white rounded-lg border">
+      <div className="max-w-xl mx-auto space-y-1">
         <div className="text-center space-y-1">
           <h2 className="text-3xl font-extrabold text-primary tracking-wide">Lectores a la Guerra</h2>
           <p className="text-sm text-gray-500">Top 5 lectores de Tintas</p>
         </div>
 
-        {/* Divider */}
         <div className="w-full h-[1px] bg-gray-700"></div>
 
-        {/* Listado */}
         {loading ? (
           <div className="flex justify-center py-10">
             <div className="animate-spin rounded-full h-10 w-10 border-4 border-yellow-400 border-t-transparent"></div>
           </div>
         ) : (
-          <div className="space-y-2">
+          <div >
             {users.map((u, idx) => {
               const isTop3 = idx < 3;
               return (
                 <div
                   key={u._id}
-                  className={`
-                    flex items-center justify-between px-4 py-3 rounded-xl
-                    ${idx === 0 ? "bg-primary" : ""}
-                    hover:bg-[#1a2c3b] transition
-                  `}
+                  className="flex items-center justify-between px-2 py-2 rounded-xl hover:bg-primary transition"
                 >
-                  {/* Left block */}
-                  <div className="flex items-center gap-3">
-                    {/* Rank circle */}
+                  <div className="flex items-center gap-2">
+                    {/* RANK CIRCLE */}
                     <div
-                      className={`
-                        w-10 h-10 rounded-full flex items-center justify-center 
-                        text-lg font-bold
-                        ${isTop3 ? medals[idx].bg : "bg-fund"}
-                        text-black
-                      `}
+                      className={`w-10 h-10 rounded-full flex items-center justify-center text-lg font-bold text-black shadow-md border border-white ${
+                        isTop3 ? medals[idx].bg : "bg-gray-300"
+                      }`}
                     >
                       {isTop3 ? medals[idx].icon : idx + 1}
                     </div>
 
-                    {/* Avatar + name */}
-                    <div className="flex items-center gap-3">
-                      <div className="relative">
+                    {/* AVATAR + LEVEL FRAME */}
+                    <div className="relative w-14 h-14 flex items-center justify-center flex-shrink-0">
+                      {/* Marco de nivel */}
+                      {u.imgLevel && (
                         <img
-                          src={u.avatar || "/hostImage/LOGO-COLOR.png"}
-                          className="w-11 h-11 rounded-full object-cover border border-gray-600"
+                          src={u.imgLevel}
+                          alt="Marco de nivel"
+                          className="absolute inset-0 w-full h-full object-contain z-10 pointer-events-none"
                         />
+                      )}
 
-                       
-                      </div>
+                      {/* Avatar */}
+                      <img
+                        src={u.avatar || "/hostImage/LOGO-COLOR.png"}
+                        className="w-10 h-10 rounded-full object-cover border-2 border-white z-20"
+                        alt={u.name}
+                      />
 
-                      <div className="flex flex-col">
-                        <span className="font-semibold text-base">
-                          {u.name}
-                        </span>
+                      {/* Badge de nivel */}
+                      <div className="absolute -bottom-1 -right-1 bg-gray-900 text-white text-[10px] font-bold px-1.5 py-0.5 rounded-full border-2 border-white shadow-sm z-20">
+                        Lv.{u.level?.level || 1}
                       </div>
+                    </div>
+
+                    {/* Nombre */}
+                    <div className="flex flex-col">
+                      <span className="font-semibold text-base">{u.name}</span>
                     </div>
                   </div>
 

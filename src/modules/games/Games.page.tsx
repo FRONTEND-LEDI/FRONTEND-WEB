@@ -86,7 +86,7 @@ export function BiblioGames() {
                 </div>
                 <span className="text-orange-500">•</span>
                 <div className="flex items-center gap-2">
-                  <StarHalfIcon className="text-yellow-400" />
+                  <StarHalfIcon className="text-orange-400" />
                   <span>GANÁ RECOMPENSAS</span>
                 </div>
               </div>
@@ -108,11 +108,11 @@ export function BiblioGames() {
             <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 max-w-6xl mx-auto">
               {featuredGames.map((game, index) => (
                 <Link key={index} to={game.link}>
-                  <div className="group relative border-4 border-orange-500 rounded-2xl overflow-hidden  hover:border-yellow-400 transition-all duration-500 hover:shadow-[0_0_50px_rgba(249,115,22,0.4)] hover:-translate-y-3">
+                  <div className="group relative border-4 border-orange-500 rounded-2xl overflow-hidden  hover:border-orange-400 transition-all duration-500 hover:shadow-[0_0_50px_rgba(249,115,22,0.4)] hover:-translate-y-3">
                     
                     {/* Points Badge */}
                     <div className="absolute top-4 left-4 z-20">
-                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-yellow-500 to-orange-500 text-black flex items-center gap-1">
+                      <span className="px-3 py-1 rounded-full text-xs font-bold bg-gradient-to-r from-orange-500 to-orange-500 text-black flex items-center gap-1">
                         <FaStar className="text-xs" />
                         {game.points}
                       </span>
@@ -168,7 +168,7 @@ export function BiblioGames() {
                     {/* Hover Effects */}
                     <div className="absolute inset-0 opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none">
                       <div className="absolute inset-0  via-transparent to-transparent"></div>
-                      <div className="absolute top-0 right-0 w-32 h-32 bg-yellow-400/60 rounded-full blur-3xl transform translate-x-16 -translate-y-16"></div>
+                      <div className="absolute top-0 right-0 w-32 h-32 bg-orange-400/60 rounded-full blur-3xl transform translate-x-16 -translate-y-16"></div>
                     </div>
                   </div>
                 </Link>
@@ -226,46 +226,90 @@ export function BiblioGames() {
             </div>
           </section>
 
-          {/* CTA Section */}
-          <section className=" flex gap-12 lg:flex-row  md:flex-row sm:flex-col">
-            <div className="relative  border-4 border-yellow-500 rounded-2xl p-8  backdrop-blur-sm text-center overflow-hidden">
-              
-              {/* Background Pattern */}
-              <div className="absolute inset-0 max-w-4xl opacity-5">
-                <div className="absolute top-0 left-0 w-32 h-32 bg-yellow-400 rounded-full blur-3xl"></div>
-                <div className="absolute bottom-0 right-0 w-32 h-32 bg-orange-400 rounded-full blur-3xl"></div>
-              </div>
+         <section className="flex flex-col sm:flex-col md:flex-row lg:flex-row gap-8 p-6 max-w-7xl mx-auto">
+      {/* CTA Principal */}
+      <div className="flex-1 relative  border-4 border-primary rounded-3xl p-10 shadow-2xl text-center overflow-hidden group hover:border-orange-400 transition-all duration-500">
+        
+        {/* Background Pattern Mejorado */}
+        <div className="absolute inset-0 opacity-10">
+          <div className="absolute top-0 left-0 w-40 h-40 bg-orange-400 rounded-full blur-3xl animate-pulse"></div>
+          <div className="absolute bottom-0 right-0 w-40 h-40 bg-orange-400 rounded-full blur-3xl animate-pulse" style={{ animationDelay: '1s' }}></div>
+          <div className="absolute top-1/2 left-1/2 transform -translate-x-1/2 -translate-y-1/2 w-60 h-60 bg-orange-300 rounded-full blur-3xl"></div>
+        </div>
 
-              <FaTrophy className="text-6xl text-yellow-400 mx-auto mb-6 animate-bounce" />
-              
-              <h3 className="text-3xl font-bold mb-4 bg-gradient-to-r from-yellow-400 to-orange-400 bg-clip-text text-transparent">
-                ¡CONQUISTÁ LA BIBLIOTECA!
-              </h3>
-              
-              <p className="text-gray-600 text-lg mb-6 max-w-2xl mx-auto leading-relaxed">
-                Completá desafíos, ganá puntos exclusivos y convertite en el lector legendario de la biblioteca arcade
-              </p>
+        {/* Patrón de puntos decorativo */}
+        <div className="absolute inset-0 opacity-5" style={{
+          backgroundImage: 'radial-gradient(circle, #000 1px, transparent 1px)',
+          backgroundSize: '30px 30px'
+        }}></div>
 
-              <div className="flex flex-wrap justify-center gap-6 text-sm text-gray-400">
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-yellow-400">
-                  <FaStar className="text-yellow-400" />
-                  <span>GANA PUNTOS</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-orange-400">
-                  <FaCrown className="text-orange-400" />
-                  <span>DESBLOQUEA LOGROS</span>
-                </div>
-                <div className="flex items-center gap-2 px-4 py-2 rounded-full border border-green-400">
-                  <div className="w-2 h-2 bg-green-400 rounded-full animate-pulse"></div>
-                  <span>APRENDE</span>
-                </div>
-              </div>
+        {/* Contenido */}
+        <div className="relative z-10">
+          {/* Ícono del Trofeo */}
+          <div className="relative inline-block mb-6">
+            <div className="absolute inset-0  opacity-50 rounded-full animate-pulse"></div>
+            <FaTrophy className="text-7xl relative z-10 " style={{ filter: 'drop-shadow(0 0 20px rgba(250, 204, 21, 0.5))' }} />
+          </div>
+          
+          {/* Título con efecto brillante */}
+          <h3 className="text-3xl md:text-5xl gap-8 font-black mb-12 relative inline-block">
+            <span className="bg-primary  bg-clip-text text-transparent animate-gradient">
+              ¡CONQUISTÁ LA BIBLIOTECA!
+            </span>
+            {/* Línea decorativa */}
+            <div className="absolute  mt-4 left-0 right-0 h-1 bg-gradient-to-r from-transparent via-orange-400 to-transparent"></div>
+          </h3>
+          
+          {/* Descripción mejorada */}
+          <p className="text-gray-700 text-lg md:text-xl mb-8 max-w-2xl mx-auto leading-relaxed font-medium">
+            Completá desafíos épicos, ganá puntos exclusivos y convertite en el 
+            <span className="text-primary font-bold"> lector legendario </span> 
+            de la biblioteca arcade
+          </p>
+
+          {/* Badges mejorados */}
+          <div className="flex flex-wrap justify-center gap-4 mb-8">
+            <div className="group/badge flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold shadow-lg hover:shadow-2xl  cursor-pointer">
+              <FaStar className="text-2xl group-hover/badge:rotate-180 transition-transform duration-500" />
+              <span className="text-sm uppercase tracking-wider">Gana Puntos</span>
             </div>
-            <TopSection/>
-          </section>
+            
+            <div className="group/badge flex items-center gap-3 px-6 py-3 rounded-full bg-gradient-to-r from-orange-400 to-orange-500 text-white font-bold shadow-lg hover:shadow-2xl  cursor-pointer">
+              <FaCrown className="text-2xl group-hover/badge:rotate-12 group-hover/badge:scale-110 transition-transform duration-300" />
+              <span className="text-sm uppercase tracking-wider">Desbloquea Logros</span>
+            </div>
+            
+            <div className="group/badge flex items-center gap-3 px-6 py-3 rounded-full bg-primary  text-white font-bold shadow-lg hover:shadow-2xl  cursor-pointer">
+              <div className="relative">
+                <div className="w-3 h-3 bg-white rounded-full animate-ping absolute"></div>
+                <div className="w-3 h-3 bg-white rounded-full relative"></div>
+              </div>
+              <span className="text-sm uppercase tracking-wider">Aprende Jugando</span>
+            </div>
+          </div>
 
+          {/* Botón CTA adicional */}
+          
+        </div>
+
+        
+      </div>
+
+      {/* Top Section */}
+      <TopSection />
+
+      <style jsx>{`
+        @keyframes gradient {
+          0%, 100% { background-position: 0% 50%; }
+          50% { background-position: 100% 50%; }
+        }
+        .animate-gradient {
+          background-size: 200% 200%;
+          animation: gradient 3s ease infinite;
+        }
+      `}</style>
+    </section>
         </main>
-
         <Footer />
       </div>
     </div>
