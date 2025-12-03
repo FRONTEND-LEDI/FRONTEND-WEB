@@ -27,8 +27,8 @@ export default function AdminAvatarsNew() {
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     try {
-      if (!avatarFile) return toast.error("Selecciona una imagen");
-      if (!gender) return toast.error("Selecciona un género");
+      if (!avatarFile) return toast.error("Seleccioná una imagen");
+      if (!gender) return toast.error("Seleccioná un género");
 
       setLoading(true);
       await adminCreateAvatar({ avatars: avatarFile, gender }, token);
@@ -54,7 +54,7 @@ export default function AdminAvatarsNew() {
             <h2 className="text-2xl font-bold text-gray-900">
               Crear Nuevo Avatar
             </h2>
-            <p className="text-gray-600">Agrega un avatar al sistema</p>
+            <p className="text-gray-600">Agregá un avatar al sistema</p>
           </div>
         </div>
       </div>

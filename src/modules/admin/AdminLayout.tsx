@@ -13,6 +13,7 @@ import {
   X,
   LayoutDashboard,
   ChartNoAxesCombined,
+  Newspaper,
 } from "lucide-react";
 
 export default function AdminLayout({
@@ -97,7 +98,7 @@ export default function AdminLayout({
             >
               <BookOpen className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
               <span className="font-medium text-gray-700 group-hover:text-gray-900">
-                Libros
+                Obras
               </span>
             </Link>
             {/* Sección Autores*/}
@@ -110,7 +111,17 @@ export default function AdminLayout({
                 Autores
               </span>
             </Link>
-            {/*/ Sección Avatares (nueva)*/}
+            {/*/ Sección Noticias*/}
+            <Link
+              href="/admin/news"
+              className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 transition-colors group"
+            >
+              <Newspaper className="w-5 h-5 text-orange-600 group-hover:text-orange-700" />
+              <span className="font-medium text-gray-700 group-hover:text-gray-900">
+                Noticias
+              </span>
+            </Link>
+            {/*/ Sección Avatares*/}
             <Link
               href="/admin/avatars"
               className="flex items-center gap-3 px-4 py-3 rounded-lg hover:bg-orange-50 transition-colors group"
@@ -120,7 +131,7 @@ export default function AdminLayout({
                 Avatares
               </span>
             </Link>
-            {/* Futuras secciones entran aquí y seguirán siendo scrolleables */}
+            {/* Futuras secciones entran acá */}
           </div>
         </nav>
 

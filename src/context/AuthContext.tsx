@@ -14,7 +14,14 @@ type User = {
   avatar?: string | null;
   birthDate?: string;
   nivel?: string;
-  level?: string;
+  level?: null | {
+    level?: number;
+    maxPoint?: number;
+    level_string?: string;
+    img?: {
+      url_secura?: string;
+    };
+  };
   imgLevel?: string;
   point?: number;
   preference?: {
@@ -45,7 +52,26 @@ const AuthContext = createContext<AuthContextType>({
 function normalizeUser(u: FullUser): User {
   const birth = typeof u.birthDate === "string" ? u.birthDate : undefined;
 
-  return {
+  // Normalizar level: puede venir como string o como objeto
+  let levelObj: User["level"] = null;
+  if (u.level) {
+    if (typeof u.level === "string") {
+      levelObj = { level_string: u.level };
+    } else {
+      levelObj = {
+        level: u.level.level,
+        maxPoint: u.level.maxPoint,
+        level_string: u.level.level_string,
+        img: { url_secura: u.level.img?.url_secura },
+      };
+    }
+  }
+
+  const imgLevel =
+    u.imgLevel ??
+    (typeof u.level === "object" ? u.level?.img?.url_secura : undefined);
+
+  const normalized: User = {
     id: u._id,
     name: u.name,
     lastName: u.lastName,
@@ -55,14 +81,17 @@ function normalizeUser(u: FullUser): User {
     avatar: u.avatar,
     birthDate: birth,
     nivel: u.nivel,
-    level: u.level,
+    level: levelObj,
+    imgLevel: imgLevel,
     point: u.point,
     medals: u.medals,
     preference: {
       category: u.preference?.category ?? [],
       format: u.preference?.format ?? [],
     },
-  } as const;
+  };
+
+  return normalized;
 }
 
 export const AuthProvider = ({ children }: { children: ReactNode }) => {
