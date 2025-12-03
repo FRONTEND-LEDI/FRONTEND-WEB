@@ -7,7 +7,19 @@ export interface FullUser {
   email: string;
   password?: string;
   nivel?: string;
-  level?: string;
+  level?:
+    | string
+    | {
+        img?: {
+          url_secura?: string;
+          id_image?: string;
+        };
+        _id?: string;
+        level?: number;
+        maxPoint?: number;
+        level_string?: string;
+        __v?: number;
+      };
   imgLevel?: string;
   point?: number;
   rol?: string;

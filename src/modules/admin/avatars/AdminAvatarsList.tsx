@@ -60,7 +60,7 @@ export default function AdminAvatarsList() {
                 Gestión de Avatares
               </h2>
               <p className="text-gray-600">
-                Administra los avatares disponibles para perfiles
+                Administrá los avatares disponibles para perfiles
               </p>
             </div>
           </div>
@@ -107,7 +107,7 @@ export default function AdminAvatarsList() {
                 No se encontraron avatares
               </p>
               <p className="text-gray-400 text-sm mt-1">
-                Intenta con otros términos de búsqueda
+                Intentá con otros términos de búsqueda
               </p>
             </div>
           </div>

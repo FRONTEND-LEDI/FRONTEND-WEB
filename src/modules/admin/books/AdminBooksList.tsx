@@ -39,7 +39,7 @@ export default function AdminBooksList() {
   const delMutation = useMutation({
     mutationFn: (id: string) => adminDeleteBook(id, token),
     onSuccess: () => {
-      toast.success("Libro eliminado");
+      toast.success("Obra eliminada");
       qc.invalidateQueries({ queryKey: ["admin-books"] });
     },
     onError: (e: any) => {
@@ -47,7 +47,7 @@ export default function AdminBooksList() {
     },
   });
 
-  if (isLoading) return <LoadingGate message="Cargando libros…" />;
+  if (isLoading) return <LoadingGate message="Cargando obras…" />;
   if (isError)
     return <div className="text-red-600">Error: {(error as any)?.message}</div>;
 
@@ -62,10 +62,10 @@ export default function AdminBooksList() {
             </div>
             <div>
               <h2 className="text-2xl font-bold text-gray-900">
-                Gestión de Libros
+                Gestión de Obras
               </h2>
               <p className="text-gray-600">
-                Administra el catálogo de Tintas Formoseñas
+                Administrá el catálogo de Tintas Formoseñas.
               </p>
             </div>
           </div>
@@ -74,7 +74,7 @@ export default function AdminBooksList() {
             className="flex items-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-6 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all shadow-sm hover:shadow-md"
           >
             <Plus className="w-4 h-4" />
-            Nuevo Libro
+            Nueva Obra
           </Link>
         </div>
       </div>
@@ -138,17 +138,6 @@ export default function AdminBooksList() {
                     </span>
                   </td>
                   <td className="py-4 px-6 text-gray-600">{b.yearBook}</td>
-                  {/* <td className="py-4 px-6">
-                    <span
-                      className={`inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium ${
-                        b.available
-                          ? "bg-green-100 text-green-800"
-                          : "bg-red-100 text-red-800"
-                      }`}
-                    >
-                      {b.available ? "Disponible" : "No disponible"}
-                    </span>
-                  </td> */}
                   <td className="py-4 px-6">
                     <div className="flex items-center justify-end gap-2">
                       <Link
@@ -164,7 +153,7 @@ export default function AdminBooksList() {
                           onClick={() => {
                             if (
                               !confirm(
-                                "¿Eliminar este libro? Esta acción no se puede deshacer."
+                                "¿Eliminar esta obra? Esta acción no se puede deshacer."
                               )
                             )
                               return;
@@ -188,10 +177,10 @@ export default function AdminBooksList() {
                       </div>
                       <div>
                         <p className="text-gray-500 font-medium">
-                          No se encontraron libros
+                          No se encontraron obras que coincidan con la búsqueda.
                         </p>
                         <p className="text-gray-400 text-sm">
-                          Intenta con otros términos de búsqueda
+                          Intentá con otros términos de búsqueda
                         </p>
                       </div>
                     </div>

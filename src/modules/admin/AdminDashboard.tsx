@@ -42,7 +42,7 @@ export default function AdminDashboard() {
             <h1 className="text-3xl font-bold text-gray-900">
               Panel de Administración
             </h1>
-            <p className="text-gray-600">Gestiona tu biblioteca digital</p>
+            <p className="text-gray-600">Gestioná tu biblioteca digital</p>
           </div>
         </div>
       </div>
@@ -53,7 +53,9 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Total Libros</p>
+              <p className="text-sm font-medium text-gray-600">
+                Total de Obras
+              </p>
               <p className="text-2xl font-bold text-gray-900">
                 {booksCountQ.isLoading ? "…" : fmt(booksCountQ.data)}
               </p>
@@ -64,7 +66,7 @@ export default function AdminDashboard() {
           </div>
           {booksCountQ.isError && (
             <p className="text-xs text-red-600 mt-2">
-              No se pudo cargar la cantidad de libros.
+              No se pudo cargar la cantidad de obras.
             </p>
           )}
         </div>
@@ -73,7 +75,9 @@ export default function AdminDashboard() {
         <div className="bg-white rounded-xl shadow-sm border border-orange-100 p-6">
           <div className="flex items-center justify-between">
             <div>
-              <p className="text-sm font-medium text-gray-600">Autores registrados</p>
+              <p className="text-sm font-medium text-gray-600">
+                Autores registrados
+              </p>
               <p className="text-2xl font-bold text-gray-900">
                 {authorsCountQ.isLoading ? "…" : fmt(authorsCountQ.data)}
               </p>
@@ -119,9 +123,9 @@ export default function AdminDashboard() {
               <LuBookUp className="w-5 h-5 text-orange-600" />
             </div>
             <div>
-              <h3 className="font-medium text-gray-900">Agregar Libro</h3>
+              <h3 className="font-medium text-gray-900">Subir Obra</h3>
               <p className="text-sm text-gray-600">
-                Crear un nuevo libro en el catálogo
+                Subir una nueva obra al catálogo
               </p>
             </div>
           </a>
@@ -134,7 +138,7 @@ export default function AdminDashboard() {
               <TbUserUp className="w-5 h-5 text-amber-600" />
             </div>
             <div>
-              <h3 className="font-medium text-gray-900">Agregar Autor</h3>
+              <h3 className="font-medium text-gray-900">Registrar Autor</h3>
               <p className="text-sm text-gray-600">Registrar un nuevo autor</p>
             </div>
           </a>

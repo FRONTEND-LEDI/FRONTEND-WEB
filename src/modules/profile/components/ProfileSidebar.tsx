@@ -174,7 +174,7 @@ export default function ProfileSidebar({ user, onEdit, onDelete }: Props) {
                   Nivel {currentLevel}
                 </p>
                 <p className="text-sm text-gray-600">
-                  Continúa leyendo para avanzar
+                  Continuá leyendo para avanzar
                 </p>
               </div>
             </div>
@@ -201,7 +201,7 @@ export default function ProfileSidebar({ user, onEdit, onDelete }: Props) {
           onClick={() => setShowAvatarModal(false)}
         >
           <div
-            className="relative max-w-2xl w-full"
+            className="relative max-w-2xl w-full max-h-[80vh]"
             onClick={(e) => e.stopPropagation()}
           >
             {/* Botón cerrar */}
@@ -212,8 +212,8 @@ export default function ProfileSidebar({ user, onEdit, onDelete }: Props) {
               <X className="w-6 h-6" />
             </button>
 
-            {/* Imagen */}
             <div className="bg-white rounded-2xl p-2 shadow-2xl">
+              {/* Imagen
               {frameUrl ? (
                 <div className="relative">
                   <img
@@ -224,32 +224,32 @@ export default function ProfileSidebar({ user, onEdit, onDelete }: Props) {
                   <img
                     src={user?.avatar ?? "/hostImage/avatarLanding.png"}
                     alt="Avatar"
-                    className="w-full h-auto rounded-xl"
+                    className="w-full h-auto max-h-[70vh] rounded-xl object-contain"
                   />
                 </div>
-              ) : (
-                <div className="relative">
-                  <div
-                    className={`absolute -inset-4 bg-gradient-to-br ${frameColor} rounded-2xl blur-xl opacity-50`}
-                  ></div>
-                  <img
-                    src={user?.avatar ?? "/hostImage/avatarLanding.png"}
-                    alt="Avatar"
-                    className="relative w-full h-auto rounded-xl border-4 border-white shadow-lg"
-                  />
-                </div>
-              )}
+              ) : ( */}
+              <div className="relative">
+                <div
+                  className={`absolute -inset-4 bg-gradient-to-br ${frameColor} rounded-2xl blur-xl opacity-50`}
+                ></div>
+                <img
+                  src={user?.avatar ?? "/hostImage/avatarLanding.png"}
+                  alt="Avatar"
+                  className="relative w-full h-auto max-h-[70vh] rounded-xl border-4 border-white shadow-lg object-contain"
+                />
+              </div>
+              {/* )} */}
             </div>
 
             {/* Info del nivel */}
-            <div className="mt-4 text-center text-white">
+            {/* <div className="mt-4 text-center text-white">
               <p className="text-lg font-semibold">{fullName}</p>
               <p
                 className={`text-sm inline-block px-4 py-1 rounded-full bg-gradient-to-r ${frameColor} mt-2 font-medium`}
               >
                 {levelLabel} - Nivel {currentLevel}
               </p>
-            </div>
+            </div> */}
           </div>
         </div>
       )}

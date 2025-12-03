@@ -96,7 +96,7 @@ export default function AdminBooksEdit() {
         setThemeText((book.theme ?? []).join(", "));
       } catch (e: any) {
         if (!mounted) return;
-        toast.error(e?.message ?? "No se pudo cargar el libro");
+        toast.error(e?.message ?? "No se pudo cargar la obra");
         navigate("/admin/books");
       } finally {
         if (!mounted) return;
@@ -144,10 +144,10 @@ export default function AdminBooksEdit() {
       };
 
       await adminUpdateBook(id, payload, token);
-      toast.success("Libro actualizado correctamente");
+      toast.success("Obra actualizada correctamente");
       navigate("/admin/books");
     } catch (err: any) {
-      toast.error(err?.message ?? "Error al actualizar el libro");
+      toast.error(err?.message ?? "Error al actualizar la obra");
     } finally {
       setSaving(false);
     }
@@ -158,7 +158,7 @@ export default function AdminBooksEdit() {
       <div className="flex items-center justify-center py-12">
         <div className="text-center">
           <div className="w-8 h-8 border-2 border-orange-500 border-t-transparent rounded-full animate-spin mx-auto mb-4"></div>
-          <p className="text-gray-600">Cargando libro...</p>
+          <p className="text-gray-600">Cargando obra...</p>
         </div>
       </div>
     );
@@ -173,10 +173,10 @@ export default function AdminBooksEdit() {
           </div>
           <div>
             <h2 className="text-xl md:text-2xl font-bold text-gray-900">
-              Editar Libro
+              Editar Obra
             </h2>
             <p className="text-sm md:text-base text-gray-600">
-              Modifica la información del libro
+              Modifica la información de la obra
             </p>
           </div>
         </div>
@@ -564,7 +564,7 @@ export default function AdminBooksEdit() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Archivo del libro (opcional)
+                  Archivo de la obra (opcional)
                 </label>
                 <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-orange-300 transition-colors">
                   <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />

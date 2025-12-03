@@ -30,8 +30,8 @@ const ImprovedFiltersBar: React.FC<Props> = ({
 
   const aiPlaceholders = [
     "Descubrí cuentos de escritores formoseños...",
-    "Encuentra poemas, cuentos, audiolibros...",
-    "Libros sobre la historia y cultura de Formosa...",
+    "Encontrá poemas, cuentos, audiolibros...",
+    "Obras sobre la historia y cultura de Formosa...",
     "Cuentos infantiles de escritores locales...",
   ];
 
@@ -268,7 +268,7 @@ const ImprovedFiltersBar: React.FC<Props> = ({
                 className="w-4 h-4 text-orange-500 bg-white border-gray-300 rounded focus:ring-orange-500 cursor-pointer"
               />
               <span className="text-sm font-medium text-gray-700 group-hover:text-orange-600 transition-colors">
-                Ver Antologías completa
+                Ver Antologías completas
               </span>
             </label>
           </div>

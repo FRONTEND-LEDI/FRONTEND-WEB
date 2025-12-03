@@ -65,7 +65,7 @@ export default function AdminAvatarsEdit() {
 
   const onSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    if (!gender) return toast.error("Selecciona un género");
+    if (!gender) return toast.error("Seleccioná un género");
 
     setSaving(true);
 
@@ -95,7 +95,7 @@ export default function AdminAvatarsEdit() {
           </div>
           <div>
             <h2 className="text-2xl font-bold text-gray-900">Editar Avatar</h2>
-            <p className="text-gray-600">Modifica la información del avatar</p>
+            <p className="text-gray-600">Modificá la información del avatar</p>
           </div>
         </div>
       </div>

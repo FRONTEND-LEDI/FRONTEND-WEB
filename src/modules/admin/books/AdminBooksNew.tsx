@@ -91,7 +91,7 @@ export default function AdminBooksNew() {
         return toast.error("Completá la extensión");
 
       if (!imgFile || !bookFile)
-        return toast.error("Falta seleccionar imagen y archivo del libro.");
+        return toast.error("Falta seleccionar imagen y archivo de la obra.");
 
       setLoading(true);
 
@@ -104,10 +104,10 @@ export default function AdminBooksNew() {
       };
 
       await adminCreateBook(payload, token);
-      toast.success("Libro creado correctamente");
+      toast.success("Obra cargada correctamente");
       navigate("/admin/books");
     } catch (err: any) {
-      toast.error(err?.message ?? "Error al crear libro");
+      toast.error(err?.message ?? "Error al crear la obra");
     } finally {
       setLoading(false);
     }
@@ -122,10 +122,10 @@ export default function AdminBooksNew() {
           </div>
           <div>
             <h2 className="text-xl md:text-2xl font-bold text-gray-900">
-              Crear Nuevo Libro
+              Crear una Nuevo Obra
             </h2>
             <p className="text-sm md:text-base text-gray-600">
-              Agrega un libro al catálogo de Tintas Formoseñas
+              Agrega una obra al catálogo de Tintas Formoseñas.
             </p>
           </div>
         </div>
@@ -146,7 +146,7 @@ export default function AdminBooksNew() {
                 </label>
                 <input
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all"
-                  placeholder="Ingresa el título del libro"
+                  placeholder="Ingresa el título de la obra"
                   value={form.title}
                   onChange={(e) => set("title", e.target.value)}
                 />
@@ -491,7 +491,7 @@ export default function AdminBooksNew() {
                 <textarea
                   className="w-full px-4 py-3 border border-gray-200 rounded-lg focus:ring-2 focus:ring-orange-500 focus:border-transparent transition-all resize-none"
                   rows={3}
-                  placeholder="Breve resumen del libro..."
+                  placeholder="Breve resumen de la obra..."
                   value={form.summary}
                   onChange={(e) => set("summary", e.target.value)}
                 />
@@ -545,7 +545,7 @@ export default function AdminBooksNew() {
 
               <div className="space-y-2">
                 <label className="text-sm font-medium text-gray-700">
-                  Archivo del libro *
+                  Archivo de la obra *
                 </label>
                 <div className="border-2 border-dashed border-gray-200 rounded-lg p-6 text-center hover:border-orange-300 transition-colors">
                   <Upload className="w-8 h-8 text-gray-400 mx-auto mb-2" />
@@ -576,7 +576,7 @@ export default function AdminBooksNew() {
               className="w-full sm:w-auto flex items-center justify-center gap-2 bg-gradient-to-r from-orange-500 to-amber-500 text-white px-8 py-3 rounded-lg hover:from-orange-600 hover:to-amber-600 transition-all shadow-sm hover:shadow-md disabled:opacity-50 disabled:cursor-not-allowed"
             >
               <Save className="w-4 h-4" />
-              {loading ? "Creando..." : "Crear Libro"}
+              {loading ? "Subiendo..." : "Subir Obra"}
             </button>
             <button
               type="button"

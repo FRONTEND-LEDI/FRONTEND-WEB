@@ -29,13 +29,13 @@ export default function Test() {
   const [selectedAvatar, setSelectedAvatar] = useState<string>("");
 
   const dialog: DialogProps[] = [
-    { dialog: "Hola, soy tu bibliotecario virtual personal!" },
+    { dialog: "¡Hola, soy tu bibliotecario virtual personal!" },
     {
       dialog:
         "Si gustás, te realizaré una serie de preguntas que me ayudarán a conocerte y seleccionar la mejor lectura para vos.",
     },
-    { dialog: "Elegí al menos 3 opciones de tus temas favorito" },
-    { dialog: "Elegí al menos 3 opciones de tu formato de libro favorito" },
+    { dialog: "Elegí al menos 3 opciones de tus temas favoritos" },
+    { dialog: "Elegí al menos 1 opción de tu formato de libro favorito" },
     { dialog: "¡Elegí tu avatar!" },
   ];
 
