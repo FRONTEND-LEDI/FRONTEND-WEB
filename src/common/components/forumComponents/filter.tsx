@@ -1,4 +1,4 @@
-import type { Foro, Comment, ForoExtendido } from "../../../types/forum";
+import type { Comment, ForoExtendido } from "../../../types/forum";
 import { UsersRound } from "lucide-react";
 
 type FilterProps = {
@@ -17,16 +17,20 @@ const contarRecursivo = (posts: Comment[]): number => {
 };
 
 const contarComentariosPorForo = (foroId: string, comentarios: Comment[]) => {
-  const posts = comentarios.filter(
-    (c) => c.idForo === foroId || c.idForo?._id === foroId
-  );
+  const posts = comentarios.filter((c) => {
+    const cForoId =
+      typeof c.idForo === "object" ? (c.idForo as any)?._id : c.idForo;
+    return cForoId === foroId;
+  });
   return contarRecursivo(posts);
 };
 
 const ultimaActividadPorForo = (foroId: string, comentarios: Comment[]) => {
-  const posts = comentarios.filter(
-    (c) => c.idForo === foroId || c.idForo?._id === foroId
-  );
+  const posts = comentarios.filter((c) => {
+    const cForoId =
+      typeof c.idForo === "object" ? (c.idForo as any)?._id : c.idForo;
+    return cForoId === foroId;
+  });
 
   if (!posts.length) return "Sin actividad";
 

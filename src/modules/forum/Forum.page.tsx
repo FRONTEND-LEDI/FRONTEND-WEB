@@ -1,5 +1,4 @@
-"use client";
-import { useState, useEffect, useMemo, useCallback } from "react";
+import { useState, useEffect, useMemo, useCallback, useRef } from "react";
 import FilterForum from "../../common/components/forumComponents/filter";
 import Popular from "../../common/components/forumComponents/mostPopular";
 import SearchingBar from "../../common/components/forumComponents/searchBar";
@@ -15,6 +14,7 @@ import Box from "@mui/material/Box";
 import AsideNotificaciones from "../../common/components/forumComponents/noticias";
 export default function ForumPage() {
   const { user, token } = useAuth();
+  const listenersSetupRef = useRef(false);
 
   const [comentarios, setComentarios] = useState<Comment[]>([]);
   const [foros, setForos] = useState<ForoExtendido[]>([]);
@@ -25,205 +25,252 @@ export default function ForumPage() {
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
 
-  /* ----------------------- SOCKET INIT ----------------------- */
+  /* ========================= SETUP COMPLETO DE SOCKET Y LISTENERS ========================= */
   useEffect(() => {
-    if (!token) return;
+    if (!token) {
+      console.log("Sin token, no inicializando socket");
+      return;
+    }
 
-    const socket = initSocket(token);
-    setSocketConnected(socket.connected);
+    let isComponentMounted = true;
 
-    const handleConnect = () => {
-      console.log("Socket conectado, NO emitiendo get-all-foros aún");
-      setSocketConnected(true);
-      // NO emitir aquí - esperar a que se carguen los comentarios primero
+    const setupAndConnect = () => {
+      if (!isComponentMounted) return;
+
+      console.log("🔧 Configurando todos los listeners");
+
+      const initializedSocket = initSocket(token);
+
+      /* -------- CONEXIÓN -------- */
+      const handleConnect = () => {
+        console.log("Socket conectado:", initializedSocket.id);
+        if (isComponentMounted) setSocketConnected(true);
+      };
+
+      const handleDisconnect = () => {
+        console.log(" Socket desconectado");
+        if (isComponentMounted) setSocketConnected(false);
+      };
+
+      const handleConnectError = (error: any) => {
+        console.error("Error de conexión:", error);
+        if (isComponentMounted) setSocketConnected(false);
+      };
+
+      /* -------- COMENTARIOS GLOBALES -------- */
+      const handleComents = (data: Comment[]) => {
+        if (!isComponentMounted) return;
+        console.log("Recibidos comentarios:", data.length);
+
+        const normalized = data.map((c) => {
+          const foroId =
+            typeof c.idForo === "object" && c.idForo
+              ? (c.idForo as any)?._id
+              : c.idForo;
+          return {
+            ...c,
+            idForo: foroId as string,
+          };
+        });
+
+        setComentarios((prev) => {
+          const newCommentMap = new Map(normalized.map((c) => [c._id, c]));
+          const actualizados = prev.map((c) => {
+            return newCommentMap.has(c._id) ? newCommentMap.get(c._id)! : c;
+          });
+
+          normalized.forEach((nc) => {
+            if (!prev.some((c) => c._id === nc._id)) {
+              actualizados.push(nc);
+            }
+          });
+
+          return actualizados.length > 0 ? actualizados : normalized;
+        });
+      };
+
+      /* -------- FOROS -------- */
+      const handleAllForos = (data: Foro[]) => {
+        if (!isComponentMounted) return;
+        console.log("📥 Recibidos foros:", data.length);
+
+        if (!Array.isArray(data)) {
+          console.warn("⚠️ Foros data no es un array");
+          return;
+        }
+
+        // Obtener comentarios actuales del estado
+        setComentarios((currentComentarios) => {
+          const extendidos = data.map((f) => {
+            const relacionados = currentComentarios.filter(
+              (c) => c.idForo === f._id
+            );
+            return {
+              ...f,
+              posts: relacionados,
+              comentarios: relacionados,
+            };
+          });
+
+          console.log("Foros asociados:", extendidos.length);
+          setForos(extendidos);
+          return currentComentarios;
+        });
+      };
+
+      /* -------- COMENTARIOS ESPECÍFICOS DEL FORO -------- */
+      const handleComentsForo = (data: Comment[]) => {
+        if (!isComponentMounted) return;
+        console.log("Recibidos comentarios del foro:", data.length);
+
+        const normalizados = data.map((c) => {
+          const foroId =
+            typeof c.idForo === "object" && c.idForo
+              ? (c.idForo as any)?._id
+              : c.idForo;
+          return {
+            ...c,
+            idForo: foroId as string,
+          };
+        });
+
+        setForos((prev) =>
+          prev.map((f) => {
+            const foroId =
+              normalizados.length > 0 ? normalizados[0].idForo : null;
+            if (f._id === foroId) {
+              return {
+                ...f,
+                posts: normalizados,
+                comentarios: normalizados,
+              };
+            }
+            return f;
+          })
+        );
+
+        if (isComponentMounted) setLoading(false);
+      };
+
+      /* -------- ACTUALIZACIÓN DE COMENTARIOS -------- */
+      const handleUpdateComents = (data: Comment[]) => {
+        if (!isComponentMounted) return;
+        console.log("Comentarios actualizados:", data.length);
+
+        const normalized = data.map((c) => {
+          const foroId =
+            typeof c.idForo === "object" && c.idForo
+              ? (c.idForo as any)?._id
+              : c.idForo;
+          return {
+            ...c,
+            idForo: foroId as string,
+          };
+        });
+
+        setComentarios(normalized);
+        setForos((prev) =>
+          prev.map((f) => {
+            const nuevosComentarios = normalized.filter(
+              (c) => c.idForo === f._id
+            );
+            return {
+              ...f,
+              posts: nuevosComentarios,
+              comentarios: nuevosComentarios,
+            };
+          })
+        );
+      };
+
+      /* -------- ELIMINACIÓN DE COMENTARIOS -------- */
+      const handleDeleteComents = (data: Comment[]) => {
+        if (!isComponentMounted) return;
+        console.log("Comentarios después de eliminación:", data.length);
+
+        const normalized = data.map((c) => {
+          const foroId =
+            typeof c.idForo === "object" && c.idForo
+              ? (c.idForo as any)?._id
+              : c.idForo;
+          return {
+            ...c,
+            idForo: foroId as string,
+          };
+        });
+
+        setComentarios(normalized);
+        setForos((prev) =>
+          prev.map((f) => {
+            const comentariosRestantes = normalized.filter(
+              (c) => c.idForo === f._id
+            );
+            return {
+              ...f,
+              posts: comentariosRestantes,
+              comentarios: comentariosRestantes,
+            };
+          })
+        );
+      };
+
+      /* -------- REGISTRAR TODOS LOS LISTENERS -------- */
+      initializedSocket.on("connect", handleConnect);
+      initializedSocket.on("disconnect", handleDisconnect);
+      initializedSocket.on("connect_error", handleConnectError);
+      initializedSocket.on("coments", handleComents);
+      initializedSocket.on("all-foros", handleAllForos);
+      initializedSocket.on("coments-in-the-foro", handleComentsForo);
+      initializedSocket.on("update", handleUpdateComents);
+      initializedSocket.on("Delete", handleDeleteComents);
+
+      if (initializedSocket.connected) handleConnect();
+
+      /* -------- CLEANUP -------- */
+      return () => {
+        console.log("🧹 Limpiando listeners");
+        initializedSocket.off("connect", handleConnect);
+        initializedSocket.off("disconnect", handleDisconnect);
+        initializedSocket.off("connect_error", handleConnectError);
+        initializedSocket.off("coments", handleComents);
+        initializedSocket.off("all-foros", handleAllForos);
+        initializedSocket.off("coments-in-the-foro", handleComentsForo);
+        initializedSocket.off("update", handleUpdateComents);
+        initializedSocket.off("Delete", handleDeleteComents);
+      };
     };
 
-    socket.on("connect", handleConnect);
-    socket.on("disconnect", () => {
-      console.log("Socket desconectado");
-      setSocketConnected(false);
-    });
-    socket.on("connect_error", (error) => {
-      console.error("Error de conexión:", error);
-      setSocketConnected(false);
-    });
-
-    if (socket.connected) handleConnect();
+    const cleanup = setupAndConnect();
 
     return () => {
-      socket.off("connect", handleConnect);
-      socket.off("disconnect");
-      socket.off("connect_error");
+      isComponentMounted = false;
+      cleanup?.();
     };
   }, [token]);
 
-  /* ----------------------- SOLICITAR FOROS UNA VEZ CARGADOS LOS COMENTARIOS ----------------------- */
+  /* -------- SOLICITAR FOROS UNA VEZ CARGADOS LOS COMENTARIOS -------- */
   useEffect(() => {
     if (comentarios.length === 0) {
-      console.log("Esperando comentarios antes de pedir foros...");
+      console.log("Esperando comentarios...");
       return;
     }
 
     const socket = getSocket();
-    if (!socket) {
-      console.warn("Socket no disponible");
+    if (!socket || !socket.connected) {
+      console.warn("Socket no disponible o desconectado");
       return;
     }
 
-    console.log(
-      `Comentarios cargados (${comentarios.length}), ahora emitiendo get-all-foros`
-    );
+    console.log(`Emitiendo get-all-foros (comentarios: ${comentarios.length})`);
     socket.emit("get-all-foros");
   }, [comentarios.length]);
 
-  /* -------------- RECIBIR COMENTARIOS GLOBALES Y NORMALIZAR ---------------- */
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket) {
-      console.warn("Socket no disponible");
-      return;
-    }
-
-    console.log("Registrando listener coments");
-
-    const handleComents = (data: Comment[]) => {
-      console.log("Recibidos comentarios RAW:", data);
-      const normalized = data.map((c) => {
-        const foroId =
-          typeof c.idForo === "object" && c.idForo
-            ? (c.idForo as any)?._id
-            : c.idForo;
-        console.log(
-          `Comentario ${c._id}: idForo type=${typeof c.idForo}, value=`,
-          c.idForo,
-          "→ normalized=",
-          foroId
-        );
-        return {
-          ...c,
-          idForo: foroId as string,
-        };
-      });
-
-      console.log("Comentarios normalizados:", normalized);
-      setComentarios(normalized);
-    };
-
-    socket.on("coments", handleComents);
-
-    return () => {
-      console.log("Limpiando listener coments");
-      socket.off("coments", handleComents);
-    };
-  }, []);
-
-  /* -------------- ASOCIAR COMENTARIOS A FOROS CUANDO AMBOS ESTÉN LISTOS ---------------- */
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket) {
-      console.warn("Socket no disponible");
-      return;
-    }
-
-    console.log("Registrando listeners para all-foros");
-
-    const handleAllForos = (data: Foro[]) => {
-      console.log("Recibidos foros RAW:", data);
-      if (!Array.isArray(data)) {
-        console.warn(" all-foros data no es un array:", data);
-        return;
-      }
-
-      console.log(
-        `Intentando asociar ${comentarios.length} comentarios a ${data.length} foros`
-      );
-
-      // EXTENDER FOROS → agregar posts + comentarios basado en comentarios ACTUALIZADOS
-      const extendidos = data.map((f) => {
-        const relacionados = comentarios.filter((c) => {
-          const cForoId = c.idForo; // Ya está normalizado
-          const match = cForoId === f._id;
-          if (match) {
-            console.log(`Comentario ${c._id} pertenece a foro ${f._id}`);
-          }
-          return match;
-        });
-
-        console.log(
-          `Foro "${f.title}" (${f._id}): ${relacionados.length} comentarios`
-        );
-        return {
-          ...f,
-          posts: relacionados,
-          comentarios: relacionados,
-        };
-      });
-
-      console.log("Foros extendidos finales:", extendidos);
-      setForos(extendidos);
-    };
-
-    socket.on("all-foros", handleAllForos);
-
-    return () => {
-      console.log("Limpiando listener all-foros");
-      socket.off("all-foros", handleAllForos);
-    };
-  }, [comentarios]);
-
-  /* ------------ COMENTARIOS ESPECÍFICOS DE UN FORO ---------------- */
-  useEffect(() => {
-    const socket = getSocket();
-    if (!socket) return;
-
-    console.log("Registrando listener coments-in-the-foro");
-
-    const handleComentsForo = (data: Comment[]) => {
-      console.log("Recibidos comentarios del foro:", data);
-      const normalizados = data.map((c) => {
-        const foroId =
-          typeof c.idForo === "object" && c.idForo
-            ? (c.idForo as any)?._id
-            : c.idForo;
-        return {
-          ...c,
-          idForo: foroId as string,
-        };
-      });
-
-      console.log("Comentarios normalizados del foro:", normalizados);
-
-      setForos((prev) =>
-        prev.map((f) => {
-          // Usar el ID del primer comentario como referencia del foro
-          const foroId =
-            normalizados.length > 0 ? normalizados[0].idForo : null;
-
-          if (f._id === foroId) {
-            console.log("Actualizando posts del foro:", f._id);
-            return {
-              ...f,
-              posts: normalizados,
-              comentarios: normalizados,
-            };
-          }
-          return f;
-        })
-      );
-      setLoading(false);
-    };
-
-    socket.on("coments-in-the-foro", handleComentsForo);
-
-    return () => {
-      console.log("Limpiando listener coments-in-the-foro");
-      socket.off("coments-in-the-foro", handleComentsForo);
-    };
-  }, []);
-
   /* ------------------------ CARGAR POSTS DEL FORO SELECCIONADO ------------------------ */
   useEffect(() => {
-    if (!foroSeleccionado?._id) return;
+    if (!foroSeleccionado?._id) {
+      setLoading(false);
+      return;
+    }
 
     const socket = getSocket();
     if (!socket?.connected) {
@@ -231,6 +278,7 @@ export default function ForumPage() {
         "Socket no conectado para cargar foro:",
         foroSeleccionado?._id
       );
+      setLoading(false);
       return;
     }
 
@@ -242,12 +290,123 @@ export default function ForumPage() {
     const timeout = setTimeout(() => {
       console.warn("⏱Timeout cargando posts del foro");
       setLoading(false);
-    }, 10000);
+    }, 5000);
 
     return () => clearTimeout(timeout);
   }, [foroSeleccionado?._id]);
 
-  /* ------------------------ AGREGAR POST ------------------------ */
+  /* ------------------------ AGREGAR RESPUESTA A COMENTARIO ------------------------ */
+  const agregarComentario = useCallback(
+    (postId: string, contenido: string) => {
+      if (!foroSeleccionado || !user) {
+        console.warn("Foro o usuario no disponibles para responder");
+        return;
+      }
+
+      const socket = getSocket();
+      if (!socket?.connected) {
+        console.warn("Socket no conectado para responder");
+        return;
+      }
+
+      console.log("Emitiendo respuesta al post:", {
+        postId,
+        foroId: foroSeleccionado._id,
+      });
+
+      socket.emit("create-answer", postId, {
+        content: contenido,
+        idForo: foroSeleccionado._id,
+        idUser: user.id,
+        idComent: postId,
+      });
+    },
+    [foroSeleccionado, user]
+  );
+
+  /* ------------------------ EDITAR COMENTARIO/POST ------------------------ */
+  const editarPost = useCallback(
+    (postId: string, contenido: string) => {
+      if (!user || !foroSeleccionado) {
+        console.warn("Usuario o foro no disponible para editar post");
+        return;
+      }
+
+      const socket = getSocket();
+      if (!socket?.connected) {
+        console.warn("Socket no conectado para editar post");
+        return;
+      }
+
+      console.log("Emitiendo edición de post:", postId);
+
+      // Actualizar estado local inmediatamente
+      setForos((prev) =>
+        prev.map((f) => {
+          if (f._id === foroSeleccionado._id) {
+            return {
+              ...f,
+              posts: f.posts.map((p) =>
+                p._id === postId ? { ...p, content: contenido } : p
+              ),
+              comentarios: f.comentarios.map((c) =>
+                c._id === postId ? { ...c, content: contenido } : c
+              ),
+            };
+          }
+          return f;
+        })
+      );
+
+      // Actualizar comentarios globales
+      setComentarios((prev) =>
+        prev.map((c) => (c._id === postId ? { ...c, content: contenido } : c))
+      );
+
+      socket.emit("update-coment", postId, {
+        content: contenido,
+      });
+    },
+    [user, foroSeleccionado]
+  );
+
+  /* ------------------------ ELIMINAR COMENTARIO/POST ------------------------ */
+  const eliminarPost = useCallback(
+    (postId: string) => {
+      if (!user || !foroSeleccionado) {
+        console.warn("Usuario o foro no disponible para eliminar post");
+        return;
+      }
+
+      const socket = getSocket();
+      if (!socket?.connected) {
+        console.warn("Socket no conectado para eliminar post");
+        return;
+      }
+
+      console.log("Emitiendo eliminación de post:", postId);
+
+      // Actualizar estado local inmediatamente (optimistic update)
+      setForos((prev) =>
+        prev.map((f) => {
+          if (f._id === foroSeleccionado._id) {
+            return {
+              ...f,
+              posts: f.posts.filter((p) => p._id !== postId),
+              comentarios: f.comentarios.filter((c) => c._id !== postId),
+            };
+          }
+          return f;
+        })
+      );
+
+      // Actualizar comentarios globales
+      setComentarios((prev) => prev.filter((c) => c._id !== postId));
+
+      socket.emit("delete-coment", postId);
+    },
+    [user, foroSeleccionado]
+  );
   const agregarPost = useCallback(
     (contenido: string) => {
       if (!foroSeleccionado || !user) {
@@ -266,6 +425,29 @@ export default function ForumPage() {
         userId: user.id,
       });
 
+      // Crear post local inmediatamente
+      const nuevoPost: Comment = {
+        _id: `temp-${Date.now()}`,
+        content: contenido,
+        idForo: foroSeleccionado._id,
+        idUser: user as any,
+        createdAt: new Date().toISOString(),
+      };
+
+      // Actualizar estado local inmediatamente
+      setForos((prev) =>
+        prev.map((f) =>
+          f._id === foroSeleccionado._id
+            ? {
+                ...f,
+                posts: [...f.posts, nuevoPost],
+                comentarios: [...f.comentarios, nuevoPost],
+              }
+            : f
+        )
+      );
+
+      // Emitir al servidor
       socket.emit("new-public", {
         content: contenido,
         idForo: foroSeleccionado._id,
@@ -402,7 +584,13 @@ export default function ForumPage() {
             ) : postsFiltrados.length === 0 ? (
               <p className="text-center text-gray-500">No hay posts aún</p>
             ) : (
-              <Popular posts={postsFiltrados} agregarComentario={() => {}} />
+              <Popular
+                posts={postsFiltrados}
+                agregarComentario={agregarComentario}
+                editarPost={editarPost}
+                eliminarPost={eliminarPost}
+                usuarioActual={user}
+              />
             )}
           </>
         )}
