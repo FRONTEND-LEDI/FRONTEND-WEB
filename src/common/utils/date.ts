@@ -35,6 +35,20 @@ export function formatDateAvoidTimezone(dateString?: string, locale = "es-AR") {
 
 export default formatDateAvoidTimezone;
 
+// Formatea la fecha como tiempo relativo (hace X minutos, hace X horas, etc.)
+export function formatearTiempoRelativo(fechaISO: string): string {
+  if (!fechaISO) return "Fecha desconocida";
+
+  const fecha = new Date(fechaISO);
+  const diferencia = (Date.now() - fecha.getTime()) / 1000;
+
+  if (diferencia < 60) return "Hace unos segundos";
+  if (diferencia < 3600) return `Hace ${Math.floor(diferencia / 60)} min`;
+  if (diferencia < 86400) return `Hace ${Math.floor(diferencia / 3600)} horas`;
+  if (diferencia < 172800) return "Hace 1 día";
+  return `Hace ${Math.floor(diferencia / 86400)} días`;
+}
+
 // Devuelve un valor seguro `YYYY-MM-DD` para usar en `<input type="date" />`.
 export function toDateInputValue(dateString?: string): string {
   if (!dateString) return "";

@@ -2,6 +2,7 @@ import { useState } from "react";
 import type { Comment } from "../../../types/forum";
 import type { FullUser } from "../../../types/user";
 import { MessageCircle, Trash2, Edit2, Check, X } from "lucide-react";
+import { formatearTiempoRelativo } from "../../utils/date";
 
 interface PopularProps {
   posts: Comment[];
@@ -141,7 +142,7 @@ export default function Popular({
                     <div className="flex items-center gap-2">
                       <p className="text-xs text-gray-500">
                         {post.createdAt
-                          ? new Date(post.createdAt).toLocaleString("es-ES")
+                          ? formatearTiempoRelativo(post.createdAt)
                           : "Sin fecha"}
                       </p>
 
@@ -245,34 +246,77 @@ export default function Popular({
 
                   {/* RESPUESTAS */}
                   {respuestas.length > 0 && (
-                    <div className="mt-2 space-y-3 border-l border-primary pl-8">
+                    <div className="mt-2 space-y-3 border-l-2 border-primary pl-4">
                       {respuestas.map((resp) => {
                         const respIsOwner = esOwner(resp);
+                        const respInitials = getInitials(resp.idUser);
                         return (
                           <div
                             key={resp._id}
-                            className="bg-gray-100 p-3 rounded-md relative"
+                            className="bg-gray-50 p-3 rounded-lg relative"
                           >
-                            <div className="flex justify-between items-start mb-1">
-                              <p className="font-bold text-sm">
-                                {(resp.idUser as any)?.userName}
-                              </p>
-                              {respIsOwner && (
-                                <div className="flex gap-1">
-                                  <button
-                                    onClick={() => eliminarPost(resp._id)}
-                                    className="p-1 hover:bg-gray-200 rounded"
-                                    title="Eliminar"
-                                  >
-                                    <Trash2
-                                      size={14}
-                                      className="text-red-500"
-                                    />
-                                  </button>
+                            {/* HEADER DE RESPUESTA */}
+                            <div className="flex items-center gap-3 mb-2">
+                              {/* AVATAR + MARCO */}
+                              <div className="relative w-10 h-10 flex items-center justify-center flex-shrink-0">
+                                {/* Marco por nivel */}
+                                {(resp.idUser as any)?.imgLevel && (
+                                  <img
+                                    src={(resp.idUser as any).imgLevel}
+                                    alt="Marco"
+                                    className="absolute w-12 h-12 object-contain pointer-events-none"
+                                  />
+                                )}
+
+                                {/* Avatar o iniciales */}
+                                {(resp.idUser as any)?.avatar ? (
+                                  <img
+                                    src={(resp.idUser as any).avatar}
+                                    alt="Avatar"
+                                    className="w-8 h-8 rounded-full object-cover border-2 border-primary"
+                                  />
+                                ) : (
+                                  <div className="w-8 h-8 rounded-full bg-primary text-white flex items-center justify-center font-bold text-xs">
+                                    {respInitials}
+                                  </div>
+                                )}
+                              </div>
+
+                              <div className="flex flex-col flex-1">
+                                <div className="flex justify-between items-center">
+                                  <p className="font-bold text-sm">
+                                    {(resp.idUser as any)?.userName}
+                                  </p>
+
+                                  <div className="flex items-center gap-2">
+                                    <p className="text-xs text-gray-500">
+                                      {resp.createdAt
+                                        ? formatearTiempoRelativo(
+                                            resp.createdAt
+                                          )
+                                        : "Sin fecha"}
+                                    </p>
+
+                                    {/* BOTÓN DE ELIMINAR */}
+                                    {respIsOwner && (
+                                      <button
+                                        onClick={() => eliminarPost(resp._id)}
+                                        className="p-1 hover:bg-gray-200 rounded"
+                                        title="Eliminar"
+                                      >
+                                        <Trash2
+                                          size={14}
+                                          className="text-red-500"
+                                        />
+                                      </button>
+                                    )}
+                                  </div>
                                 </div>
-                              )}
+                              </div>
                             </div>
-                            <p className="text-gray-700 whitespace-pre-wrap text-sm">
+
+                            {/* CONTENIDO DE LA RESPUESTA */}
+                            <p className="text-gray-700 whitespace-pre-wrap text-sm ml-13">
                               {resp.content}
                             </p>
                           </div>
