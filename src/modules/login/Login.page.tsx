@@ -76,7 +76,7 @@ const LoginPage = () => {
       await saveSession(token);
 
       setSuccess("Inicio de sesión exitoso");
-      toast.success("¡Bienvenido de nuevo a Tinta Nativa!");
+      toast.success("¡Bienvenido de nuevo a Tintas Formoseñas!");
       resetForm();
 
       // Limpiar returnTo después de usar lo (evita que se reutilice en próximos logouts)
