@@ -11,13 +11,13 @@ export default function Herolanding() {
       <div className="hero-overlay"></div>
 <div className="relative w-full  h-full">
   <div className="absolute inset-0 bg-black/20 " />
-  <div className="relative z-10"></div>
+
       <div className="hero-content mt-24 text-neutral-content text-center">
-        <div className="max-w-md ml-50 flex justify-center flex-col items-center">
-          <h1 className="text-3xl karaoke md:text-5xl font-bold p-6 text-white ">
+        <div className="max-w-md  flex justify-center flex-col items-center">
+          <h1 className="text-3xl karaoke md:text-5xl font-bold p-4 text-white ">
             Bienvenido
           </h1>
-          <p className="text-lg karaoke text-white md:text-xl px-2 py-2 rounded max-w-2xl">
+          <p className="text-lg karaoke text-white md:text-xl px-2 py-2  max-w-4xl">
             Una biblioteca virtual que resguarda y difunde las antologías
             literarias de los empleados públicos de la provincia de Formosa.
           </p>
@@ -26,7 +26,7 @@ export default function Herolanding() {
             alt="Aguará Guazú"
             className="w-50 h-80  object-contain  drop-shadow-lg  "
           />
-          <div className="mt-6 flex gap-4">
+          <div className=" flex gap-4">
           
     <RouteLink
       to="/register"

@@ -9,7 +9,7 @@ export async function createYourHistory(bookId: string, gamble: Gamble, token?: 
     throw new Error("Token de autenticación requerido");
   }
   
-  const res = await fetch(`${URL}/createYourHistory/${bookId}`, {  // ✅ Corregido: paréntesis normales
+  const res = await fetch(`${URL}/createYourHistory/${bookId}`, {  
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -20,7 +20,7 @@ export async function createYourHistory(bookId: string, gamble: Gamble, token?: 
   
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Error en createYourHistory: ${res.status} - ${text}`); // ✅ Corregido: paréntesis normales
+    throw new Error(`Error en createYourHistory: ${res.status} - ${text}`);
   }
   
   return res.json();
@@ -32,7 +32,7 @@ export async function submitQuiz(bookId: string, quiz: Quiz, token?: string) {
     throw new Error("Token de autenticación requerido");
   }
   
-  const res = await fetch(`${URL}/quiz/${bookId}`, {  // ✅ Corregido: paréntesis normales
+  const res = await fetch(`${URL}/quiz/${bookId}`, {  
     method: "POST",
     headers: {
       "Content-Type": "application/json",
@@ -43,7 +43,7 @@ export async function submitQuiz(bookId: string, quiz: Quiz, token?: string) {
   
   if (!res.ok) {
     const text = await res.text();
-    throw new Error(`Error en submitQuiz: ${res.status} - ${text}`); // ✅ Corregido: paréntesis normales
+    throw new Error(`Error en submitQuiz: ${res.status} - ${text}`); 
   }
   
   return res.json();
