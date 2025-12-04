@@ -32,6 +32,9 @@ import { Quiz } from "../common/components/games/Preguntados";
 import AdminAvatarsList from "../modules/admin/avatars/AdminAvatarsList";
 import AdminAvatarsNew from "../modules/admin/avatars/AdminAvatarsNew";
 import AdminAvatarsEdit from "../modules/admin/avatars/AdminAvatarsEdit";
+import AdminNewsList from "../modules/admin/news/AdminNewsList";
+import AdminNewsNew from "../modules/admin/news/AdminNewsNew";
+import AdminNewsEdit from "../modules/admin/news/AdminNewsEdit";
 import MetricsPage from "../modules/admin/metrics/MetricsPage";
 
 const AppRouter = () => {
@@ -155,14 +158,16 @@ const AppRouter = () => {
                 component={AdminAuthorsEdit}
               />
               <Route path="/admin/metrics" component={MetricsPage} />
-              <Route>
-                <Route path="/admin/avatars" component={AdminAvatarsList} />
-                <Route path="/admin/avatars/new" component={AdminAvatarsNew} />
-                <Route
-                  path="/admin/avatars/:id/edit"
-                  component={AdminAvatarsEdit}
-                />
-              </Route>
+              <Route path="/admin/avatars" component={AdminAvatarsList} />
+              <Route path="/admin/avatars/new" component={AdminAvatarsNew} />
+              <Route
+                path="/admin/avatars/:id/edit"
+                component={AdminAvatarsEdit}
+              />
+              {/* Sección Noticias */}
+              <Route path="/admin/news" component={AdminNewsList} />
+              <Route path="/admin/news/new" component={AdminNewsNew} />
+              <Route path="/admin/news/:id/edit" component={AdminNewsEdit} />
               <AdminNotFound />
             </Switch>
           </AdminLayout>

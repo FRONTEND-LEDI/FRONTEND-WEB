@@ -121,6 +121,7 @@ export default function AdminLayout({
                 Noticias
               </span>
             </Link>
+
             {/*/ Sección Avatares*/}
             <Link
               href="/admin/avatars"
