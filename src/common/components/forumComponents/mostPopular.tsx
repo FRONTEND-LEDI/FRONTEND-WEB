@@ -66,7 +66,8 @@ export default function Popular({
     if (texto?.trim()) {
       agregarComentario(postId, texto);
       setComentarios((prev) => ({ ...prev, [postId]: "" }));
-      setOpenInput((prev) => ({ ...prev, [postId]: false }));
+      // Ya no cerramos el input después de enviar
+      // setOpenInput((prev) => ({ ...prev, [postId]: false }));
     }
   };
 
