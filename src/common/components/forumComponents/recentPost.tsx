@@ -4,16 +4,22 @@ import { formatearTiempoRelativo } from "../../utils/date";
 
 type ForumOverviewProps = {
   foros: ForoExtendido[];
+  isLoading?: boolean;
 };
 
-export default function ForumOverview({ foros }: ForumOverviewProps) {
+export default function ForumOverview({
+  foros,
+  isLoading = false,
+}: ForumOverviewProps) {
   // 🔹 Convertir todos los posts de todos los foros en una sola lista
   const todosLosPosts: (Comment & { foroTitle: string })[] = foros.flatMap(
-    (foro) =>
-      (foro.posts ?? []).map((post) => ({
+    (foro) => {
+      console.log(`📊 Foro "${foro.title}":`, foro.posts?.length || 0, "posts");
+      return (foro.posts ?? []).map((post) => ({
         ...post,
         foroTitle: foro.title,
-      }))
+      }));
+    }
   );
 
   // 🔹 Ordenar por fecha (más recientes primero)
@@ -102,9 +108,13 @@ export default function ForumOverview({ foros }: ForumOverviewProps) {
               );
             })}
           </div>
-        ) : (
+        ) : isLoading ? (
           <div className="flex justify-center py-10">
             <div className="animate-spin rounded-full h-10 w-10 border-4 border-yellow-400 border-t-transparent"></div>
+          </div>
+        ) : (
+          <div className="text-center py-10 text-gray-500">
+            <p>No hay actividad reciente todavía</p>
           </div>
         )}
       </section>
