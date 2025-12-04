@@ -19,7 +19,8 @@ const CatalogPage: React.FC = () => {
   const { token } = useAuth();
   const [query, setQuery] = useState("");
   const [filters, setFilters] = useState<FilterState>(emptyFilters);
-  const { years, genres, subgenres, formats } = useCatalogOptions(token);
+  const { years, genres, subgenres, formats, authors } =
+    useCatalogOptions(token);
 
   const { data, isLoading, error } = useBooks({ query, filters, token });
   const books = data ?? [];
@@ -35,6 +36,7 @@ const CatalogPage: React.FC = () => {
           genres={genres || []}
           subgenres={subgenres || []}
           formats={formats || []}
+          authors={authors || []}
           filters={filters}
           onChange={setFilters}
           onSearch={setQuery}

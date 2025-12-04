@@ -5,6 +5,7 @@ export interface FilterState {
   genres: string[];
   subgenres: string[];
   formats: FormatType[];
+  authors: string[];
   anthology?: boolean;
 }
 
@@ -13,6 +14,7 @@ export const emptyFilters: FilterState = {
   genres: [],
   subgenres: [],
   formats: [],
+  authors: [],
   anthology: false,
 };
 
@@ -22,6 +24,7 @@ export function hasActiveFilters(f: FilterState): boolean {
     f.genres.length > 0 ||
     f.subgenres.length > 0 ||
     f.formats.length > 0 ||
+    f.authors.length > 0 ||
     f.anthology === true
   );
 }
