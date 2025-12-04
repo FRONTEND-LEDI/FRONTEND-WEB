@@ -3,12 +3,14 @@ import { useState, useEffect } from "react";
 import { Filter, X, Brain, Sparkles, Zap } from "lucide-react";
 import DynamicMultiSelect from "../../components/filters/DynamicMultiSelect";
 import type { FilterState, FormatType } from "../../../types/filters";
+import type { Author } from "../../../db/services/catalog";
 
 interface Props {
   years: (number | string)[];
   genres: string[];
   subgenres: string[];
   formats: FormatType[];
+  authors: Author[];
   filters: FilterState;
   onChange: (next: FilterState) => void;
   onSearch: (query: string) => void;
@@ -19,6 +21,7 @@ const ImprovedFiltersBar: React.FC<Props> = ({
   genres,
   subgenres,
   formats,
+  authors,
   filters,
   onChange,
   onSearch,
@@ -70,11 +73,17 @@ const ImprovedFiltersBar: React.FC<Props> = ({
     label: f === "ebook" ? "Ebook" : f === "audiobook" ? "Audiolibro" : "Video",
   }));
 
+  const authorOptions = (authors || []).map((a) => ({
+    value: a._id,
+    label: a.fullName,
+  }));
+
   const hasActiveFilters =
     filters.years.length > 0 ||
     filters.genres.length > 0 ||
     filters.subgenres.length > 0 ||
     filters.formats.length > 0 ||
+    filters.authors.length > 0 ||
     filters.anthology === true;
 
   const clearAllFilters = () => {
@@ -83,6 +92,7 @@ const ImprovedFiltersBar: React.FC<Props> = ({
       genres: [],
       subgenres: [],
       formats: [],
+      authors: [],
       anthology: false,
     });
     setQuery("");
@@ -96,6 +106,7 @@ const ImprovedFiltersBar: React.FC<Props> = ({
       newFilters.genres.length > 0 ||
       newFilters.subgenres.length > 0 ||
       newFilters.formats.length > 0 ||
+      newFilters.authors.length > 0 ||
       newFilters.anthology === true
     ) {
       setQuery("");
@@ -189,6 +200,7 @@ const ImprovedFiltersBar: React.FC<Props> = ({
                   filters.genres.length +
                   filters.subgenres.length +
                   filters.formats.length +
+                  filters.authors.length +
                   (filters.anthology ? 1 : 0)}
               </span>
             )}
@@ -210,7 +222,7 @@ const ImprovedFiltersBar: React.FC<Props> = ({
       {/* Filtros plegables */}
       {showFilters && (
         <div className="bg-none p-4">
-          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-4 gap-4">
+          <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-4">
             <DynamicMultiSelect
               label="Año"
               options={yearOptions}
@@ -250,6 +262,16 @@ const ImprovedFiltersBar: React.FC<Props> = ({
                 onChange({ ...filters, formats: formats as FormatType[] })
               }
               placeholder="Todos los formatos"
+            />
+
+            <DynamicMultiSelect
+              label="Autor"
+              options={authorOptions}
+              selected={filters.authors}
+              onChange={(authors) =>
+                handleFilterChange({ ...filters, authors: authors as string[] })
+              }
+              placeholder="Todos los autores"
             />
           </div>
 

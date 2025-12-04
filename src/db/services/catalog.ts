@@ -50,6 +50,22 @@ export async function getAllFormats(token: string | null): Promise<string[]> {
   return res.json();
 }
 
+export interface Author {
+  _id: string;
+  fullName: string;
+}
+
+export async function getAllAuthorsFilter(
+  token: string | null
+): Promise<Author[]> {
+  const res = await fetch(`${API_BASE_URL}/metadata`, {
+    headers: authHeaders(token),
+    credentials: "include",
+  });
+  if (!res.ok) throw new Error("Error al obtener autores");
+  return res.json();
+}
+
 export async function getBooksByFiltering(
   filters: FilterState,
   token: string | null
@@ -60,6 +76,7 @@ export async function getBooksByFiltering(
     yearBook: filters.years ?? [],
     genre: filters.genres ?? [],
     format: filters.formats ?? [],
+    idAuthor: filters.authors ?? [],
   };
 
   const res = await fetch(`${API_BASE_URL}/booksByFiltering`, {
