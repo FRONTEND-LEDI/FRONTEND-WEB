@@ -60,7 +60,7 @@ export default function ForumPage() {
       /* -------- COMENTARIOS GLOBALES -------- */
       const handleComents = (data: Comment[]) => {
         if (!isComponentMounted) return;
-        console.log("Recibidos comentarios:", data.length);
+        console.log("📨 Recibidos comentarios:", data.length);
 
         const normalized = data.map((c) => {
           const foroId =
@@ -73,20 +73,21 @@ export default function ForumPage() {
           };
         });
 
-        setComentarios((prev) => {
-          const newCommentMap = new Map(normalized.map((c) => [c._id, c]));
-          const actualizados = prev.map((c) => {
-            return newCommentMap.has(c._id) ? newCommentMap.get(c._id)! : c;
-          });
+        setComentarios(normalized);
 
-          normalized.forEach((nc) => {
-            if (!prev.some((c) => c._id === nc._id)) {
-              actualizados.push(nc);
-            }
-          });
-
-          return actualizados.length > 0 ? actualizados : normalized;
-        });
+        // Actualizar foros con los nuevos comentarios
+        setForos((prev) =>
+          prev.map((f) => {
+            const comentariosForo = normalized.filter(
+              (c) => c.idForo === f._id
+            );
+            return {
+              ...f,
+              posts: comentariosForo,
+              comentarios: comentariosForo,
+            };
+          })
+        );
       };
 
       /* -------- FOROS -------- */
@@ -155,7 +156,7 @@ export default function ForumPage() {
       /* -------- ACTUALIZACIÓN DE COMENTARIOS -------- */
       const handleUpdateComents = (data: Comment[]) => {
         if (!isComponentMounted) return;
-        console.log("Comentarios actualizados:", data.length);
+        console.log("✏️ Comentarios actualizados:", data.length);
 
         const normalized = data.map((c) => {
           const foroId =
@@ -171,13 +172,13 @@ export default function ForumPage() {
         setComentarios(normalized);
         setForos((prev) =>
           prev.map((f) => {
-            const nuevosComentarios = normalized.filter(
+            const comentariosForo = normalized.filter(
               (c) => c.idForo === f._id
             );
             return {
               ...f,
-              posts: nuevosComentarios,
-              comentarios: nuevosComentarios,
+              posts: comentariosForo,
+              comentarios: comentariosForo,
             };
           })
         );
@@ -202,13 +203,13 @@ export default function ForumPage() {
         setComentarios(normalized);
         setForos((prev) =>
           prev.map((f) => {
-            const comentariosRestantes = normalized.filter(
+            const comentariosForo = normalized.filter(
               (c) => c.idForo === f._id
             );
             return {
               ...f,
-              posts: comentariosRestantes,
-              comentarios: comentariosRestantes,
+              posts: comentariosForo,
+              comentarios: comentariosForo,
             };
           })
         );
@@ -228,7 +229,7 @@ export default function ForumPage() {
 
       /* -------- CLEANUP -------- */
       return () => {
-        console.log("🧹 Limpiando listeners");
+        console.log("Limpiando listeners");
         initializedSocket.off("connect", handleConnect);
         initializedSocket.off("disconnect", handleDisconnect);
         initializedSocket.off("connect_error", handleConnectError);
@@ -264,6 +265,19 @@ export default function ForumPage() {
     console.log(`Emitiendo get-all-foros (comentarios: ${comentarios.length})`);
     socket.emit("get-all-foros");
   }, [comentarios.length]);
+
+  /* -------- SINCRONIZAR FORO SELECCIONADO CON ARRAY DE FOROS -------- */
+  useEffect(() => {
+    if (!foroSeleccionado) return;
+
+    // Buscar el foro actualizado en el array de foros
+    const foroActualizado = foros.find((f) => f._id === foroSeleccionado._id);
+
+    if (foroActualizado) {
+      console.log("Sincronizando foro seleccionado con datos actualizados");
+      setForoSeleccionado(foroActualizado);
+    }
+  }, [foros, foroSeleccionado?._id]);
 
   /* ------------------------ CARGAR POSTS DEL FORO SELECCIONADO ------------------------ */
   useEffect(() => {
@@ -340,29 +354,6 @@ export default function ForumPage() {
 
       console.log("Emitiendo edición de post:", postId);
 
-      // Actualizar estado local inmediatamente
-      setForos((prev) =>
-        prev.map((f) => {
-          if (f._id === foroSeleccionado._id) {
-            return {
-              ...f,
-              posts: f.posts.map((p) =>
-                p._id === postId ? { ...p, content: contenido } : p
-              ),
-              comentarios: f.comentarios.map((c) =>
-                c._id === postId ? { ...c, content: contenido } : c
-              ),
-            };
-          }
-          return f;
-        })
-      );
-
-      // Actualizar comentarios globales
-      setComentarios((prev) =>
-        prev.map((c) => (c._id === postId ? { ...c, content: contenido } : c))
-      );
-
       socket.emit("update-coment", postId, {
         content: contenido,
       });
@@ -386,23 +377,6 @@ export default function ForumPage() {
 
       console.log("Emitiendo eliminación de post:", postId);
 
-      // Actualizar estado local inmediatamente (optimistic update)
-      setForos((prev) =>
-        prev.map((f) => {
-          if (f._id === foroSeleccionado._id) {
-            return {
-              ...f,
-              posts: f.posts.filter((p) => p._id !== postId),
-              comentarios: f.comentarios.filter((c) => c._id !== postId),
-            };
-          }
-          return f;
-        })
-      );
-
-      // Actualizar comentarios globales
-      setComentarios((prev) => prev.filter((c) => c._id !== postId));
-
       socket.emit("delete-coment", postId);
     },
     [user, foroSeleccionado]
@@ -425,29 +399,6 @@ export default function ForumPage() {
         userId: user.id,
       });
 
-      // Crear post local inmediatamente
-      const nuevoPost: Comment = {
-        _id: `temp-${Date.now()}`,
-        content: contenido,
-        idForo: foroSeleccionado._id,
-        idUser: user as any,
-        createdAt: new Date().toISOString(),
-      };
-
-      // Actualizar estado local inmediatamente
-      setForos((prev) =>
-        prev.map((f) =>
-          f._id === foroSeleccionado._id
-            ? {
-                ...f,
-                posts: [...f.posts, nuevoPost],
-                comentarios: [...f.comentarios, nuevoPost],
-              }
-            : f
-        )
-      );
-
-      // Emitir al servidor
       socket.emit("new-public", {
         content: contenido,
         idForo: foroSeleccionado._id,
