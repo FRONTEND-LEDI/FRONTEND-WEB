@@ -24,6 +24,7 @@ export default function ForumPage() {
   const [searchTerm, setSearchTerm] = useState("");
   const [loading, setLoading] = useState(false);
   const [socketConnected, setSocketConnected] = useState(false);
+  const [initialDataLoaded, setInitialDataLoaded] = useState(false);
 
   /* ========================= SETUP COMPLETO DE SOCKET Y LISTENERS ========================= */
   useEffect(() => {
@@ -43,8 +44,10 @@ export default function ForumPage() {
 
       /* -------- CONEXIÓN -------- */
       const handleConnect = () => {
-        console.log("Socket conectado:", initializedSocket.id);
-        if (isComponentMounted) setSocketConnected(true);
+        console.log("✅ Socket conectado:", initializedSocket.id);
+        if (isComponentMounted) {
+          setSocketConnected(true);
+        }
       };
 
       const handleDisconnect = () => {
@@ -74,6 +77,7 @@ export default function ForumPage() {
         });
 
         setComentarios(normalized);
+        setInitialDataLoaded(true);
 
         // Actualizar foros con los nuevos comentarios
         setForos((prev) =>
@@ -93,10 +97,10 @@ export default function ForumPage() {
       /* -------- FOROS -------- */
       const handleAllForos = (data: Foro[]) => {
         if (!isComponentMounted) return;
-        console.log("📥 Recibidos foros:", data.length);
+        console.log("📥 Recibidos foros:", data.length, data);
 
         if (!Array.isArray(data)) {
-          console.warn("⚠️ Foros data no es un array");
+          console.warn("⚠️ Foros data no es un array", typeof data, data);
           return;
         }
 
@@ -113,8 +117,9 @@ export default function ForumPage() {
             };
           });
 
-          console.log("Foros asociados:", extendidos.length);
+          console.log("✅ Foros asociados:", extendidos.length);
           setForos(extendidos);
+          setInitialDataLoaded(true);
           return currentComentarios;
         });
       };
@@ -225,7 +230,30 @@ export default function ForumPage() {
       initializedSocket.on("update", handleUpdateComents);
       initializedSocket.on("Delete", handleDeleteComents);
 
-      if (initializedSocket.connected) handleConnect();
+      if (initializedSocket.connected) {
+        handleConnect();
+        // Solicitar datos si ya está conectado (con pequeño delay)
+        setTimeout(() => {
+          if (isComponentMounted) {
+            console.log("📡 Socket ya conectado, solicitando datos...");
+            initializedSocket.emit("get-all-coments");
+            initializedSocket.emit("get-all-foros");
+          }
+        }, 100);
+      }
+
+      // Solicitar datos cuando se conecte (con pequeño delay para que el backend registre listeners)
+      initializedSocket.once("connect", () => {
+        if (isComponentMounted) {
+          setTimeout(() => {
+            if (isComponentMounted) {
+              console.log("📡 Solicitando datos tras conectar...");
+              initializedSocket.emit("get-all-coments");
+              initializedSocket.emit("get-all-foros");
+            }
+          }, 100);
+        }
+      });
 
       /* -------- CLEANUP -------- */
       return () => {
@@ -248,23 +276,6 @@ export default function ForumPage() {
       cleanup?.();
     };
   }, [token]);
-
-  /* -------- SOLICITAR FOROS UNA VEZ CARGADOS LOS COMENTARIOS -------- */
-  useEffect(() => {
-    if (comentarios.length === 0) {
-      console.log("Esperando comentarios...");
-      return;
-    }
-
-    const socket = getSocket();
-    if (!socket || !socket.connected) {
-      console.warn("Socket no disponible o desconectado");
-      return;
-    }
-
-    console.log(`Emitiendo get-all-foros (comentarios: ${comentarios.length})`);
-    socket.emit("get-all-foros");
-  }, [comentarios.length]);
 
   /* -------- SINCRONIZAR FORO SELECCIONADO CON ARRAY DE FOROS -------- */
   useEffect(() => {

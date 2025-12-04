@@ -6,13 +6,7 @@ let socket: Socket | null = null;
 export const initSocket = (token: string): Socket => {
   // Solo crear un nuevo socket si no existe o está desconectado
   if (socket?.connected) {
-    console.log("Socket ya conectado, limpiando listeners antiguos");
-    // Limpiar listeners antiguos que pueden estar desconectados del estado nuevo
-    socket.off("coments");
-    socket.off("all-foros");
-    socket.off("coments-in-the-foro");
-    socket.off("update");
-    socket.off("Delete");
+    console.log("♻️ Socket ya conectado, reutilizando conexión");
     return socket;
   }
 
