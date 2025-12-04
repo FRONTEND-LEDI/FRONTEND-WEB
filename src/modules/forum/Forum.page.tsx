@@ -37,7 +37,7 @@ export default function ForumPage() {
     const setupAndConnect = () => {
       if (!isComponentMounted) return;
 
-      console.log("🔧 Configurando todos los listeners");
+      console.log("Configurando todos los listeners");
 
       const initializedSocket = initSocket(token);
 
