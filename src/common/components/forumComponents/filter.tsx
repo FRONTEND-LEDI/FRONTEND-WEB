@@ -1,9 +1,9 @@
-import type { Foro, Comment } from "../../../types/forum";
+import type { Comment, ForoExtendido } from "../../../types/forum";
 import { UsersRound } from "lucide-react";
 
 type FilterProps = {
-  setForoSeleccionado: (foro: Foro | null) => void;
-  foros: Foro[];
+  setForoSeleccionado: (foro: ForoExtendido | null) => void;
+  foros: ForoExtendido[];
   comentarios: Comment[];
 };
 
@@ -17,16 +17,20 @@ const contarRecursivo = (posts: Comment[]): number => {
 };
 
 const contarComentariosPorForo = (foroId: string, comentarios: Comment[]) => {
-  const posts = comentarios.filter(
-    (c) => c.idForo === foroId || c.idForo?._id === foroId
-  );
+  const posts = comentarios.filter((c) => {
+    const cForoId =
+      typeof c.idForo === "object" ? (c.idForo as any)?._id : c.idForo;
+    return cForoId === foroId;
+  });
   return contarRecursivo(posts);
 };
 
 const ultimaActividadPorForo = (foroId: string, comentarios: Comment[]) => {
-  const posts = comentarios.filter(
-    (c) => c.idForo === foroId || c.idForo?._id === foroId
-  );
+  const posts = comentarios.filter((c) => {
+    const cForoId =
+      typeof c.idForo === "object" ? (c.idForo as any)?._id : c.idForo;
+    return cForoId === foroId;
+  });
 
   if (!posts.length) return "Sin actividad";
 
@@ -42,7 +46,11 @@ const ultimaActividadPorForo = (foroId: string, comentarios: Comment[]) => {
     : "Sin fecha";
 };
 
-export default function FilterForum({ setForoSeleccionado, foros, comentarios }: FilterProps) {
+export default function FilterForum({
+  setForoSeleccionado,
+  foros,
+  comentarios,
+}: FilterProps) {
   return (
     <div className="flex flex-col mt-12 gap-8 w-full">
       <div>
@@ -67,7 +75,8 @@ export default function FilterForum({ setForoSeleccionado, foros, comentarios }:
                 <div className="flex justify-between mt-2 text-sm text-gray-500">
                   <div className="flex items-center gap-2">
                     <UsersRound className="w-4 h-4 text-primary" />
-                    {contarComentariosPorForo(foro._id, comentarios)} Comentarios
+                    {contarComentariosPorForo(foro._id, comentarios)}{" "}
+                    Comentarios
                   </div>
 
                   <div>
