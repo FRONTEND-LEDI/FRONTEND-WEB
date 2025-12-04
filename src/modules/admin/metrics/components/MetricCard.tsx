@@ -31,7 +31,8 @@ const MetricCard = ({
   const { data, isLoading, isError } = useQuery({
     queryKey: [queryKeyBase, period],
     queryFn: () => fetcher(period, token),
-    staleTime: 60000,
+    staleTime: 10000,
+    refetchInterval: 10000, // Actualizar cada 10 segundos
   });
 
   return (

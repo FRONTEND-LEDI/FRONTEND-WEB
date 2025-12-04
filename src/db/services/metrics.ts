@@ -91,11 +91,20 @@ export const getBookMetrics = (period: MetricPeriod, token: string | null) =>
   }));
 
 // Autores
-export const getAuthorMetrics = (period: MetricPeriod, token: string | null) =>
-  fetchMetric("MetricAuthor", period, token, (item) => ({
+export const getAuthorMetrics = async (
+  period: MetricPeriod,
+  token: string | null
+) => {
+  const data = await fetchMetric("MetricAuthor", period, token, (item) => ({
     label: item.idAuthor?.fullName || "Desconocido",
     value: item.count,
   }));
+  // Filtrar autores desconocidos o nulos
+  return data.filter(
+    (item) =>
+      item.label && item.label !== "Desconocido" && item.label.trim() !== ""
+  );
+};
 
 // Formatos
 export const getFormatMetrics = (period: MetricPeriod, token: string | null) =>

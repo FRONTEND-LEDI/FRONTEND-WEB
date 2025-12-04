@@ -9,6 +9,8 @@ const TopUsersList = () => {
   const { data, isLoading, isError } = useQuery({
     queryKey: ["top-users"],
     queryFn: () => getTopUsers(token),
+    staleTime: 10000,
+    refetchInterval: 10000, // Actualizar cada 10 segundos
   });
 
   if (isLoading) return <div className="p-4">Cargando usuarios...</div>;
