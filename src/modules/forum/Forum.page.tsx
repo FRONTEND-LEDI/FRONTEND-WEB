@@ -79,6 +79,9 @@ export default function ForumPage() {
         setComentarios(normalized);
         setInitialDataLoaded(true);
 
+        // Deshabilitar loading si estamos esperando datos
+        setLoading(false);
+
         // Actualizar foros con los nuevos comentarios
         setForos((prev) =>
           prev.map((f) => {
@@ -127,7 +130,10 @@ export default function ForumPage() {
       /* -------- COMENTARIOS ESPECÍFICOS DEL FORO -------- */
       const handleComentsForo = (data: Comment[]) => {
         if (!isComponentMounted) return;
-        console.log("Recibidos comentarios del foro:", data.length);
+        console.log("✅ Recibidos comentarios del foro:", data.length);
+
+        // Siempre deshabilitar loading al recibir respuesta
+        if (isComponentMounted) setLoading(false);
 
         const normalizados = data.map((c) => {
           const foroId =
@@ -154,8 +160,6 @@ export default function ForumPage() {
             return f;
           })
         );
-
-        if (isComponentMounted) setLoading(false);
       };
 
       /* -------- ACTUALIZACIÓN DE COMENTARIOS -------- */
@@ -307,18 +311,28 @@ export default function ForumPage() {
       return;
     }
 
+    // Si el foro ya tiene posts cargados, no mostrar loading
+    if (foroSeleccionado.posts && foroSeleccionado.posts.length > 0) {
+      console.log("Foro ya tiene posts cargados, no requiere loading");
+      setLoading(false);
+      return;
+    }
+
     console.log("Emitiendo all-public-foro para:", foroSeleccionado._id);
     setLoading(true);
 
     socket.emit("all-public-foro", foroSeleccionado._id);
 
+    // Reducir timeout y asegurar que siempre se deshabilite el loading
     const timeout = setTimeout(() => {
-      console.warn("⏱Timeout cargando posts del foro");
+      console.warn(
+        "⏱Timeout cargando posts del foro, mostrando datos disponibles"
+      );
       setLoading(false);
-    }, 5000);
+    }, 2000);
 
     return () => clearTimeout(timeout);
-  }, [foroSeleccionado?._id]);
+  }, [foroSeleccionado?._id, foroSeleccionado?.posts?.length]);
 
   /* ------------------------ AGREGAR RESPUESTA A COMENTARIO ------------------------ */
   const agregarComentario = useCallback(
@@ -484,7 +498,7 @@ export default function ForumPage() {
                     comentarios={comentarios}
                   />
                 )}
-                <ForumOverview foros={foros} />
+                <ForumOverview foros={foros} isLoading={!initialDataLoaded} />
               </div>
 
               {/* COLUMNA DERECHA: NOTICIAS */}
